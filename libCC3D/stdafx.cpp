@@ -2,22 +2,6 @@
 
 #include "stdafx.h"
 
-void strlwr(char * s)
-{ 
-    while(*s)
-  	{
-         if( isupper(*s)) *s = tolower(*s);
-         s++;
-     }
-}
-
-void strupr(char * s)
-{ 
-	while(*s) {
-       	if( islower(*s)) *s = toupper(*s);
-        s++;
-    }
-}
  
 
 // emulation for MFC CString 

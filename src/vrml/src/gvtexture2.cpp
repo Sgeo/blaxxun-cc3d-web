@@ -368,7 +368,7 @@ BOOL GDSStream::CreateFilterGraph(int fileFormat,const char * pszFileName,IAMMul
 		//hr = pFilter->QueryVendorInfo(LPWSTR * );
 		CString tmp(info.achName);
 		TRACE("Filter %s \n",(const char *) tmp);
-		// Microsoft® Netshow(TM) with Real  
+		// Microsoftï¿½ Netshow(TM) with Real  
 		//hr = pFilter->QueryInterface(IID_IIndeoDecode, &m_pIndeo);
 		pFilter->Release();
 
@@ -401,7 +401,7 @@ BOOL GDSStream::CheckFilterGraph()
 		//hr = pFilter->QueryVendorInfo(LPWSTR * );
 		CString tmp(info.achName);
 		TRACE("Filter %s \n",(const char *) tmp);
-		// Microsoft® Netshow(TM) with Real  
+		// Microsoftï¿½ Netshow(TM) with Real  
 		//hr = pFilter->QueryInterface(IID_IIndeoDecode, &m_pIndeo);
 		pFilter->Release();
 

@@ -50,7 +50,9 @@ Todo :
 
 ******************************************************************************/
 
-class RenderState;
+#include "glrender.h"
+
+//class RenderState;
 class RGBAColor;
 
 #ifdef _OGL
@@ -141,6 +143,8 @@ class GSoundDevice;
 #include "gcamera.h"
 #include "gcamerautil.h"
 #include "gfuzzy.h"
+
+#include "glrender.h"
 
 class GMultitSensorHandler;
 
@@ -728,7 +732,7 @@ public:
 	int anchorPreloadMode;	// preload anchors
 
 		
-	int initialTextureMode;		//!< start texturing mode for VRML scenes, 0 don´t load 1 ask 2 load
+	int initialTextureMode;		//!< start texturing mode for VRML scenes, 0 donï¿½t load 1 ask 2 load
 	int initialTextureFilteringMode;//!< start filter mode 
 	int initalRenderingMode;  // initial rendering mode for VRML scenes
 

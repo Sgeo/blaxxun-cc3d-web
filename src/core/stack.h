@@ -27,23 +27,23 @@ class Stack : public Array<T>
 {
 public:
 	Stack() : Array<T>()	{};
-	Stack(int initSize) : Array<T>(initSize)	{ SetLength(0); };
+	Stack(int initSize) : Array<T>(initSize)	{ this->SetLength(0); };
 
-	int GetDepth() { return Length(); }
-	void SetDepth(int newDepth) { SetLength(newDepth); }
+	int GetDepth() { return this->Length(); }
+	void SetDepth(int newDepth) { this->SetLength(newDepth); }
 	
-	int IsEmpty() { return Length()==0; }
+	int IsEmpty() { return this->Length()==0; }
 
 	// Push a new Element
-	void Push(T NewTop) { Append(NewTop); }
+	void Push(T NewTop) { this->Append(NewTop); }
 
 	// get Top Element
-	T Top() { return(p[Length()-1]); }
+	T Top() { return(this->p[this->Length()-1]); }
 	
 	// Pop a Element
-	void PopTop() { SetLength(Length()-1); }
+	void PopTop() { this->SetLength(this->Length()-1); }
 
-	T Pop() { T top =Top(); SetLength(Length()-1); return(top); }
+	T Pop() { T top =Top(); this->SetLength(this->Length()-1); return(top); }
 
 
 	// operations from array which should be ok

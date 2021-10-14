@@ -65,7 +65,7 @@ pragma Off(Auto_class_member_instantiation);
 //pragma On(Print_template_usage);
 #endif
 
-class AStream;
+#include "astream.h"
 // Auto expand on Append(T)
 #define ArrayNew_EXPANSION 1024
 
@@ -616,8 +616,8 @@ public:
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator*=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while (i--) *dst++ *= Arg;
   return (*this);
 };
@@ -625,8 +625,8 @@ NumericArrayNew<T>& NumericArrayNew<T>::operator*=(const T Arg)
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator+=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while(i--) *dst++ += Arg;
   return (*this);
 };
@@ -634,8 +634,8 @@ NumericArrayNew<T>& NumericArrayNew<T>::operator+=(const T Arg)
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator-=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while(i--) *dst++ -= Arg;
   return (*this);
 };
@@ -644,8 +644,8 @@ NumericArrayNew<T>& NumericArrayNew<T>::operator-=(const T Arg)
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator/=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst =this-> p ;
   while(i--) *dst++ /= Arg;
   return (*this);
 };
@@ -653,9 +653,9 @@ NumericArrayNew<T>& NumericArrayNew<T>::operator/=(const T Arg)
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator+=(const NumericArrayNew<T>& Arg)
 {
-  register int i = np;
+  register int i = this->np;
   register T* src = Arg.p ;
-  register T* dst = p ;
+  register T* dst = this->p ;
   if (i>Arg.np) i=Arg.np;
   while (i--) *dst++ += *src++;
   return (*this);
@@ -664,9 +664,9 @@ NumericArrayNew<T>& NumericArrayNew<T>::operator+=(const NumericArrayNew<T>& Arg
 template<class T>
 NumericArrayNew<T>& NumericArrayNew<T>::operator*=(const NumericArrayNew<T>& Arg)
 {
-  register int i = np;
+  register int i = this->np;
   register T* src = Arg.p ;
-  register T* dst = p ;
+  register T* dst = this->p ;
   if (i>Arg.np) i=Arg.np;
   while (i--) *dst++ *= *src++;
   return (*this);

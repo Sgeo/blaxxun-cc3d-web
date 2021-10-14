@@ -33,6 +33,7 @@ Todo :
 ******************************************************************************/
 
 // #include "stdafx.h"
+#ifdef _KATMAI
 
 #include "d3dtypes.h"
 
@@ -55,7 +56,6 @@ typedef struct  Vertex_Tag  { float x;
 
 
 
-#ifdef _KATMAI
 
 
 
@@ -653,6 +653,7 @@ typedef struct _D3DLVERTEX {
 
 #endif
 
+#ifdef _KATMAI
 		
 
 
@@ -694,7 +695,6 @@ void KatmaiTransformScreen(const float *x,
 
 }
 
-#ifdef _KATMAI
 
 void KatmaiTransformScreen_Int(int n,Point *p,
 						   float m[4][4],
@@ -1193,7 +1193,6 @@ void KatmaiTransformLight_1_dir_spec(
 
 
 
-#endif
 
 
 
@@ -1238,3 +1237,5 @@ void KatmaiCopyTextureCoord(const float *x,
 	}
 
 }
+
+#endif

@@ -133,6 +133,16 @@ typedef char CHAR;
 typedef short SHORT;
 typedef long LONG;
 
+typedef unsigned long ULONG;
+typedef ULONG *PULONG;
+typedef unsigned short USHORT;
+typedef USHORT *PUSHORT;
+typedef unsigned char UCHAR;
+typedef UCHAR *PUCHAR;
+typedef uint32_t UINT32;
+typedef int32_t INT32;
+
+
 typedef LONG HRESULT;
 
 typedef void				*LPVOID;
@@ -287,11 +297,12 @@ inline DWORD timeGetTime() { return (1000l*clock()) / CLOCKS_PER_SEC  ; }
 #define _MAX_PATH MAXPATHLEN
 #endif
 
-#define HTREEITEM  void *
 
-#define HANDLE void *
-#define HWND void *
-#define HDC  void *
+typedef void *HTREEITEM;
+
+typedef void *HANDLE;
+typedef void *HWND;
+typedef void *HDC;
 typedef struct tagRECT
 {
     LONG    left;
@@ -471,11 +482,11 @@ inline void G__cdecl AfxTrace(LPCTSTR, ...) { }
 #define UNUSED_ALWAYS(x) x
 
 #define _strlwr strlwr
-extern void strlwr(char * s);
+//extern void strlwr(char * s);
 
 
 #define _strupr strupr
-extern void strupr(char * s);
+//extern void strupr(char * s);
 
 
 // emulation for MFC CString 

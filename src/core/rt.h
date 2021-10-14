@@ -40,6 +40,8 @@ class RTRoot;
  *  intented as a abstract type for general use
  */
 
+class TypeInfo;
+
 class TypeId {
 
 public:
@@ -136,7 +138,7 @@ public:
 public:														\
 		static const TypeInfo info;							\
 		virtual TypeId Id() const;							\
-		static TypeId ClassId() { return(&info); }			\
+		static TypeId ClassId() { return(TypeId(&info)); }			\
 		static const TypeInfo* baseInfo[2];					\
 		static RTRoot *New()
 
@@ -163,7 +165,7 @@ public:
 		virtual TypeId Id() const;
 
 		// ! reuturn the TypeId of the class
-		static TypeId ClassId() { return(&info); }
+		static TypeId ClassId() { return(TypeId(&info)); }
 
 		//! is this object of same or derived type as T ?
 		gbool IsA(TypeId T) const;

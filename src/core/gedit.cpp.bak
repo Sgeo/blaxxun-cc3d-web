@@ -834,7 +834,7 @@ int GMoveTransformHandler::OnLButtonDown(UINT nFlags, Point &point)
 
 			return(EV_OK);
 		} else {
-			Reporter.Error("Can´t edit selected object, because not contained in Transform group. "); 
+			Reporter.Error("Canï¿½t edit selected object, because not contained in Transform group. "); 
 			return(EV_CANCEL);
 		}
 	}

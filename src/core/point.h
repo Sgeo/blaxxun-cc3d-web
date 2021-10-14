@@ -166,7 +166,12 @@ class Point {
 	friend int operator== (const Point& A, const Point& B);
 	friend int operator!= (const Point& A, const Point& B);
 
-	friend int Equal(const Point& A, const Point& B,float Epsilon=EPS);
+	friend inline int Equal(const Point& A, const Point& B,float Epsilon=EPS) {
+		
+	return	fabs(A.x - B.x) <= Epsilon &&
+		fabs(A.y -  B.y) <= Epsilon &&
+		fabs(A.z - B.z) <= Epsilon;
+	}
 
 	Point& operator*= (const Matrix &A) { Set(A* *this); return(*this); }
 
@@ -399,12 +404,8 @@ inline int operator!= (const Point& A, const Point& B)
 	return !(A == B);
 }
 
-inline int Equal(const Point& A, const Point& B,float Epsilon)
-{
-	return	fabs(A.x - B.x) <= Epsilon &&
-		fabs(A.y -  B.y) <= Epsilon &&
-		fabs(A.z - B.z) <= Epsilon;
-}
+
+
 
 inline Point CrossProd (const Point& A, const Point& B)
 {
@@ -474,7 +475,6 @@ public:
 };
 
 
-
 //! a 3D plane stored as normal + offset from origin
 class Plane 	{
 public:
@@ -509,6 +509,10 @@ public:
 	//! set by normal vector and distance from origin
 	inline void Set(const Vector &normal,float D) { n.Set(normal), d = D; }
 
+	// compute plane from 3 pts 
+	Plane Plane3(const Point &p0,const Point &p1,const Point &p2);
+	friend Plane Plane3(const Point &p0,const Point &p1,const Point &p2);
+
 	//! set by 3 points on Plane (triangle)
 	inline void Set(const Point &p0,const Point &p1,const Point &p2) { Set(Plane3(p0,p1,p2)); }
 
@@ -535,12 +539,11 @@ public:
 
 
 	friend Plane operator* (const Matrix&, const Plane&);
-	// compute plane from 3 pts 
-	friend Plane Plane3(const Point &p0,const Point &p1,const Point &p2);
 
 	int io(AStream &a);
 
 };
+Plane Plane3(const Point &p0,const Point &p1,const Point &p2);
 
 #define BBOX_MAX FLT_MAX 
 #define BBOX_MIN FLT_MIN

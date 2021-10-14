@@ -78,7 +78,7 @@ public:
 	virtual int OnTimer();
 	
 	// handle a key, return false if key not handlerd 
-	virutal BOOL OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual BOOL OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 
 	// execute move action, on time event 

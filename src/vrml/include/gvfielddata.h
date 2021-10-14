@@ -46,7 +46,7 @@ Todo :
 ******************************************************************************/
 
 
-
+#include <functional>
 
 #include <gvbasic.h>
 #include <gvplist.h>
@@ -100,6 +100,7 @@ typedef FieldType GvFieldClass;
 #include <gvnode.h>
 
 typedef   void (GvNode::*GvNodeEventInMethod)(GvField *event);
+//typedef std::function<void(GvNode*,GvField*)> GvNodeEventInMethod;
 
 
 class GvConnection;

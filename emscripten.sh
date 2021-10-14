@@ -1,0 +1,1 @@
+emcc -IlibCC3D -Isrc/core src/core/*.cpp -Isrc/vrml/include src/vrml/src/*.cpp -Isrc/core/gl src/core/gl/*.cpp -Isrc/jpeghgnt/ src/jpeghgnt/*.c -D_OGL=1 -Wno-deprecated-register -Wno-extra-tokens 

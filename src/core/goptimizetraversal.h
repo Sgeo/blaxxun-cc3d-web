@@ -214,7 +214,7 @@ public :
 			GvNodeHandle n;
 			int retMask =  GetResult(n);
 			ret.set(n);
-			if (n == (GvNode*) NULL) ret.setDefault(TRUE);
+			if (n == nullptr) ret.setDefault(TRUE); // TODO: Is this the right way to fix the overloaded ==?
 			return(retMask);
 	}
 

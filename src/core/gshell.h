@@ -65,6 +65,7 @@ Todo :
 #endif
 
 #include "grender.h"
+#include "grenderbase.h"
 
 
 // Forward
@@ -800,7 +801,7 @@ public:
 	int Changed() { return(edit_flags != 0); }
 
 	/* ! Evaluate object as object of type "type"
-	  if return = this, don´t destroy result, otherwise destroy */
+	  if return = this, donï¿½t destroy result, otherwise destroy */
 	virtual GEvalAs_TYPE* EvalAs(TypeId type,int copyAttributes=1); 
 
 
@@ -1106,7 +1107,7 @@ public:
 	void GetVertexParametersNative(int n,Point *vp);
 
 	/*! Evaluate object as object of type "type"
-	  if return = this, don´t destroy result, otherwise destroy */
+	  if return = this, donï¿½t destroy result, otherwise destroy */
 	 GEvalAs_TYPE* EvalAs(TypeId type,int copyAttributes=1);
 
     //! GClass do ray intersection with ray, store hits in traversal

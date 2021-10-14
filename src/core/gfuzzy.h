@@ -34,7 +34,7 @@ Todo :
 #ifndef _FuzzyRuleBase_ 
 #define _FuzzyRuleBase_ 
 
-#include <fstream.h>
+#include <fstream>
 
 #ifdef _DEBUG
 	//#define _GFUZZY_LOG

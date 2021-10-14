@@ -57,6 +57,19 @@ class Point;
 
 class AStream;
 
+Matrix ScaleMatrix(const Point& Scale);
+Matrix ScaleMatrix(float X, float Y, float Z);
+Matrix RotationMatrix(const Point& Rotation);
+Matrix RotationMatrix(float X, float Y, float Z);
+Matrix TranslationMatrix(const Point& Location);
+Matrix TranslationMatrix(float X, float Y, float Z);
+Matrix RotationAxisMatrix(const Point& axis_, float angle);
+Matrix RotationAxisMatrix(const Point &AxisPt, const Point& AxisDir, float angle);
+Matrix ViewMatrix(const Point& LookAt, const Point& Viewer, const Point& UpL);
+Matrix RotationZMatrix(float Angle);
+
+
+
 //! a 4*4 float transformation matrix
 //! many operations are designed to not use itermediate or stack return values for speed
 class Matrix {

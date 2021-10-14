@@ -643,8 +643,8 @@ public:
 template<class T>
 NumericArray<T>& NumericArray<T>::operator*=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while (i--) *dst++ *= Arg;
   return (*this);
 };
@@ -652,8 +652,8 @@ NumericArray<T>& NumericArray<T>::operator*=(const T Arg)
 template<class T>
 NumericArray<T>& NumericArray<T>::operator+=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while(i--) *dst++ += Arg;
   return (*this);
 };
@@ -661,8 +661,8 @@ NumericArray<T>& NumericArray<T>::operator+=(const T Arg)
 template<class T>
 NumericArray<T>& NumericArray<T>::operator-=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while(i--) *dst++ -= Arg;
   return (*this);
 };
@@ -671,8 +671,8 @@ NumericArray<T>& NumericArray<T>::operator-=(const T Arg)
 template<class T>
 NumericArray<T>& NumericArray<T>::operator/=(const T Arg)
 {
-  register int i = np;
-  register T* dst = p ;
+  register int i = this->np;
+  register T* dst = this->p ;
   while(i--) *dst++ /= Arg;
   return (*this);
 };
@@ -680,9 +680,9 @@ NumericArray<T>& NumericArray<T>::operator/=(const T Arg)
 template<class T>
 NumericArray<T>& NumericArray<T>::operator+=(const NumericArray<T>& Arg)
 {
-  register int i = np;
+  register int i = this->np;
   register T* src = Arg.p ;
-  register T* dst = p ;
+  register T* dst = this->p ;
   if (i>Arg.np) i=Arg.np;
   while (i--) *dst++ += *src++;
   return (*this);
@@ -691,9 +691,9 @@ NumericArray<T>& NumericArray<T>::operator+=(const NumericArray<T>& Arg)
 template<class T>
 NumericArray<T>& NumericArray<T>::operator*=(const NumericArray<T>& Arg)
 {
-  register int i = np;
+  register int i = this->np;
   register T* src = Arg.p ;
-  register T* dst = p ;
+  register T* dst = this->p ;
   if (i>Arg.np) i=Arg.np;
   while (i--) *dst++ *= *src++;
   return (*this);

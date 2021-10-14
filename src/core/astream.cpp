@@ -87,7 +87,7 @@ AStream::AStream(const char *fname,const char *fmode)
   else {
   	// set buffering to larger bufer 64 k
   	if (setvbuf(f,NULL,_IOFBF,1024*64) !=0) {
-	   Error("Can´t set stream buffer size to %d",1024*64);
+	   Error("CanÂ´t set stream buffer size to %d",1024*64);
   	}
   }
 

@@ -2089,9 +2089,9 @@ void dxf_line(void)
 	 objgenend();
   } else {
 	ogenstart();
-
-	GetCurrentShell()->AppendEdge( Point( opts[0][X]*scalex,opts[0][Y]*scaley,opts[0][Z]*scalez),
-			Point(opts[1][X]*scalex,opts[1][Y]*scaley,opts[1][Z]*scalez));
+	Point p1(opts[0][X]*scalex,opts[0][Y]*scaley,opts[0][Z]*scalez);
+	Point p2(opts[1][X]*scalex,opts[1][Y]*scaley,opts[1][Z]*scalez);
+	GetCurrentShell()->AppendEdge( p1, p2);
 	ogenend();
   }
 #endif
@@ -2870,7 +2870,7 @@ int ReadDxfFile(const char *dxfile,GWorld *theWorld)
 
   		  // set buffering to larger bufer 64 k
   		  if (setvbuf(InFile,NULL,_IOFBF,1024*64) !=0) {
-	         fprintf(stderr,"gdxfin::Can´t set stream buffer size");
+	         fprintf(stderr,"gdxfin::CanÂ´t set stream buffer size");
   		  }
 
 

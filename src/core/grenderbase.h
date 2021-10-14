@@ -55,6 +55,8 @@ class GRenderer2D;
 
 typedef struct image_ image;
 
+#include "matrix.h"
+
 
 
 //@class a simple transform stored component wise
@@ -487,7 +489,7 @@ public:
         handle = NULL;
     }
 
-    //! Notify handle (owned by renderstate) that this ref doesn´t need the handle any more
+    //! Notify handle (owned by renderstate) that this ref doesnï¿½t need the handle any more
     ~GTextureRef() {
         if (handle) handle->UnRef();
         handle = NULL;

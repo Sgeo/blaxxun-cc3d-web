@@ -41,6 +41,7 @@ AStream
 #include <string.h>
 #include <ctype.h>
 //#include <iostream.h>
+#include "gutils.h"
 
 
 // grrrrrrrrr some stdio define them as macros !

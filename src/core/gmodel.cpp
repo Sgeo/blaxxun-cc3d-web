@@ -198,6 +198,8 @@ Todo :
 
 #include "gvhandle.h"
 
+#include "point.h"
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1254,7 +1256,7 @@ void ComputeParticleMovement(int part,int totalPart,
 						  Array<Rotation> &rotate)
 {
 
-	float w= (float) part / (float) (totalPart); // don´t close 
+	float w= (float) part / (float) (totalPart); // donï¿½t close 
 	w*= TWOPI;
 	w+= PI/2.0;
 
@@ -7733,7 +7735,7 @@ void GView::DrawScene(RECT &rc)
 		traversal.transparencyMode = GTRANSPARENCY_DELAYED;
 
 		
-		// Don´t load files during mouse move, 
+		// Donï¿½t load files during mouse move, 
 		if (0 && Moving()) {
 			traversal.loadInlines = GTraversal::DONT_LOAD;
 			traversal.loadTextures = GTraversal::DONT_LOAD;
@@ -8081,7 +8083,7 @@ void GView::DrawScene(RECT &rc)
 			traversal.defaultMaterial = (Gv2Material *) defaultMaterial.get();
 			traversal.defaultTextureTransform = (Gv2TextureTransform *)defaultTextureTransform.get();
 
-		    // Don´t load files during mouse move, 
+		    // Donï¿½t load files during mouse move, 
 		    if (Moving()) {
 			    traversal.loadInlines = GTraversal::DONT_LOAD;
 			    traversal.loadTextures = GTraversal::DONT_LOAD;
@@ -10336,7 +10338,7 @@ void GView::OnSize(UINT nType, int cx, int cy)
 
 		   if (!device->HandleWM_SIZE(device->GetHWnd(), nType, cx, cy)) {
 			
-		   	// couldn´t handle, fallback to software 			
+		   	// couldnï¿½t handle, fallback to software 			
 			if (device->CurrDriver != device->SoftwareDriver)		
             if (!device->ChangeDriver(device->SoftwareDriver,NULL)) {
 				ReportD3DError();
@@ -11080,7 +11082,7 @@ GShellI *NewSkySphere(int sky,float cx,float cy,float cz,float r,
 		o->SetVC(colors);
 
 		o->SetVertices(n1*n2,verts);
-		delete verts;
+		delete[] verts;
 
 		flist.SetLength(0);
 
@@ -11118,7 +11120,7 @@ int GvBackground::Apply(GView *view)
 
 #ifdef _D3D
 	if (!view->renderState.canDoRgbLighting) {
-		// we don´t have color per vertex 
+		// we donï¿½t have color per vertex 
 		if (numSkyColors > 1) numSkyColors = 1;
 		numGroundColors = 0;
 	}

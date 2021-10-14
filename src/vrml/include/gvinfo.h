@@ -50,7 +50,7 @@ class GvInfo : public GvNode {
     // Fields
     GvSFString		string;		// Info string
 	int Do(GTraversal &state);
-	int GvInfo::Do(GOptimizeTraversal &state);
+	int Do(GOptimizeTraversal &state);
 
 
 };

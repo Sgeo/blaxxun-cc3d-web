@@ -169,7 +169,7 @@ enum GAction {
 	GAttributeChanged
 	};
 
-// object type id´s 
+// object type idï¿½s 
 // to do: use RTTI
 enum GId {
 	GIdGroup=1,
@@ -345,7 +345,7 @@ public:
 class GPath : public Stack<GPathElement>
 {
 public :
-//	GPath(int initSíze=30) : Stack<GPathElement>(initSize) { };
+//	GPath(int initSï¿½ze=30) : Stack<GPathElement>(initSize) { };
 //	~GPath() {} ;
 
 };
@@ -446,7 +446,7 @@ public:
 	
 	
 	enum LoadMode {
-		DONT_LOAD,	 	//!< don´t load
+		DONT_LOAD,	 	//!< donï¿½t load
 		LOAD_FIRST,		//!< load first than stop
 		LOAD_IF_NEEDED,	//!< lazy, load only if needed
 		LOAD_ALL		//!< load all
@@ -1066,6 +1066,8 @@ public :
 
 
 #ifdef _GFULL
+
+Matrix IdentityMatrix();
 
 class GMatrix : public GAttribute
 {
