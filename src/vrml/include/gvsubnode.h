@@ -164,7 +164,7 @@ Todo :
 #define GV_NODE_ADD_EVENT_IN(eventName,typeClass)	\
     if (firstInstance) {							      \
         void (GvNode::*func)(typeClass *val); \
-        func = (void (GvNode::*)(typeClass *val))  eventName; \
+        func = (void (GvNode::*)(typeClass *val))  &eventName; \
 	    fieldData->addEventIn(this, GV__QUOTE(eventName), (GvNodeEventInMethod) func,typeClass::ClassId(),typeClass::getClassFieldType(),GV_NODE_EVENT_IN);    \
     }
 

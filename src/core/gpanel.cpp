@@ -90,7 +90,7 @@ Todo :
 #endif
 #endif
 
-#include "../../blaxxuncc3d/resource.h"
+#include "../../blaxxunCC3D/resource.h"
 
 #include "grender.h"
 #include "gmodel.h"
