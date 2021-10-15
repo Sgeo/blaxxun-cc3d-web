@@ -1361,7 +1361,7 @@ GvBool GvMFNode::add(GvNode *node)
     for(int i= 0 ; i<num; i++) 
         if (values[i] == node) return (FALSE);
 
-	if (node == NULL) return FALSE;
+	if (node == nullptr) return FALSE;
 
 	if (RTISA(node,GvLight)) {
 		insert(0,node);

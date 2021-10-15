@@ -67,6 +67,7 @@ Matrix RotationAxisMatrix(const Point& axis_, float angle);
 Matrix RotationAxisMatrix(const Point &AxisPt, const Point& AxisDir, float angle);
 Matrix ViewMatrix(const Point& LookAt, const Point& Viewer, const Point& UpL);
 Matrix RotationZMatrix(float Angle);
+Matrix GenRotation(const Point& x, const Point& y, const Point& z);
 
 
 

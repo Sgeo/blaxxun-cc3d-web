@@ -755,12 +755,12 @@ int IsZippedData(const char *data)
 int IsRedirectedUrl(const char *data,char* newUrl) 
 {
   if (strstr(data,"document has moved") || strstr(data,"can be found")) {
- 	char *p = strstr(data,"href=\"");
+ 	const char *p = strstr(data,"href=\"");
  	if (!p) p = strstr(data,"HREF=\"");
  	if (!p) p = strstr(data,"HRef=\"");
 	if (p) {
 	   p+=6;
-	   char *p1 = strchr(p,'"');
+	   const char *p1 = strchr(p,'"');
 	   if (p1) {
 		  strncpy(newUrl,p,p1-p);
 		  newUrl[p1-p]=0;
@@ -1025,13 +1025,13 @@ FILE * GZipOpen(const char * fileName, const char *mode)
    	);	
 	
 	if (!CloseHandle(pinf.hProcess))  {	// handle of object to close  
-   		TRACE("Can´t close handle to process\n");;
+   		TRACE("CanÂ´t close handle to process\n");;
     } 
 	}
     
 	if (unzipRet != 0)
     {
-   		Reporter.Error("Can´t execute '%s'.",(const char *) cmd);
+   		Reporter.Error("CanÂ´t execute '%s'.",(const char *) cmd);
     }
  return(ret);
 
@@ -1059,7 +1059,7 @@ int UnzipToTmpFile(const char *fileName, CString &tmpFile)
 
 #if 0
 
-// doesn´t work for non console application, problem of
+// doesnÂ´t work for non console application, problem of
 // stdin / out handles
 extern "C" int G__cdecl _set_osfhnd(int,long);
 
@@ -1109,7 +1109,7 @@ FILE * GZipOpen(const char * fileName, const char *mode)
     FILE *infile = _popen((const char *) cmd, "rt");  /* use "w" for zwrite */
 
 	if (!infile) 
-	    Reporter.Error("Can´t open pipe %s (%s) ",(const char *) cmd,mode);
+	    Reporter.Error("CanÂ´t open pipe %s (%s) ",(const char *) cmd,mode);
 
 	return infile;
 }
@@ -1392,13 +1392,13 @@ int UnZipFile(const char *fileNameArg,
    	);	
 	
 	if (!CloseHandle(pinf.hProcess))  {	// handle of object to close  
-   		TRACE("Can´t close handle to process\n");;
+   		TRACE("CanÂ´t close handle to process\n");;
     } 
 	}
     
 	if (unzipRet != 0)
     {
-   		Reporter.Error("Can´t execute '%s'.",(const char *) cmd);
+   		Reporter.Error("CanÂ´t execute '%s'.",(const char *) cmd);
 		ret = -1;
     }
 
@@ -1525,7 +1525,7 @@ GFileRef::Load(const char *urlHome, // the home url
 				const char *refedByType, // what type of referee
 				int wwwFlags,		// wwwFlags 
 				HWND hPostMsgWnd,	// window to notify on completition
-				int currentUrlI,		// the current urli for MF-Urls´s
+				int currentUrlI,		// the current urli for MF-UrlsÂ´s
 				CTime checkTime,	 // URL cache check time	
 				GReporter *reporter, // the error reporter
 				GFile *rootLoader
@@ -1696,7 +1696,7 @@ GFileRef::SetupUrl(const char *urlHome, // the home url
 				const char *refedByType, // what type of referee
 				int wwwFlags,		// wwwFlags 
 				HWND hPostMsgWnd,	// window to notify on completition
-				int currentUrlI,		// the current urli for MF-Urls´s
+				int currentUrlI,		// the current urli for MF-UrlsÂ´s
 				GReporter *reporter, // the error reporter
 				GFile *rootLoader,
 				CString &extraArg	// the # argument
@@ -2352,7 +2352,7 @@ int GFile::SetUrl(const char *path)
 		}
 
 		// get home path 
-		s=strrchr(url,'\\'); // for file:  URL´s 
+		s=strrchr(url,'\\'); // for file:  URLÂ´s 
 		const char *s1=strrchr(url,'/');
 		if (s1>s ) s = s1;
  		if (s) 
@@ -2758,7 +2758,7 @@ int GFile::Set(const char *path,int isLocal,int queryForUrl)
   }
 
   if ((path[0]=='/') && (urlHome.GetLength() > 0)) {
-  	char *p= strstr(urlHome,"//");
+  	const char *p= strstr(urlHome,"//");
 	if (p) {
 	   p = strchr(p+2,'/');
 	   if (p) {
@@ -2793,7 +2793,7 @@ int GFile::Set(const char *path,int isLocal,int queryForUrl)
 	    if (ret == 1) {
 	        TRACE("Got url from local file :%s\n",(const char *) temp);
 	        SetUrl(temp);
-            urlLoaded = 1; // don´t need to load, done by Netscape
+            urlLoaded = 1; // donÂ´t need to load, done by Netscape
 	    }
 	}
   	ret = SetLocalFile(newPath,GLFC_LOCAL_FILE);
@@ -3128,7 +3128,7 @@ Retry:
 	   if  ((extension == "url") || (extension == "vrl")) {
    	   	  ret=ReadFromUrlDescriptionFile(localFile);
    		  if (ret<0) {
-			if (reporter) reporter->Error("Can´t read url from url file %s",(const char *)localFile);
+			if (reporter) reporter->Error("CanÂ´t read url from url file %s",(const char *)localFile);
 		  	return ret;
 		  }
 		  ret = 0;
@@ -3488,11 +3488,11 @@ Retry:
    			)) {
 				if (!CloseHandle(
         				pinf.hProcess 	// handle of object to close  
-   					)) TRACE("Can´t close handle to process\n");;
+   					)) TRACE("CanÂ´t close handle to process\n");;
 
  		   		ret = 0;
    			} else {
-   				if (reporter) reporter->Error("Can´t execute '%s'.",(const char *) cmd);
+   				if (reporter) reporter->Error("CanÂ´t execute '%s'.",(const char *) cmd);
 				ret=-1;
    			}	
 			}
@@ -3760,11 +3760,11 @@ int GFile::ProcessLoad(int threadRet)
    			)) {
 				if (!CloseHandle(
         				pinf.hProcess 	// handle of object to close  
-   					)) TRACE("Can´t close handle to process\n");;
+   					)) TRACE("CanÂ´t close handle to process\n");;
 
  		   		ret = 0;
    			} else {
-   				Reporter.Error("Can´t execute WWW Browser '%s'.",(const char *) cmd);
+   				Reporter.Error("CanÂ´t execute WWW Browser '%s'.",(const char *) cmd);
 				ret=-1;
    			}	
 			}
@@ -4333,7 +4333,7 @@ int GFile::WriteUrlDescriptionFile()
 #if 0
 		if (1) {	// write a .url file to retreive full path
 
-            if (strprefix(url,"file://")) return(0); // HG 13.05 don´t write entry for file:/// url´s 
+            if (strprefix(url,"file://")) return(0); // HG 13.05 donÂ´t write entry for file:/// urlÂ´s 
 
 	 		CString urlFile(localFile);
 	 		urlFile += ".vrl"; // .url 
@@ -4360,7 +4360,7 @@ int GFile::WriteUrlDescriptionFile()
 				fclose(f);
 				return(1);
 			}
-			else if (reporter) reporter->Error("Can´t write url description file : %s ",(const char *) urlFile);
+			else if (reporter) reporter->Error("CanÂ´t write url description file : %s ",(const char *) urlFile);
 		}
 
 #endif 
@@ -4493,7 +4493,7 @@ int GFile::WriteUrlToFile(int writeDescription)
 			fclose(f);
 	}
 	} //if f
-	else Reporter.Error("Can´t write cache file : %s ",(const char *) file);
+	else Reporter.Error("CanÂ´t write cache file : %s ",(const char *) file);
 	}
    }
 }
@@ -4585,7 +4585,7 @@ int GetURLFromLocalFile(const char * szLocal,  char * szURL)
                       APPCMD_CLIENTONLY,
                       0L))
     {
-        MessageBox(NULL, "Can´t initialize DDE", NULL, MB_OK) ;
+        MessageBox(NULL, "CanÂ´t initialize DDE", NULL, MB_OK) ;
         return(-1); ;
     }
 
@@ -4744,7 +4744,7 @@ int AskNetscapeToOpenURL(const char * szURL)
                      APPCMD_CLIENTONLY,
                      0L))
     {
-        MessageBox(NULL, "Can´t initialize DDE", NULL, MB_OK) ;
+        MessageBox(NULL, "CanÂ´t initialize DDE", NULL, MB_OK) ;
         return(-1);
     }
 

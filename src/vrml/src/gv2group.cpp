@@ -194,8 +194,8 @@ Gv2Group::Gv2Group() : children(0),
     GV_NODE_ADD_FIELD(bboxCenter);
     GV_NODE_ADD_FIELD(children);
 
-    GV_NODE_ADD_EVENT_IN(/*&Gv2Group::*/addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(/*&Gv2Group::*/removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
 }
 
 Gv2Group::~Gv2Group()
@@ -454,8 +454,8 @@ Gv2CullGroup::Gv2CullGroup() : bboxOk(FALSE), lod (FALSE) ,level(0),range(0)
 
 
 
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2CullGroup::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2CullGroup::removeChildren,GvMFNode);
 	
 }
 
@@ -654,8 +654,8 @@ Gv2Transform::Gv2Transform() : scale(1,1,1)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Transform::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Transform::removeChildren,GvMFNode);
 
   
 	transformCached = 0;
@@ -895,8 +895,8 @@ Gv2MatrixTransform::Gv2MatrixTransform()
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2MatrixTransform::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2MatrixTransform::removeChildren,GvMFNode);
 
   
 }
@@ -1039,8 +1039,8 @@ Gv2Billboard::Gv2Billboard() : axisOfRotation(0,1,0)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Billboard::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Billboard::removeChildren,GvMFNode);
 
 
 	lastMatrix.Identity();
@@ -1278,8 +1278,8 @@ GvHUD::GvHUD() : align(0)
  
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvHUD::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvHUD::removeChildren,GvMFNode);
 
 
 	lastMatrix.Identity();
@@ -1496,8 +1496,8 @@ Gv2Collision::Gv2Collision() : collide(TRUE)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Collision::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Collision::removeChildren,GvMFNode);
 
     GV_NODE_ADD_EVENT_OUT(collideTime);
 
@@ -1530,8 +1530,8 @@ Gv2Selection::Gv2Selection() : collide(TRUE),select(TRUE)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Selection::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Selection::removeChildren,GvMFNode);
 
 
 }

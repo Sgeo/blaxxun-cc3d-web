@@ -1248,8 +1248,8 @@ void GShell::SetFCByIndex(int n_fci,const int *new_fci,int n_fc,const Point *new
 	const int *fci = new_fci;
 	while (fci < fci_end) {
 		if (*fci>=0 && *fci < n_fc)
-		   fc[fci-new_fci]= new_fc[*fci];
-		else fc[fci-new_fci].Set(1,1,1);
+		   fc[(unsigned int)(fci-new_fci)]= new_fc[*fci];
+		else fc[(unsigned int)(fci-new_fci)].Set(1,1,1);
 		fci++;
 	}
 
@@ -2470,7 +2470,7 @@ GShell::ComputeEdgeList()
 }
 
 /*  Evaluate object as object of type "type"
-  if return = this, don´t destroy result, otherwise destroy */
+  if return = this, donï¿½t destroy result, otherwise destroy */
 //GvNode* /*GShell* */  
 
 GEvalAs_TYPE*
@@ -2553,7 +2553,7 @@ void GShell::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 
    
    if ((prims.Length() > 0) 
-        && !FC)     // 16.06. Tristrips doesn´t support Face colors yet
+        && !FC)     // 16.06. Tristrips doesnï¿½t support Face colors yet
    {  // use precomputed triangle strips
 		  RenderGlPrimitives(state,FN,VN,VC,VP);
 		  return;
@@ -2794,7 +2794,7 @@ void GShell::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
    if (VP) if (vp.Length() == 0)		VP =0;
    int FC = VC ? 0 : fc.Length() != 0;	// face colors if no vertex colors
 
-   if (FC) { // edgetable doesn´t support FACE colors
+   if (FC) { // edgetable doesnï¿½t support FACE colors
        // render as outline polygon 16.06.96
        // to do: better put edge face color table index into edge table
        // same for GShellI
@@ -2885,7 +2885,7 @@ void GShell::RenderGlVertices(RenderState &state,int VN,int VC)
 				while (vp < vpend)
 				{
 						//if (VC) state.SetColor(vc[vp-v]);
-						if (VN) n = &vn[vp-v];
+						if (VN) n = &vn[(unsigned int)(vp-v)];
 						state.vertexDrawStyle->RenderVertex(*vp,*n);
 						vp++;
 						if (state.Abort()) break;
@@ -2897,8 +2897,8 @@ void GShell::RenderGlVertices(RenderState &state,int VN,int VC)
    glBegin(GL_POINTS);
    while (vp < vpend)
    {
-		 if (VC) glColor(vc[vp-v]);
-		 if (VN) if (flipNormals) glNormalFlip(vn[vp-v]); else glNormal(vn[vp-v]);
+		 if (VC) glColor(vc[(unsigned int)(vp-v)]);
+		 if (VN) if (flipNormals) glNormalFlip(vn[(unsigned int)(vp-v)]); else glNormal(vn[(unsigned int)(vp-v)]);
 		 glVertex(*vp);
 		 vp++;
   }
@@ -2922,7 +2922,7 @@ void GShell::RenderGlNormals(RenderState &state,float scale,int VN,int FN)
 				{		Point *n;
 
 						//if (VC) state.SetColor(vc[vp-v]);
-						if (VN) n = &vn[vp-v];
+						if (VN) n = &vn[(unsigned int)(vp-v)];
 						state.normalDrawStyle->RenderNormal(*vp,*n);
 						vp++;
 						if (state.Abort()) break;
@@ -2933,7 +2933,7 @@ void GShell::RenderGlNormals(RenderState &state,float scale,int VN,int FN)
 
    glBegin(GL_LINES);
    while (vp < vpend)
-   {  const Point *n= &vn[vp-v];
+   {  const Point *n= &vn[(unsigned int)(vp-v)];
 
 		 glNormal(*n);
 		 glVertex(*vp);
@@ -6873,7 +6873,7 @@ void GMesh::GetVertexParametersNative(int n,Point *vp)
 }
 
 /*  Evaluate object as object of type "type"
-  if return = this, don´t destroy result, otherwise destroy */
+  if return = this, donï¿½t destroy result, otherwise destroy */
 //GvNode * /*GShell**/ 
 
 GEvalAs_TYPE*
@@ -6926,7 +6926,7 @@ void GMesh::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
 
    int FC = VC ? 0 : fc.Length() != 0;	// face colors if no vertex colors
 
-   if (FC) { // edgetable doesn´t support FACE colors
+   if (FC) { // edgetable doesnï¿½t support FACE colors
        // render as outline polygon 16.06.96
        // to do: better put edge face color table index into edge table
        // same for GShellI
@@ -7765,7 +7765,7 @@ void GPolyline::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
    //not impl. yet 
    
    if ((prims.Length() > 0) 
-        && !FC)     // 16.06. Tristrips doesn´t support Face colors yet
+        && !FC)     // 16.06. Tristrips doesnï¿½t support Face colors yet
    {  // use precomputed triangle strips
 		  RenderGlPrimitives(state,FN,VN,VC,VP);
 		  return;

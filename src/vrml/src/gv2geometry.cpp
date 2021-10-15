@@ -875,7 +875,7 @@ int GvShape::Do(GglRenderTraversal &state)
 	state.shape = this;
 
 	// process apperance
-	if (appearance.value == (GvNode*) NULL) { // use default 
+	if (appearance.value == nullptr) { // use default 
 		ret = state.defaultAppearance->Do(state);
 	}
 	else {
@@ -898,7 +898,7 @@ int GvShape::Do(GRaySelectTraversal &state)
 #if 1
 	// but needed now because shells build during rayselect,
 	// xxx not needed until transparency check 
-	if (appearance.value == (GvNode*) NULL) { // use default 
+	if (appearance.value == nullptr) { // use default 
 		ret = state.defaultAppearance->Do(state);
 	}
 	else {
@@ -1820,7 +1820,7 @@ Gv2IndexedFaceSet::BuildShell(GTraversal &state)
 	if (texCoord && (texCoordMax=texCoord->point.getNum()) == 0) texCoord = NULL;
 
 
-	// it´s in a very bad condition, no coordinates yet
+	// itï¿½s in a very bad condition, no coordinates yet
 	if (coord==NULL || (coordIndex.getNum() < 3)) {
 		return(0);
 	}
@@ -2179,7 +2179,7 @@ Gv2IndexedFaceSet::BuildShell(GTraversal &state)
 						// the face normal currently need to be the true geometric normal
 						// used for ray-intersection etc.
 						// don't trust the world builders face normal
-						// can´t pass normals to D3D
+						// canï¿½t pass normals to D3D
 
 //						theShell->SetFN(normal->vector.num, (Point *) normal->vector.values,1);
 #endif
@@ -2609,7 +2609,7 @@ Gv2IndexedLineSet::BuildShell(GTraversal &state)
 	if (coord && coord->point.getNum() == 0) coord = NULL;
 	if (color && color->color.getNum() == 0) color = NULL;
 
-	// it´s in a very bad condition, no coordinates yet
+	// itï¿½s in a very bad condition, no coordinates yet
  	if (coord==NULL || coordIndex.isDefault()) return(0);
 
 	// color per face required  ?
@@ -3026,7 +3026,7 @@ Gv2PointSet::BuildShell(GTraversal &state)
 	if (color && color->color.getNum() == 0) color = NULL;
 
 
-	// it´s in a very bad condition, no coordinates yet
+	// itï¿½s in a very bad condition, no coordinates yet
 
  	if (coord == NULL) return(0);
 	
@@ -5944,7 +5944,7 @@ GvPolygon::BuildShell(GTraversal &state)
 	if (texCoord && (texCoordMax=texCoord->point.getNum()) == 0) texCoord = NULL;
 
 
-	// it´s in a very bad condition, no coordinates yet
+	// itï¿½s in a very bad condition, no coordinates yet
 	if (coord==NULL || (coordIndex.getNum() < 3)) {
 		return(0);
 	}

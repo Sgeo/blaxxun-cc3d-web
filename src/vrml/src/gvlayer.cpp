@@ -89,8 +89,8 @@ GvLayer::GvLayer() : viewpointStretch(TRUE), size(-1,-1)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer::removeChildren,GvMFNode);
 
 
     GV_NODE_ADD_FIELD(background);
@@ -689,8 +689,8 @@ GvLayer3D::GvLayer3D() : childrenLayer(0), childrenLayerSorted(0), size(-1,-1)
     GV_NODE_ADD_FIELD(bboxSize);
     GV_NODE_ADD_FIELD(bboxCenter);
 
-    GV_NODE_ADD_EVENT_IN(addChildrenLayer,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildrenLayer,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer3D::addChildrenLayer,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer3D::removeChildrenLayer,GvMFNode);
 
 	//
     GV_NODE_ADD_FIELD(childrenLayer);
@@ -706,8 +706,8 @@ GvLayer3D::GvLayer3D() : childrenLayer(0), childrenLayerSorted(0), size(-1,-1)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer3D::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvLayer3D::removeChildren,GvMFNode);
 
 	childrenLayerChanged=gtrue;
 	
