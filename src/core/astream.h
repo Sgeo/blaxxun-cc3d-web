@@ -150,7 +150,7 @@ class AStream {
 
 	// process a scanf/printf image
 	int rim(const char *v) {Skip(); return (stat=fscanf(f,v)); }
-	int wim(const char *v)	{needSep=1; return (stat=fprintf(f,v)); }
+	int wim(const char *v)	{needSep=1; return (stat=fprintf(f,"%s",v)); }
 
 	int r(char *v) {Skip(); return (stat=fscanf(f,"%s",v)); }
 	int w(const char *v)  {
