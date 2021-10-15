@@ -963,7 +963,7 @@ char *fixname(char *s) {
    if (*p == 0) printf("Warning emptyname = %s \n",s);
 
    while (*p != '\0') {
-	if (*p> 128) *p = '#';
+	if (*p < 0) *p = '#';
 	else switch (*p) {
 	case '.':       /* _GLVIEW Meta Characters */
 	case '/':
