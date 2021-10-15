@@ -2788,7 +2788,7 @@ void dxf_header(void) {
 
 
 /***************************************************************************/
-void dxf_parse(groupcode untilcode,char * untiltype) {
+void dxf_parse(groupcode untilcode,const char * untiltype) {
 	int eof=0;
 
 	while ((curgroupt!=RTEOF) && ( eof == 0)) {
