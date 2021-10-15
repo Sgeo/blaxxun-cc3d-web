@@ -736,7 +736,12 @@ char c;
 		   }
 		   curval.rreal=d;
 	  }
+
+#ifdef _GLVIEW
+	  else sscanf(groupstr,"%f",&curval.rreal);
+#else
 	  else sscanf(groupstr,"%lf",&curval.rreal);
+#endif
 	  break;
 
 	case RTSHORT:
