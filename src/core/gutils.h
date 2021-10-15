@@ -291,7 +291,7 @@ void copylist(int *dest,const int *src,int cnt);
 int append(int * &list,int & nlist, int & listmax, const int *appendlist,int nappendlist);
 
 // return random number between 0 and 1
-inline float Rnd() {   return ((float) rand() / RAND_MAX); }
+inline float Rnd() {   return ((float) rand() / (float)RAND_MAX); }
 
 
 //\@class Template PtrHandle class
