@@ -210,6 +210,7 @@ class AStream {
 	int io (char *v);	/* io token*/
 	
 	int iotok (char *v);	/* io token, v is lowercase on input */
+	int iotok (const char *v);	/* io token, v is lowercase on input */
 	int iostr(char *v);		/* io string quoted with quote characters */
 
 	int io (const char *v);	/* must match io token*/
