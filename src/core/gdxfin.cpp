@@ -1202,7 +1202,7 @@ void oeksend(void)
 
 
 
-void objgenstart(char *obj)
+void objgenstart(const char *obj)
 { int c;
   c=takeacadcolor(ocolor);
 
