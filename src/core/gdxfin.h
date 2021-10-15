@@ -17,7 +17,7 @@ NON-INFRINGING OR IN ANY WAY CONSTITUTE THE COMPLETE PRODUCT MARKETED UNDER
 THE NAMES GIVEN SAID CODE.
 
 ==============================================================================*/
-#ifndef _GDFXFIN_H
+#ifndef _GDXFIN_H
 #define _GDXFIN_H
 
 class GWorld;
