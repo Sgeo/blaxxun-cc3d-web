@@ -650,6 +650,8 @@ int GSensorHandler::OnLButtonDown(UINT nFlags, Point &point)
 				break;
 
 			}
+		case NO_SENSOR:
+			break;
 	};
 
 	s->setActive(TRUE);
