@@ -1005,7 +1005,7 @@ int GvNode::Do(GOptimizeTraversal &state) // declared in GvNode.h
 	// to think, remove unneeded nodes names starting with _
 	state.AppendResult(this,GOptimizeTraversal::HAS_UNKNOWN_NODE);
 	return(0);
-	//return Do(*((GTraversal *) &state));		// don´t do default traversal
+	//return Do(*((GTraversal *) &state));		// donï¿½t do default traversal
 }
 
 int GvGeometrySensor::Do(GOptimizeTraversal &state) 
@@ -2356,7 +2356,7 @@ int GvShape::Do(GOptimizeTraversal &state)
 	}
 
 	// ignore if empty geometry field
-	if (geometry.value == (GvNode *) NULL) 
+	if (geometry.value == nullptr) 
 		return(0);
 
 	int ret = 0;
