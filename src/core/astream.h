@@ -149,7 +149,7 @@ class AStream {
 	int w(double v)	{CheckSep(); needSep=1; return (stat=fprintf(f,"%lg",v)); }
 
 	// process a scanf/printf image
-	int rim(const char *v) {Skip(); return (stat=fscanf(f,v)); }
+	// int rim(const char *v) {Skip(); return (stat=fscanf(f,v)); }
 	int wim(const char *v)	{needSep=1; return (stat=fprintf(f,"%s",v)); }
 
 	int r(char *v) {Skip(); return (stat=fscanf(f,"%s",v)); }
