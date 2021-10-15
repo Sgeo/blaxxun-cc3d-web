@@ -795,7 +795,7 @@ void printcurgroup(void)
 	  break;
 
 	case RTLONG:
-	  printf("%ld\n",curval.rint);
+	  printf("%hd\n",curval.rint);
 	  break;
 	case RTENAME:
 	  printf("<Entity name :%8lx>\n",curval.rlname[0]);
