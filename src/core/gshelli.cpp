@@ -1480,7 +1480,14 @@ inline void glNormalFlip(const Point &p) { glNormal3f(-p.x,-p.y,-p.z); }
 				   GVertexI &vert = verts[I]; \
 				   if (VC) glColor(vc[vert.c]); \
 				   if (VP) glTexCoord(vp[vert.p]); \
-				   if (VN) if (flipNormals) glNormalFlip(vn[vert.n]); else glNormal(vn[vert.n]);		 \
+				   if (VN) { \
+					   	if (flipNormals) { \
+					   		glNormalFlip(vn[vert.n]); \
+					   	}  \
+					   	else { \
+							glNormal(vn[vert.n]);	 \
+						}	 \
+				   } \
 				   glVertex(v[vert.v]); }
 
 const  int GL_MAX_LINES=256;	// Windows crashes if to many lines send
