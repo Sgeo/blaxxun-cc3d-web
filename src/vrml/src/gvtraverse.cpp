@@ -4771,7 +4771,8 @@ GvTriangleStripSet::BuildShell(GTraversal &state)
 		}
 		for (int i=0; i<faceLen; i++) {
 		  if (i>=2 )  {
-		    if (i && 1) f.AppendTri(coord1,coord0,coordi);
+			#pragma message("Was originally i && 1. Suspected to be a bug. Unknown if important")
+		    if (i) f.AppendTri(coord1,coord0,coordi);
 		  	else f.AppendTri(coord0,coord1,coordi); 
 		  }
 		  coord0=coord1;
