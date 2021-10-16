@@ -991,6 +991,8 @@ VsMemberAccess::evaluate(VsValue &returnValue, VsFunctionCall *parent)
 	    case mUNKNOWN:
 		returnValue.type = VsValue::vVOID;
 		break;
+		default:
+		break;
 	}
     }
 	else {
