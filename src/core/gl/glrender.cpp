@@ -1096,7 +1096,7 @@ int RenderState::SwapBuffers()
 		::SwapBuffers(hdc);
 #else
 
-#pragma message("To DO swap ");
+#pragma message("To DO swap ")
 
 #endif
 		}
