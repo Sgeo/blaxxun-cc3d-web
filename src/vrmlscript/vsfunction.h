@@ -218,8 +218,6 @@ class VsMethodCall : public VsExpr {
 	    fSINH, 
 	    fTANH, 
 		fNOISE, 
-		fNOISE3, 
-		fDNOISE, 
 
 	    fUNKNOWN, 
 	};
