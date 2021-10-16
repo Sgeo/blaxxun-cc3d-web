@@ -1,1 +1,1 @@
-emcc -IlibCC3D -Isrc/core src/core/*.cpp -Isrc/vrml/include src/vrml/src/*.cpp -Isrc/core/gl src/core/gl/*.cpp -Isrc/jpeghgnt/ -s USE_LIBJPEG=1 -Isrc/vrmlscript src/vrmlscript/*.cpp src/vrmlscript/*.c -D_OGL=1 -Wno-deprecated-register -Wno-extra-tokens 
+emcc -IlibCC3D -Isrc/core src/core/*.cpp -Isrc/vrml/include src/vrml/src/*.cpp -Isrc/core/gl src/core/gl/*.cpp -Isrc/jpeghgnt/ -s USE_LIBJPEG=1 -Isrc/vrmlscript src/vrmlscript/*.cpp -D_OGL=1 -Wno-deprecated-register -Wno-extra-tokens 
