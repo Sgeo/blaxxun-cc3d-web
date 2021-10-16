@@ -310,7 +310,7 @@ int GvMFTime::get1(GvString &s,int index)
 
 int GvMFTime::set1(const char* s,int index)
 {
-  int ret=sscanf(s,"%f",&values[index]);
+  int ret=sscanf(s,"%lf",&values[index]);
   setDefault(FALSE);
   OnChanged();
   return(ret == 1);
