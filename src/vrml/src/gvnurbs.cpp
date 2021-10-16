@@ -1666,7 +1666,7 @@ int GvContour2D::Do(GglRenderTraversal &state)
 
 	renderer->DrawGrid(pmin,pmax,tess.usteps,tess.vsteps);
 
-	for (i=0; i<tess.NumContours();i++) {
+	for (int i=0; i<tess.NumContours();i++) {
 		tess.GetContour(i,pts);
 		renderer->DrawPolyline(pts.Length(),pts);
 		renderer->SetPointSize(5.0);
