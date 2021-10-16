@@ -39,7 +39,7 @@
 		#define M_SQRT2 1.41421356237309504880
 
 #else
-	typedef unsigned long uint32_t;
+	// typedef unsigned long uint32_t;
 #endif
 
 #ifndef FALSE
