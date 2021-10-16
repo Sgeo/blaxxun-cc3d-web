@@ -3597,9 +3597,11 @@ GvIndexedFaceSet::BuildShell(GTraversal &state)
 		   // compute vertexNormalIndices based on creaseAngle
 		   if (doCreaseIndex) {
 			   PointArray fn;
+			   #pragma message("Original was `!shapeHints->vertexOrdering.value ==  GvShapeHints::CLOCKWISE`")
+			   #pragma message("That is incorrect, but it is unknown if the bug had visible effect that authors relied on")
 			   int ret=computeNormalIndices(coordIndex.num,coordIndex.values,
 					coord->point.num,(const Point*) coord->point.values,
-					shapeHints->creaseAngle,!shapeHints->vertexOrdering.value ==  GvShapeHints::CLOCKWISE
+					shapeHints->creaseAngle,!(shapeHints->vertexOrdering.value ==  GvShapeHints::CLOCKWISE)
 					, fn,creasedNormalIndex);
 
 			   if (ret <=0) {
