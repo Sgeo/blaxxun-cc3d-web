@@ -247,7 +247,7 @@ public:
 
 
 	//! create/check the directory
-	//! also adds trailing \ 
+	//! also adds trailing backslash 
 	gbool CreateDirectory(CString &directory); 
 	
 	//! existes the directory ?
