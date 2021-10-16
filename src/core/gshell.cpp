@@ -1619,7 +1619,7 @@ void GShell::ComputeBBox(BBox &box)
 
   mi=ma= *vp;
 
-  *vp++;
+  // *vp++;
 
   for (; vp<vpend;vp++) {
 		vp->MinMax(mi,ma);
@@ -1855,7 +1855,7 @@ GShell::ComputeBounds()
 
   mi=ma= *vp;
 
-  *vp++;
+  // *vp++;
 
   for (; vp<vpend;vp++) {
 		vp->MinMax(mi,ma);
