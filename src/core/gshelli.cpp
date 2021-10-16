@@ -3765,14 +3765,14 @@ int ReadShellWavefront(const char *FileName,GShellI *&s)
 		 case 'v' :
 				if (line[1] == ' ') {  // vertex
 				   Point p;
-				   sscanf(&line[2],"%g %g %g %g",&p.x,&p.y,&p.z);
+				   sscanf(&line[2],"%g %g %g",&p.x,&p.y,&p.z);
 				   s->v.Append(p);
 				   break;
 				}
 				if ((line[1] == 'n') && (line[2] == ' ')) {  // vertex normal
 				   Point p;
 				   if(s->vn.Length() == 0) s->vn.SetMaxLength(s->v.Length());
-				   sscanf(&line[3],"%g %g %g %g",&p.x,&p.y,&p.z);
+				   sscanf(&line[3],"%g %g %g",&p.x,&p.y,&p.z);
 				   s->vn.Append(p);
 				   break;
 				}
