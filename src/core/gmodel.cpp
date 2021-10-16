@@ -8613,7 +8613,7 @@ xxxx
 		if (RTISA(hitNode,GvTouchSensor)) {
 			GvTouchSensor *s = (GvTouchSensor*) hitNode;
 			/* if (!s->isOver)  ??? */ 
-			if (msg != "Touch ") msg += "Touch ";
+			if (msg != CString("Touch ")) msg += "Touch ";
 			// Event outs
 			// only if move && status changed
 			// if (old && old != s) old->isOver.set(FALSE);
