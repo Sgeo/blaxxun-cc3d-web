@@ -40,7 +40,7 @@ int GTrace::Warning1(const char * message)
 {
 //  TRACE("Warning : %s\n",message);
   if (doTrace) {
-	  fprintf(logFile,message);
+	  fprintf(logFile,"%s", message);
 	  Flush();
   }
   return(0);
