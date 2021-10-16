@@ -755,8 +755,6 @@ enum GRenderMode {
 				   GRenderNonLighted,	//@emem render faces with no lighting
 				   GRenderFlat,			//@emem render faces with flag lighting
 				   GRenderGouraud,		//@emem render faces with smooth lightings
-				   GRenderBBox,			//@emem render only bounding box of object 
-				   GRenderCustom 		//@emem mode is set to a custom mode
 	};
 
 //@enum GExtendedDrawStyles | Extended Drawstyle ,renders a object for vertices,edges, normals ...
