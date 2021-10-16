@@ -382,7 +382,7 @@ gbool parseBool(const gchar* s);
 //! mapping a define/enum value to a string 
 typedef struct {
 	int i;	//!< the value
-	char *s; //!< read only string 
+	const char *s; //!< read only string 
 	} IS;
 
 
