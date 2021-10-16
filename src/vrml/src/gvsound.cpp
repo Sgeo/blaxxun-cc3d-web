@@ -142,8 +142,8 @@ GvAudioClip::GvAudioClip() :
     GV_NODE_CONSTRUCTOR(GvAudioClip);
     isBuiltIn = TRUE;
 
-    GV_NODE_ADD_EVENT_IN(set_startTime,GvSFTime);
-    GV_NODE_ADD_EVENT_IN(set_stopTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvAudioClip::set_startTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvAudioClip::set_stopTime,GvSFTime);
 
 
     GV_NODE_ADD_FIELD(description);
@@ -397,7 +397,7 @@ Redo:
 			loader.urlI ++;
 			// fall through and load next url 
 		} else {
-			status = loader.state = S_ALL_BAD; // can´t load any URL 
+			status = loader.state = S_ALL_BAD; // can't load any URL 
 			NotifyOnAudioClipUnload(); 
 		    break;
 		}
