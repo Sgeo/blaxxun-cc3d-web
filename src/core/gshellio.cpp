@@ -602,8 +602,8 @@ int WriteShellRaw(GShell *s,const char *FileName)
 
 
 #ifdef _VRML
-static char* VrmlHeader = "VRML V1.0 ascii";
-static char* Vrml2Header = "VRML V2.0 utf8";
+static const char* VrmlHeader = "VRML V1.0 ascii";
+static const char* Vrml2Header = "VRML V2.0 utf8";
 
 int WriteShellVrml(GShell *s,const char *FileName,gbool vrml2)
 {
@@ -823,7 +823,7 @@ int GShell::WriteVrml(AStream &a,gbool vrml2)
 					a.EndList();
 
 					// HG 02.03.96 disabled
-					if (0) { // default value of -1 should work, but some viewers dosn´t seem
+					if (0) { // default value of -1 should work, but some viewers dosn't seem
 					// to support it
 					// normalIndex
 					if (vn.Length()>0) {
