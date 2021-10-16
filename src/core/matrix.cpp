@@ -218,9 +218,6 @@ Matrix::Invert()
 	for (int i = 0; i < 4; i++)
 	for (int j = 0; j < 4; j++)
 	    x[i][j] = m[i][j]*det;
-    
-	contents = contents; // ?? what to return
-
 }
 
 // set this to the inverse of a given matrix
