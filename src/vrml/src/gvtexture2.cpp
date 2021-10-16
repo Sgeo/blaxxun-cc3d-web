@@ -1396,7 +1396,7 @@ GvImageTexture::GvImageTexture() :
     GV_NODE_ADD_FIELD(repeatT);
 
 	// extra
-    GV_NODE_ADD_EVENT_IN(set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 }
@@ -1784,10 +1784,10 @@ GvMovieTexture::GvMovieTexture() :
 
     GV_NODE_ADD_FIELD(loop);
     GV_NODE_ADD_FIELD(speed);
-    GV_NODE_ADD_EVENT_IN(set_startTime,GvSFTime);
-    GV_NODE_ADD_EVENT_IN(set_stopTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_startTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_stopTime,GvSFTime);
     
-	GV_NODE_ADD_EVENT_IN(set_pause,GvSFBool);
+	GV_NODE_ADD_EVENT_IN(GvImageTexture::set_pause,GvSFBool);
     
 	GV_NODE_ADD_FIELD(startTime);
     GV_NODE_ADD_FIELD(stopTime);
