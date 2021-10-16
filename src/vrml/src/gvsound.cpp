@@ -882,6 +882,8 @@ Redo:
 			}
 
 			break;
+	case RELOAD:
+		break;
 
 	}
 	return (soundState == PLAYING);
