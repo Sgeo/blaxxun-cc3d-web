@@ -595,8 +595,8 @@ int lldebug = 0;
 #endif
 
 /* forward references defined in this module */
-void skipSlashStarComments(void);
-char *getStringConstant(char delimiter);
+static void skipSlashStarComments(void);
+static char *getStringConstant(char delimiter);
 
 
 /* Macros after this point can all be overridden by user definitions in
