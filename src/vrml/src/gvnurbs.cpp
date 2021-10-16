@@ -2592,7 +2592,7 @@ int GvNurbsPositionInterpolator::CurvePoint (int n, int p, const float *U, const
 	return 1;
 }
 
-GvNurbsPositionInterpolator::OnEvaluate(float f)
+int GvNurbsPositionInterpolator::OnEvaluate(float f)
 {
 	
 	int degree;
