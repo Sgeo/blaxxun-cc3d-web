@@ -188,7 +188,7 @@ VbPList::expand(int size)
 		ptrsSize *= 2;
     }
 
-    newPtrs = new (void *[ptrsSize]);
+    newPtrs = new void *[ptrsSize];
 
     if (ptrs != NULL) {
 		for (i = 0; i < nPtrs; i++)
