@@ -119,7 +119,7 @@ Redo:
 	switch(status) {
 	case S_BAD_DATA:
 	case S_BAD_URL:
-		status = loader.state = S_ALL_BAD; // can´t load any URL 
+		status = loader.state = S_ALL_BAD; // canï¿½t load any URL 
 		isLoaded.set(FALSE);
 	    break;
 	case S_NOT_LOADED: // starting state : NOT loaded 
@@ -304,11 +304,11 @@ Gv2Inline::Gv2Inline() : url(0),isLoaded(FALSE),lastRenderTime(0),parser(NULL),i
     // normally hidden
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Inline::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Inline::removeChildren,GvMFNode);
 
 	// extra
-    GV_NODE_ADD_EVENT_IN(set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN(Gv2Inline::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 }
@@ -476,7 +476,7 @@ Redo:
 			loader.urlI ++;
 			// fall through and load next url 
 		} else {
-			status = loader.state = S_ALL_BAD; // can´t load any URL 
+			status = loader.state = S_ALL_BAD; // canï¿½t load any URL 
 			isLoaded.set(FALSE);
 			children.OnChanged(); // so could advise on children_changed 
 		    break;
@@ -961,8 +961,8 @@ Gv2CreateVrmlFromUrl::Gv2CreateVrmlFromUrl() : nodeEvent(-1)
 
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2CreateVrmlFromUrl::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2CreateVrmlFromUrl::removeChildren,GvMFNode);
 
 	GV_NODE_ADD_FIELD(node);
 	GV_NODE_ADD_FIELD(nodeEvent);
@@ -1019,14 +1019,14 @@ GvAvatar::GvAvatar():
 	// from Gv2Inline
 	GV_NODE_ADD_FIELD(url);
 
-    GV_NODE_ADD_EVENT_IN(set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN(GvAvatar::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvAvatar::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvAvatar::removeChildren,GvMFNode);
 
 	// avatar 
 	GV_NODE_ADD_FIELD(avatarURL);	
