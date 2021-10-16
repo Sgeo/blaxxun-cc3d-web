@@ -121,7 +121,7 @@ GvField* GvFieldEntry::createInstance() const
 
     
     if (!newField) { 
-        TRACE("Couldn´t allocate fieldInstance : %s\n", getType());
+        TRACE("Couldn't allocate fieldInstance : %s\n", getType());
         return NULL;
     }
     
@@ -757,7 +757,7 @@ GvFieldData::read(GvInput *in, GvNode *object,
 	    return FALSE;
 	}
 
-// HG problem, can´t give error errorOnUnknown Field because
+// HG problem, canï¿½t give error errorOnUnknown Field because
 // it may be a child classname
 	if (!foundName) {
 	    if (errorOnUnknownField) {
@@ -1060,7 +1060,7 @@ GvFieldData::readScriptInterface(GvInput *in, GvNode *object)
 
          // check if built in field
 	     if (! read(in, object, fieldName, foundName)) {
-                if (foundName) return FALSE; // couldn´t read value
+                if (foundName) return FALSE; // couldnï¿½t read value
          }
          
          if (!foundName)    // a field with name not found,
