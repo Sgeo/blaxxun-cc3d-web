@@ -1488,7 +1488,7 @@ GvScene *newSphereGrid()
 
 	int ntextures = 3;
 
-	char *textures[] = {
+	const char *textures[] = {
 						 "mandrill.bmp",
 						 "brick.rgb",
 						 ""
