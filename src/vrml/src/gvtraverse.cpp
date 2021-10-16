@@ -1261,10 +1261,10 @@ GvTransformSeparator::Do(GTraversal &state)
 		ret = getChild(i)->Traverse(state);
 
     // Now do the "pop"
-	// can´t simply pop, because all attributes are linked together
+	// canï¿½t simply pop, because all attributes are linked together
 	// could do a find & linkout 
 
-    // 13.04.96. hg newly pushed matrices wasn´t restored
+    // 13.04.96. hg newly pushed matrices wasnï¿½t restored
 	
 	GMatrixStack* p;
     p = (GMatrixStack*) state.Get(GMatrixStack::attrId);
@@ -1442,7 +1442,7 @@ int  GvMaterialElement::GetDiffuse(int i,Point &color)
 		if (baseColor) { baseColor->GetColor(i,color); return(1); }
 		else  
 		if (data) {
-			 &((GvMaterial *) data)->diffuseColor.get1(i,color);
+			 ((GvMaterial *) data)->diffuseColor.get1(i,color);
 			 return(1);
 		}
 		else return (0);
@@ -1467,7 +1467,7 @@ GvMaterialElement::GetLocalColors(PointArray &colors,int period)
 	}
 	if (!c) return(0);
 	
-	if (c->num <= 1) return(0);	// one color doesn´t make sense
+	if (c->num <= 1) return(0);	// one color doesnï¿½t make sense
 
 	if (period<=0) period = c->num;
 
@@ -2659,7 +2659,7 @@ GvBool GvSpotLight::glSet(RenderState *glState,int i,GCamera *camera,const Matri
 
 	   float beam = beamWidth;
 	   if (beam > cutOffAngle ) beam = cutOffAngle.value;
-	   l->dvTheta = beam;  /* Angle, in radians, of the spotlight's umbra—that is, the fully illuminated spotlight cone. */
+	   l->dvTheta = beam;  /* Angle, in radians, of the spotlight's umbraï¿½that is, the fully illuminated spotlight cone. */
 	 
 	   //float exponent = 0.5 * log(0.5) / log(cos(beamWidth));
 	   // l->dvFalloff = dropOffRate * 128.0;
