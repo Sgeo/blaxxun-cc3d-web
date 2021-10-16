@@ -1985,9 +1985,14 @@ int GvMovieTexture::ComputeFrameNr( double t)
 
 		long frame = t * framesPerSec * speed;
 		if (frame <0) return 0;
-		if (frame >= numFrames)
-			if (!loop) frame = numFrames - 1;
-			else frame = frame % numFrames;
+		if (frame >= numFrames) {
+			if (!loop) {
+				frame = numFrames - 1;
+			}
+			else {
+				frame = frame % numFrames;
+			}
+		}
 		return frame;
 	}
 
