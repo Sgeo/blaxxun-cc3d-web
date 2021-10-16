@@ -528,7 +528,7 @@ Redo:
 			loader.urlI ++;
 			// fall through and load  next 
 		} else {
-			status = loader.state = S_ALL_BAD; // can´t load any URL 
+			status = loader.state = S_ALL_BAD; // can't load any URL 
 			GView *browser = (GView *) getBrowser();
 			if (browser) browser->UnRegisterPending(this);
 		    break;
@@ -647,7 +647,7 @@ Redo:
 						this->proto = browser->getProto(theFile->GetUrl(),externProtoName);
 					}
 					if (!this->proto) {
-						state.view->GetReporter()->Error("EXTERNPROTO:Can´t find proto '%s' in %s \n", (const char *)externProtoName,(const char *)loader.loader->GetUrl());
+						state.view->GetReporter()->Error("EXTERNPROTO:Can't find proto '%s' in %s \n", (const char *)externProtoName,(const char *)loader.loader->GetUrl());
 					}
 					loader.SetProcessed();
 					state.view->lastFrameLoadCnt++;
@@ -696,7 +696,7 @@ Redo:
 	if (!loader.Ok()) {
 		// if ((state.inlineLevel <= state.maxInlineLevel)	
 		
-		// we need the inline element to resolve URL´s !!!!!!!!!!!!!!!
+		// we need the inline element to resolve URL's !!!!!!!!!!!!!!!
 		GvWWWInlineElement *current;
 		current = (GvWWWInlineElement*) state.Get(GvWWWInlineElement::attrId);
 
