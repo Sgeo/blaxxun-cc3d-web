@@ -2477,7 +2477,7 @@ int GvMovieTexture::Define(GglRenderTraversal &state)
 	return Load(state);
 }
 
-GvMovieTexture::Define(GglRenderTraversal &state, LPCTSTR fileName, LPCTSTR fileUrl, int fileFmt)
+int GvMovieTexture::Define(GglRenderTraversal &state, LPCTSTR fileName, LPCTSTR fileUrl, int fileFmt)
 {   int ret = -1;
 
 	framesPerSec = 3;
