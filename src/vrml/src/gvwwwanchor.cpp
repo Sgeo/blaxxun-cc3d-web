@@ -246,8 +246,8 @@ Gv2Anchor::Gv2Anchor() : parameter(0),url(0)
 
     // from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Anchor::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Anchor::removeChildren,GvMFNode);
 
 	homeUrlInit = FALSE;
 
