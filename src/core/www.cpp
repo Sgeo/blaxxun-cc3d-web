@@ -597,7 +597,7 @@ static const char* prefix_http = "http://";
 static const char* prefix_file = "file://";
 
 // GLView known file extensions / formats
-struct { GFileFormat type; char *ext; } fileExtensions[]= 
+struct { GFileFormat type; const char *ext; } fileExtensions[]= 
 {
 
 HMF_FMT,"hmf",
