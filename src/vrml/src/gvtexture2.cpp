@@ -1784,10 +1784,10 @@ GvMovieTexture::GvMovieTexture() :
 
     GV_NODE_ADD_FIELD(loop);
     GV_NODE_ADD_FIELD(speed);
-    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_startTime,GvSFTime);
-    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_stopTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_startTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_stopTime,GvSFTime);
     
-	GV_NODE_ADD_EVENT_IN(GvImageTexture::set_pause,GvSFBool);
+	GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_pause,GvSFBool);
     
 	GV_NODE_ADD_FIELD(startTime);
     GV_NODE_ADD_FIELD(stopTime);
