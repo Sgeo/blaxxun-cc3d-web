@@ -11372,7 +11372,7 @@ int GView::EditBackgroundImage(const char *FileName,int format)
 #ifdef _G_VRML1
 
     if (ret) {
-      if (sceneInfo)       
+      if (sceneInfo) {     
         if (sceneInfo->backgroundImage) {
            // to do: relative filename 
             sceneInfo->backgroundImage->string= FileName;
@@ -11383,6 +11383,7 @@ int GView::EditBackgroundImage(const char *FileName,int format)
            sceneInfo->backgroundImage->setName(GvName("BackgroundImage"));
            //addTopLevelNode(sceneInfo->backgroundImage);
         }
+	  }
     }
 #endif _G_VRML1
 

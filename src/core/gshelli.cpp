@@ -1449,7 +1449,7 @@ GShellI::ComputeTriangles(GFaceList &tri,IntArray &tri2face,int useTriangulator)
 
 
 // Evaluate object as object of type "type"
-// if return = this, don´t destroy result, otherwise destroy
+// if return = this, donï¿½t destroy result, otherwise destroy
 GEvalAs_TYPE*
 GShellI::EvalAs(TypeId type,int copyAttributes) 
 {
@@ -1495,7 +1495,7 @@ void GShellI::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
 
    int FC = VC ? 0 : fc.Length() != 0;	// face colors if no vertex colors
 
-   if (FC) { // edgetable doesn´t support FACE colors
+   if (FC) { // edgetable doesnï¿½t support FACE colors
        // render as outline polygon 16.06.96
        // to do: better put edge face color table index into edge table
        // same for GShellI
@@ -1630,7 +1630,14 @@ void GShellI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 }
 				 {
 				   i= *fp++;
-				   if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				   	if (FN) {
+					   	if (flipNormals) {
+					   		glNormalFlip(fn[fi]);
+						}
+					   	else {
+							glNormal(fn[fi]);
+						}
+				   }
 				   if (FC) glColor(fc[fi]);
 				   OUTVERT(i);
 				   i= *fp++;
@@ -1646,7 +1653,14 @@ void GShellI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 mode = 0;
 		 }
 		 glBegin(GL_POLYGON);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2263,7 +2277,7 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
    //not impl. yet 
    
    if ((prims.Length() > 0) 
-        && !FC)     // 16.06. Tristrips doesn´t support Face colors yet
+        && !FC)     // 16.06. Tristrips doesnï¿½t support Face colors yet
    {  // use precomputed triangle strips
 		  RenderGlPrimitives(state,FN,VN,VC,VP);
 		  return;
@@ -2324,7 +2338,14 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2346,7 +2367,14 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
