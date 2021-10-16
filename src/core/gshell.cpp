@@ -2943,7 +2943,14 @@ void GShell::RenderGlVertices(RenderState &state,int VN,int VC)
    while (vp < vpend)
    {
 		 if (VC) glColor(vc[(unsigned int)(vp-v)]);
-		 if (VN) if (flipNormals) glNormalFlip(vn[(unsigned int)(vp-v)]); else glNormal(vn[(unsigned int)(vp-v)]);
+		 if (VN) {
+			if (flipNormals) {
+				glNormalFlip(vn[(unsigned int)(vp-v)]); 
+		 	}
+			else {
+				glNormal(vn[(unsigned int)(vp-v)]);
+			}
+   		}
 		 glVertex(*vp);
 		 vp++;
   }
