@@ -52,8 +52,7 @@ public :
 	enum Action {
 		RENDER_ALL_OBJECTS,				// render all objects independent of transparency
 		RENDER_OPAQUE_OBJECTS,			// render only opaque objects
-		RENDER_TRANSPARENT_OBJECTS,		// render only transparent	
-		RENDER_OPAQUE_OBJECTS_COLLECT_TRANSPARENT, // render opaque and collect transparent
+		RENDER_TRANSPARENT_OBJECTS		// render only transparent	
 	};
 	
 	Action action;
