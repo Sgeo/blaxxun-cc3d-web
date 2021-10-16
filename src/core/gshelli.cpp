@@ -2979,7 +2979,7 @@ GShellI * NewBox(float atx, float aty,float atz,
    cube->SetVP(4,params);
    cube->SetVertices(vi,v);
    cube->SetFN(6,(Point *)NULL);
-   delete v;
+   delete[] v;
 
 
    cube->SetFaceList(flistp-flist,flist);
@@ -2987,7 +2987,7 @@ GShellI * NewBox(float atx, float aty,float atz,
 //   cube->ComputeVertexNormals();
 
    cube->SetFlag(cube_flags);
-   delete flist;
+   delete[] flist;
 
    return (cube);
 }
@@ -3059,7 +3059,7 @@ GShellI *NewCylinder(float cx,float cy,float cz,float r,float h,int n,GShellI *o
 		o->SetVP(4*n,params);
 
 		o->SetVertices(4*n,verts);
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3191,7 +3191,7 @@ GShellI *NewCylinderVrml(float cx,float cy,float cz,float r,float h,int n,int pa
 		o->SetVP(4*n,params);
 
 		o->SetVertices(4*n,verts);
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3443,7 +3443,7 @@ GShellI *NewConeVrml(float cx,float cy,float cz,float r,float h,int n,int parts,
 
 		o->SetVertices(3*n,verts);
 
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3575,7 +3575,7 @@ GShellI *NewSphereVrml(float cx,float cy,float cz,float r,
 
 		o->SetVertices(n1*n2,verts);
 
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
