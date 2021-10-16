@@ -2064,7 +2064,7 @@ static char *getStringConstant(char delimiter)
         tmpStr[i] = startChar[i];
         }
         maxlen *= 2;
-        delete startChar;
+        delete[] startChar;
         startChar = tmpStr;
     }
     startChar[len++] = cChar;
