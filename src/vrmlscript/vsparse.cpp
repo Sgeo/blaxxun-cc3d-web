@@ -217,9 +217,9 @@ VsParseTree::yyerror(const char *errmsg)
     for (int i = 0; i < charsInLine; i++) {
         msg[msglen+i] = buf[lineBegin+i];
     }
-    msg[msglen+i] = '"';  // Add close-quote:
+    msg[msglen+charsInLine] = '"';  // Add close-quote:
    // msg[msglen+i+1] = '\n'; // Add new line
-    msg[msglen+i+1] = 0; // And end-of-string
+    msg[msglen+charsInLine+1] = 0; // And end-of-string
 
 #ifndef __sgi
      //::MessageBox((HWND)NULL, msg, "VrmlScript syntax error", MB_OK );
