@@ -266,6 +266,14 @@ int AStream::iotok (char *v)	/* io token, v is lowercase on input */
 	return(-1);
 }
 
+int AStream::iotok (const char *v)	/* io token, v is lowercase on input */
+{ int ret;
+	if (mode == A_OUTPUT) {
+		return (w(v));
+	}
+	return(-1);
+}
+
 int AStream::io (const char *v)	/* must match io token*/
 { int ret;
   if (mode == A_INPUT) {

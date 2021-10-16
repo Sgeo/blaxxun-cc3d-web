@@ -91,8 +91,8 @@ GvScene::GvScene() :
     GV_NODE_ADD_FIELD(bboxSize);
     GV_NODE_ADD_FIELD(bboxCenter);
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
 
 
     GV_NODE_ADD_FIELD(protos);
@@ -409,7 +409,7 @@ GvBool GvScene::removeCreateVrmlFromUrl(Gv2CreateVrmlFromUrl *node)
     else return(FALSE);;
 }
 
-// check CreateVrmlFromUrl for loaded url´s and send event
+// check CreateVrmlFromUrl for loaded url's and send event
 GvBool GvScene::checkCreateVrmlFromUrl(GFile *file)
 {
 

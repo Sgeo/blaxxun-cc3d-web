@@ -333,7 +333,7 @@ GifReaderState::DoExtension(int label)
 {
 
 	unsigned	char	buf[256];
-	char		*str;
+	const		char		*str;
 
 	switch (label) {
 	case 0x01:		/* Plain Text Extension */

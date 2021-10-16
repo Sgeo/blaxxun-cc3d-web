@@ -921,8 +921,8 @@ GvNurbsGroup::GvNurbsGroup() :
     
     GV_NODE_ADD_FIELD(children);
 
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
 
 }
 
@@ -1479,8 +1479,8 @@ GvContour2D::GvContour2D() :
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
 
 
    
@@ -1666,7 +1666,7 @@ int GvContour2D::Do(GglRenderTraversal &state)
 
 	renderer->DrawGrid(pmin,pmax,tess.usteps,tess.vsteps);
 
-	for (i=0; i<tess.NumContours();i++) {
+	for (int i=0; i<tess.NumContours();i++) {
 		tess.GetContour(i,pts);
 		renderer->DrawPolyline(pts.Length(),pts);
 		renderer->SetPointSize(5.0);
@@ -1724,8 +1724,8 @@ GvTrimmedSurface::GvTrimmedSurface() :trimmingContour(0)
     GV_NODE_ADD_FIELD(trimmingContour);
     GV_NODE_ADD_FIELD(surface);
 
-    GV_NODE_ADD_EVENT_IN(addTrimmingContour,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeTrimmingContour,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvTrimmedSurface::addTrimmingContour,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(GvTrimmedSurface::removeTrimmingContour,GvMFNode);
 
 	m_bInitialized = gfalse;
 	m_bBadValues = gfalse;
@@ -2592,7 +2592,7 @@ int GvNurbsPositionInterpolator::CurvePoint (int n, int p, const float *U, const
 	return 1;
 }
 
-GvNurbsPositionInterpolator::OnEvaluate(float f)
+int GvNurbsPositionInterpolator::OnEvaluate(float f)
 {
 	
 	int degree;
@@ -2746,8 +2746,8 @@ GvCoordinateDeformer::GvCoordinateDeformer() :
     ///
 	GV_NODE_ADD_FIELD(children);
 
-    GV_NODE_ADD_EVENT_IN(addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
 
 }
 

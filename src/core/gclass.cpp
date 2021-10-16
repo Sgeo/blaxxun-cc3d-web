@@ -249,7 +249,7 @@ int GNode:: io(AStream &a)
 
 	}
 	else {
-	  a.Error("GNode::Can´t read unknow object type");
+	  a.Error("GNode::Can't read unknown object type");
 	}
 	return(a.stat);
 }
@@ -1137,7 +1137,7 @@ GWorld::~GWorld() {
 
 
 // Open a group given a Pathname
-// if group dosn´t exist create a new one
+// if group dosnï¿½t exist create a new one
 // if pathname = "" create a unnamed group in the curreent group
 // new group is also beeing pushed on current open group stack
 void GWorld::Open(const char *PathName)

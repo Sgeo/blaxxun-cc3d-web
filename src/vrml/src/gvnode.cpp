@@ -2130,7 +2130,7 @@ GvNode::readNode(GvInput *in, GvName &className, GvNode *&node)
 			
 			// HG skip unknown fields until CLOSE_BRACE fount
 			int level = 1;
-			while (gotChar = in->read(c)) {
+			while ((gotChar = in->read(c))) {
 			  if (c == CLOSE_BRACE) {
 			  	level --;
 				if (level == 0) {

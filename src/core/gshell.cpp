@@ -1619,7 +1619,7 @@ void GShell::ComputeBBox(BBox &box)
 
   mi=ma= *vp;
 
-  *vp++;
+  // *vp++;
 
   for (; vp<vpend;vp++) {
 		vp->MinMax(mi,ma);
@@ -1855,7 +1855,7 @@ GShell::ComputeBounds()
 
   mi=ma= *vp;
 
-  *vp++;
+  // *vp++;
 
   for (; vp<vpend;vp++) {
 		vp->MinMax(mi,ma);
@@ -2514,7 +2514,14 @@ inline void glNormalFlip(const Point &p) { glNormal3f(-p.x,-p.y,-p.z); }
 #define OUTVERT(I) \
 				   if (VC) glColor(vc[I]); \
 				   if (VP) glTexCoord(vp[I]); \
-				   if (VN) if (flipNormals) glNormalFlip(vn[I]); else glNormal(vn[I]); 	 \
+				   if (VN) { \
+				   		if (flipNormals) {\
+						   glNormalFlip(vn[I]); \
+						   } \
+						else { \
+							glNormal(vn[I]); 	 \
+						} \
+				   } \
 				   glVertex(v[I]);
 
 #define OUTVERT_VN(I) \
@@ -2602,7 +2609,14 @@ void GShell::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 }
 				 {
 				   i= *fp++;
-				   if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				   if (FN) {
+					   	if (flipNormals) {
+					   		glNormalFlip(fn[fi]);
+						}
+					   	else {
+							glNormal(fn[fi]);
+						}
+				   }
 				   if (FC) glColor(fc[fi]);
 				   state.glArrayElementEXT(i);	
 				   i= *fp++;
@@ -2617,7 +2631,14 @@ void GShell::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 mode = 0;
 		 }
 		 glBegin(GL_POLYGON);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2657,7 +2678,14 @@ void GShell::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 }
 				 {
 				   i= *fp++;
-				   if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				   	if (FN) {
+					   	if (flipNormals) {
+					   		glNormalFlip(fn[fi]);
+						}
+					   	else {
+							glNormal(fn[fi]);
+						}
+				   }
 				   if (FC) glColor(fc[fi]);
 				   OUTVERT(i);
 				   i= *fp++;
@@ -2672,7 +2700,14 @@ void GShell::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 mode = 0;
 		 }
 		 glBegin(GL_POLYGON);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2751,7 +2786,14 @@ void GShell::RenderGlPrimitives(RenderState &state,int FN, int VN, int VC, int V
 				fi = *fp++;
 				if (fi<0) { glEnd(); op = -fi; break;}
 				i = *fp ++;
-				if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				if (FN) {
+					if (flipNormals) {
+						glNormalFlip(fn[fi]);
+					}
+					else {
+						glNormal(fn[fi]);
+					}
+				}
 				if (FC) glColor(fc[fi]);
 				OUTVERT(i);
 		   }
@@ -2819,7 +2861,10 @@ void GShell::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
 				Point *p1,*p2,*n1=NULL,*n2=NULL;
 				Point z(0,0,1);
 
-				if (vn.Length()==0)  n1,n2= &z;
+				if (vn.Length()==0) {
+					// Should be `n1 = n2 = &z;` but leaving behavior as is
+					n2 = &z;
+				}
 
 				 while (ep <epend)
 				{
@@ -2898,7 +2943,14 @@ void GShell::RenderGlVertices(RenderState &state,int VN,int VC)
    while (vp < vpend)
    {
 		 if (VC) glColor(vc[(unsigned int)(vp-v)]);
-		 if (VN) if (flipNormals) glNormalFlip(vn[(unsigned int)(vp-v)]); else glNormal(vn[(unsigned int)(vp-v)]);
+		 if (VN) {
+			if (flipNormals) {
+				glNormalFlip(vn[(unsigned int)(vp-v)]); 
+		 	}
+			else {
+				glNormal(vn[(unsigned int)(vp-v)]);
+			}
+   		}
 		 glVertex(*vp);
 		 vp++;
   }
@@ -6783,7 +6835,7 @@ GMesh::ComputeVertexNormals()
    for(int rows=nrows-1; rows >=0; rows --) {
 		  int frowoffset = (ncols-1);	// only ncols-1 face normals !
 		  // first + last row, use only this
-		  if ((rows == (nrows-1))) 
+		  if (rows == (nrows-1)) 
           {
               frowoffset=0;
               f0=0;
@@ -6793,7 +6845,7 @@ GMesh::ComputeVertexNormals()
               frowoffset=0;
           } 
           else {
-    		  if ((rows == (nrows-2))) 
+    		  if (rows == (nrows-2)) 
               {
                 f0=0;
               } 
@@ -6999,7 +7051,14 @@ void GMesh::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 		 for (int cols = ncols-1; cols>0; cols --) {
 				 OUTVERT(i2);
 				 if (FC) glColor(fc[fi]);
-				 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				if (FN) {
+					if (flipNormals) {
+						glNormalFlip(fn[fi]);
+					}
+					else {
+						glNormal(fn[fi]);
+					}
+				}
 				 OUTVERT(i1);
 				 i1++;i2++;
 				 fi++;
@@ -7826,7 +7885,14 @@ void GPolyline::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -7848,7 +7914,14 @@ void GPolyline::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index

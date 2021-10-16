@@ -63,10 +63,14 @@ G__cdecl GvReadError::post(GvInput *in,GvReadErrorCode errorCode, const char *fo
 
 	GReporter *reporter = in->getReporter();
 
-	if (reporter)
-	if (in->src != NULL)
-	    reporter->Error("VRML syntax error: %s in %s:\n%s", locstr.getString(), in->src, buf );
-	else reporter->Error("VRML syntax error: %s\n%s",locstr.getString(), buf );
+	if (reporter) {
+		if (in->src != NULL) {
+		    reporter->Error("VRML syntax error: %s in %s:\n%s", locstr.getString(), in->src, buf );
+		}
+		else {
+			reporter->Error("VRML syntax error: %s\n%s",locstr.getString(), buf );
+		}
+	}
 
     //fprintf(stderr, "VRML read error: %s\n%s\n", buf, locstr.getString());
     //TRACE("VRML read error: %s\n%s\n", buf, locstr.getString());

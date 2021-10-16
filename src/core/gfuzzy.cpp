@@ -331,7 +331,7 @@ float GFuzzySetElement::GetCentreOfMass(void)
 //////////////////////////////////////////////////////////
 
 
-GFuzzySetLinearElement::GFuzzySetLinearElement(char *newName, const float NewLowerBound, 
+GFuzzySetLinearElement::GFuzzySetLinearElement(const char *newName, const float NewLowerBound, 
                           const float NewCentre, 
                           const float NewUpperBound, 
                           const float NewHeight) 

@@ -736,7 +736,12 @@ char c;
 		   }
 		   curval.rreal=d;
 	  }
+
+#ifdef _GLVIEW
+	  else sscanf(groupstr,"%f",&curval.rreal);
+#else
 	  else sscanf(groupstr,"%lf",&curval.rreal);
+#endif
 	  break;
 
 	case RTSHORT:
@@ -790,7 +795,7 @@ void printcurgroup(void)
 	  break;
 
 	case RTLONG:
-	  printf("%ld\n",curval.rint);
+	  printf("%hd\n",curval.rint);
 	  break;
 	case RTENAME:
 	  printf("<Entity name :%8lx>\n",curval.rlname[0]);
@@ -958,7 +963,7 @@ char *fixname(char *s) {
    if (*p == 0) printf("Warning emptyname = %s \n",s);
 
    while (*p != '\0') {
-	if (*p> 128) *p = '#';
+	if (*p < 0) *p = '#';
 	else switch (*p) {
 	case '.':       /* _GLVIEW Meta Characters */
 	case '/':
@@ -1197,7 +1202,7 @@ void oeksend(void)
 
 
 
-void objgenstart(char *obj)
+void objgenstart(const char *obj)
 { int c;
   c=takeacadcolor(ocolor);
 
@@ -2783,7 +2788,7 @@ void dxf_header(void) {
 
 
 /***************************************************************************/
-void dxf_parse(groupcode untilcode,char * untiltype) {
+void dxf_parse(groupcode untilcode,const char * untiltype) {
 	int eof=0;
 
 	while ((curgroupt!=RTEOF) && ( eof == 0)) {

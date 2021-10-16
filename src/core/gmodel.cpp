@@ -1400,7 +1400,7 @@ GvScene* NewPartAnimation()
 	Point colors[3];
 	int ntextures = 3;
 
-	char *textures[] = {
+	const char *textures[] = {
 						 "mandrill.bmp",
 						 "brick.rgb",
 						 ""
@@ -1488,7 +1488,7 @@ GvScene *newSphereGrid()
 
 	int ntextures = 3;
 
-	char *textures[] = {
+	const char *textures[] = {
 						 "mandrill.bmp",
 						 "brick.rgb",
 						 ""
@@ -2387,7 +2387,7 @@ int GView::EditBackgroundColor(const Point &c)
   if (ret>0) {
       char s[120];
   	  sprintf(s,"%f %f %f", c.x,c.y,c.z);
-      if (sceneInfo)       
+      if (sceneInfo) {    
         if (sceneInfo->backgroundColor) {
             sceneInfo->backgroundColor->string= s;
         } else {
@@ -2396,6 +2396,7 @@ int GView::EditBackgroundColor(const Point &c)
            sceneInfo->backgroundColor->setName(GvName("BackgroundColor"));
            if (sceneInfo->top && RTISA(sceneInfo->top,GvGroup)) RTCAST(sceneInfo->top,GvGroup) ->addChild(sceneInfo->backgroundImage);
         }
+	  }
   }  
   return(1);
 }
@@ -8612,7 +8613,7 @@ xxxx
 		if (RTISA(hitNode,GvTouchSensor)) {
 			GvTouchSensor *s = (GvTouchSensor*) hitNode;
 			/* if (!s->isOver)  ??? */ 
-			if (msg != "Touch ") msg += "Touch ";
+			if (msg != CString("Touch ")) msg += "Touch ";
 			// Event outs
 			// only if move && status changed
 			// if (old && old != s) old->isOver.set(FALSE);
@@ -11371,7 +11372,7 @@ int GView::EditBackgroundImage(const char *FileName,int format)
 #ifdef _G_VRML1
 
     if (ret) {
-      if (sceneInfo)       
+      if (sceneInfo) {     
         if (sceneInfo->backgroundImage) {
            // to do: relative filename 
             sceneInfo->backgroundImage->string= FileName;
@@ -11382,6 +11383,7 @@ int GView::EditBackgroundImage(const char *FileName,int format)
            sceneInfo->backgroundImage->setName(GvName("BackgroundImage"));
            //addTopLevelNode(sceneInfo->backgroundImage);
         }
+	  }
     }
 #endif _G_VRML1
 

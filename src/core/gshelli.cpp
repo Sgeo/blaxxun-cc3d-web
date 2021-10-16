@@ -1449,7 +1449,7 @@ GShellI::ComputeTriangles(GFaceList &tri,IntArray &tri2face,int useTriangulator)
 
 
 // Evaluate object as object of type "type"
-// if return = this, don´t destroy result, otherwise destroy
+// if return = this, donï¿½t destroy result, otherwise destroy
 GEvalAs_TYPE*
 GShellI::EvalAs(TypeId type,int copyAttributes) 
 {
@@ -1480,7 +1480,14 @@ inline void glNormalFlip(const Point &p) { glNormal3f(-p.x,-p.y,-p.z); }
 				   GVertexI &vert = verts[I]; \
 				   if (VC) glColor(vc[vert.c]); \
 				   if (VP) glTexCoord(vp[vert.p]); \
-				   if (VN) if (flipNormals) glNormalFlip(vn[vert.n]); else glNormal(vn[vert.n]);		 \
+				   if (VN) { \
+					   	if (flipNormals) { \
+					   		glNormalFlip(vn[vert.n]); \
+					   	}  \
+					   	else { \
+							glNormal(vn[vert.n]);	 \
+						}	 \
+				   } \
 				   glVertex(v[vert.v]); }
 
 const  int GL_MAX_LINES=256;	// Windows crashes if to many lines send
@@ -1495,7 +1502,7 @@ void GShellI::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
 
    int FC = VC ? 0 : fc.Length() != 0;	// face colors if no vertex colors
 
-   if (FC) { // edgetable doesn´t support FACE colors
+   if (FC) { // edgetable doesnï¿½t support FACE colors
        // render as outline polygon 16.06.96
        // to do: better put edge face color table index into edge table
        // same for GShellI
@@ -1630,7 +1637,14 @@ void GShellI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 }
 				 {
 				   i= *fp++;
-				   if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+				   	if (FN) {
+					   	if (flipNormals) {
+					   		glNormalFlip(fn[fi]);
+						}
+					   	else {
+							glNormal(fn[fi]);
+						}
+				   }
 				   if (FC) glColor(fc[fi]);
 				   OUTVERT(i);
 				   i= *fp++;
@@ -1646,7 +1660,14 @@ void GShellI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP)
 				 mode = 0;
 		 }
 		 glBegin(GL_POLYGON);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2263,7 +2284,7 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
    //not impl. yet 
    
    if ((prims.Length() > 0) 
-        && !FC)     // 16.06. Tristrips doesn´t support Face colors yet
+        && !FC)     // 16.06. Tristrips doesnï¿½t support Face colors yet
    {  // use precomputed triangle strips
 		  RenderGlPrimitives(state,FN,VN,VC,VP);
 		  return;
@@ -2324,7 +2345,14 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2346,7 +2374,14 @@ void GPolylineI::RenderGlFaces(RenderState &state,int FN, int VN, int VC, int VP
 		 int i;
 
 		 glBegin(GL_LINE_STRIP);
-		 if (FN) if (flipNormals) glNormalFlip(fn[fi]); else glNormal(fn[fi]);
+		if (FN) {
+			if (flipNormals) {
+				glNormalFlip(fn[fi]);
+			}
+			else {
+				glNormal(fn[fi]);
+			}
+		}
 		 if (FC) glColor(fc[fi]);
 		 for (i=0; i< flen; i++) {
 				 int vi = *fp++; // vertex index
@@ -2944,7 +2979,7 @@ GShellI * NewBox(float atx, float aty,float atz,
    cube->SetVP(4,params);
    cube->SetVertices(vi,v);
    cube->SetFN(6,(Point *)NULL);
-   delete v;
+   delete[] v;
 
 
    cube->SetFaceList(flistp-flist,flist);
@@ -2952,7 +2987,7 @@ GShellI * NewBox(float atx, float aty,float atz,
 //   cube->ComputeVertexNormals();
 
    cube->SetFlag(cube_flags);
-   delete flist;
+   delete[] flist;
 
    return (cube);
 }
@@ -3024,7 +3059,7 @@ GShellI *NewCylinder(float cx,float cy,float cz,float r,float h,int n,GShellI *o
 		o->SetVP(4*n,params);
 
 		o->SetVertices(4*n,verts);
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3156,7 +3191,7 @@ GShellI *NewCylinderVrml(float cx,float cy,float cz,float r,float h,int n,int pa
 		o->SetVP(4*n,params);
 
 		o->SetVertices(4*n,verts);
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3408,7 +3443,7 @@ GShellI *NewConeVrml(float cx,float cy,float cz,float r,float h,int n,int parts,
 
 		o->SetVertices(3*n,verts);
 
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3540,7 +3575,7 @@ GShellI *NewSphereVrml(float cx,float cy,float cz,float r,
 
 		o->SetVertices(n1*n2,verts);
 
-		delete verts;
+		delete[] verts;
 
 
 		flist.SetLength(0);
@@ -3730,14 +3765,14 @@ int ReadShellWavefront(const char *FileName,GShellI *&s)
 		 case 'v' :
 				if (line[1] == ' ') {  // vertex
 				   Point p;
-				   sscanf(&line[2],"%g %g %g %g",&p.x,&p.y,&p.z);
+				   sscanf(&line[2],"%g %g %g",&p.x,&p.y,&p.z);
 				   s->v.Append(p);
 				   break;
 				}
 				if ((line[1] == 'n') && (line[2] == ' ')) {  // vertex normal
 				   Point p;
 				   if(s->vn.Length() == 0) s->vn.SetMaxLength(s->v.Length());
-				   sscanf(&line[3],"%g %g %g %g",&p.x,&p.y,&p.z);
+				   sscanf(&line[3],"%g %g %g",&p.x,&p.y,&p.z);
 				   s->vn.Append(p);
 				   break;
 				}

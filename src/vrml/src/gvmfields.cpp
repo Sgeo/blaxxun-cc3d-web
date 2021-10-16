@@ -310,7 +310,7 @@ int GvMFTime::get1(GvString &s,int index)
 
 int GvMFTime::set1(const char* s,int index)
 {
-  int ret=sscanf(s,"%f",&values[index]);
+  int ret=sscanf(s,"%lf",&values[index]);
   setDefault(FALSE);
   OnChanged();
   return(ret == 1);
@@ -1359,7 +1359,7 @@ int  GvMFNode::insert(int index,GvNode *node)
 GvBool GvMFNode::add(GvNode *node)
 {
     for(int i= 0 ; i<num; i++) 
-        if (values[i] == node) return (FALSE);
+        if (values[i].operator==(node)) return (FALSE);
 
 	if (node == nullptr) return FALSE;
 
@@ -1385,7 +1385,7 @@ GvBool GvMFNode::remove(GvNode *node)
 
 {
     for(int i= 0 ; i<num; i++)  {
-        if (values[i] == node) {
+        if (values[i].operator==(node)) {
             deleteElement(i);
             return (TRUE);
         }
@@ -1535,7 +1535,7 @@ GvNode *GvMFNode::find(int index)
 int  GvMFNode::find(GvNode * node)
 {
     for(int i= 0 ; i<num; i++)  {
-        if (values[i] == node) {
+        if (values[i].operator==(node)) {
             return(i);
         }
     }

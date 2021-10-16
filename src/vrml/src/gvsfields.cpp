@@ -944,7 +944,7 @@ int GvSFImage::setAlpha(const float *rgb,float alpha)
 
 // set image to new contents
 // Warning data = malloc pointer is now owned by image,
-// don´t delete your pointer afterwards
+// don't delete your pointer afterwards
 
    
 int GvSFImage::set(int width, int height, int comp,unsigned char *data)
@@ -1226,7 +1226,7 @@ int GvSFImage::get(GvString &s)
   int cnt=0;
   char * p= s.getBuffer(MAX_INT_STR*4+10);
 
-  int ret=sprintf(p,"%ld %ld %ld %n",size[0],size[1],numComponents,&cnt);
+  int ret=sprintf(p,"%hd %hd %d %n",size[0],size[1],numComponents,&cnt);
   s.releaseBuffer();
 
       if (bytes) {

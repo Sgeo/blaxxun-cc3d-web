@@ -82,7 +82,7 @@ public:
 class GFuzzySetLinearElement: public GFuzzySetElement 
 { 
 public: 
-	GFuzzySetLinearElement(char *newName, const float,const float,const float,const float); 
+	GFuzzySetLinearElement(const char *newName, const float,const float,const float,const float); 
 	~GFuzzySetLinearElement(); 
 	float GetMembership(const float); 
 	float GetArea(void); 

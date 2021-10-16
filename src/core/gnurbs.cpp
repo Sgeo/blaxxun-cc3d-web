@@ -1145,13 +1145,14 @@ gbool GNurbsShell::Init(int uDimension, int vDimension,
 	float defaultWeight = 1.0;
 	// default weight ??
 
-	if (doWeight)
+	if (doWeight) {
 		if (numWeight == 1 ) {
 			defaultWeight=weight[0];
 			doWeight = gfalse;
 		} else if (numWeight  < imax) {
 			doWeight = gfalse;
 		}
+	}
 
 	
 	HPoint *cp= (HPoint *) m_ControlPoints.Data();

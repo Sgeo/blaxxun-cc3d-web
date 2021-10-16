@@ -1396,7 +1396,7 @@ GvImageTexture::GvImageTexture() :
     GV_NODE_ADD_FIELD(repeatT);
 
 	// extra
-    GV_NODE_ADD_EVENT_IN(set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN(GvImageTexture::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 }
@@ -1784,10 +1784,10 @@ GvMovieTexture::GvMovieTexture() :
 
     GV_NODE_ADD_FIELD(loop);
     GV_NODE_ADD_FIELD(speed);
-    GV_NODE_ADD_EVENT_IN(set_startTime,GvSFTime);
-    GV_NODE_ADD_EVENT_IN(set_stopTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_startTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_stopTime,GvSFTime);
     
-	GV_NODE_ADD_EVENT_IN(set_pause,GvSFBool);
+	GV_NODE_ADD_EVENT_IN(GvMovieTexture::set_pause,GvSFBool);
     
 	GV_NODE_ADD_FIELD(startTime);
     GV_NODE_ADD_FIELD(stopTime);
@@ -1985,9 +1985,14 @@ int GvMovieTexture::ComputeFrameNr( double t)
 
 		long frame = t * framesPerSec * speed;
 		if (frame <0) return 0;
-		if (frame >= numFrames)
-			if (!loop) frame = numFrames - 1;
-			else frame = frame % numFrames;
+		if (frame >= numFrames) {
+			if (!loop) {
+				frame = numFrames - 1;
+			}
+			else {
+				frame = frame % numFrames;
+			}
+		}
 		return frame;
 	}
 
@@ -2472,7 +2477,7 @@ int GvMovieTexture::Define(GglRenderTraversal &state)
 	return Load(state);
 }
 
-GvMovieTexture::Define(GglRenderTraversal &state, LPCTSTR fileName, LPCTSTR fileUrl, int fileFmt)
+int GvMovieTexture::Define(GglRenderTraversal &state, LPCTSTR fileName, LPCTSTR fileUrl, int fileFmt)
 {   int ret = -1;
 
 	framesPerSec = 3;

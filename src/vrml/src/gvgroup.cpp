@@ -138,7 +138,7 @@ GvGroup::readChildren(GvInput *in)
 		  break;
 	  }
 
-      if ((c == '}')) { // CLOSE_BRACE) || (c == CLOSE_BRACE_CHAR)) { 
+      if (c == '}') { // CLOSE_BRACE) || (c == CLOSE_BRACE_CHAR)) { 
 		  in->putBack(c);
 		  break; 
 	  }
