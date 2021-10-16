@@ -2387,7 +2387,7 @@ int GView::EditBackgroundColor(const Point &c)
   if (ret>0) {
       char s[120];
   	  sprintf(s,"%f %f %f", c.x,c.y,c.z);
-      if (sceneInfo)       
+      if (sceneInfo) {    
         if (sceneInfo->backgroundColor) {
             sceneInfo->backgroundColor->string= s;
         } else {
@@ -2396,6 +2396,7 @@ int GView::EditBackgroundColor(const Point &c)
            sceneInfo->backgroundColor->setName(GvName("BackgroundColor"));
            if (sceneInfo->top && RTISA(sceneInfo->top,GvGroup)) RTCAST(sceneInfo->top,GvGroup) ->addChild(sceneInfo->backgroundImage);
         }
+	  }
   }  
   return(1);
 }
