@@ -6835,7 +6835,7 @@ GMesh::ComputeVertexNormals()
    for(int rows=nrows-1; rows >=0; rows --) {
 		  int frowoffset = (ncols-1);	// only ncols-1 face normals !
 		  // first + last row, use only this
-		  if ((rows == (nrows-1))) 
+		  if (rows == (nrows-1)) 
           {
               frowoffset=0;
               f0=0;
@@ -6845,7 +6845,7 @@ GMesh::ComputeVertexNormals()
               frowoffset=0;
           } 
           else {
-    		  if ((rows == (nrows-2))) 
+    		  if (rows == (nrows-2)) 
               {
                 f0=0;
               } 
