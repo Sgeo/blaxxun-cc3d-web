@@ -803,7 +803,7 @@ void in_amend( Meshobj *m )
 /*** test adjacency pointers for consistency ***/
 	for (tri=m->trilist->first; tri; tri=tri->next) {
 		for (i=0; i<3; i++) {
-			if (nexttri = tri->adj[i]) {
+			if ((nexttri = tri->adj[i])) {
 				for (j=0,k=0; j<3; j++) {
 					if (tri == nexttri->adj[j])
 						k += 1;
@@ -836,18 +836,18 @@ void in_amend( Meshobj *m )
 /*** search for connected triangles and output ***/
 	while (1) {
 	/*** output singular triangles, if any ***/
-		while (tri = m->adjtrilist[0]->first) {
+		while ((tri = m->adjtrilist[0]->first)) {
 			deletetri(m->adjtrilist[0],tri);
 			inserttri(m->newtrilist,tri);
 			tri->used = TRUE;
 			outmesh(m,m->newtrilist);
 		}
 	/*** choose a seed triangle with the minimum number of adjacencies ***/
-		if (tri = m->adjtrilist[1]->first)
+		if ((tri = m->adjtrilist[1]->first))
 			deletetri(m->adjtrilist[1],tri);
-		else if (tri = m->adjtrilist[2]->first)
+		else if ((tri = m->adjtrilist[2]->first))
 			deletetri(m->adjtrilist[2],tri);
-		else if (tri = m->adjtrilist[3]->first)
+		else if ((tri = m->adjtrilist[3]->first))
 			deletetri(m->adjtrilist[3],tri);
 		else
 			break;
@@ -855,7 +855,7 @@ void in_amend( Meshobj *m )
 		removeadjacencies(m,tri);
 
 	/*** extend in one direction using triangles with min adjacencies ***/
-		while (tri = minadj(tri)) {
+		while ((tri = minadj(tri))) {
 			deletetri(m->adjtrilist[tri->adjcount],tri);
 			inserttri(m->newtrilist,tri);
 			removeadjacencies(m,tri);
