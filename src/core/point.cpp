@@ -101,6 +101,11 @@ Plane Plane3(const Point &p0,const Point &p1,const Point &p2)
 		return p;
 }
 
+Plane Plane::Plane3(const Point &p0,const Point &p1,const Point &p2)
+{
+    return Plane3(p0, p1, p2);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
