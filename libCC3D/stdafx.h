@@ -335,6 +335,10 @@ typedef struct tagPOINT
 // mesa test
 #undef __CYGWIN32__
 
+#ifdef __EMSCRIPTEN__
+#include <GL/Regal.h>
+#endif
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 
