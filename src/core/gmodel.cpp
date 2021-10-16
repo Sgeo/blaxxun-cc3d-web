@@ -1400,7 +1400,7 @@ GvScene* NewPartAnimation()
 	Point colors[3];
 	int ntextures = 3;
 
-	char *textures[] = {
+	const char *textures[] = {
 						 "mandrill.bmp",
 						 "brick.rgb",
 						 ""
