@@ -2514,7 +2514,14 @@ inline void glNormalFlip(const Point &p) { glNormal3f(-p.x,-p.y,-p.z); }
 #define OUTVERT(I) \
 				   if (VC) glColor(vc[I]); \
 				   if (VP) glTexCoord(vp[I]); \
-				   if (VN) if (flipNormals) glNormalFlip(vn[I]); else glNormal(vn[I]); 	 \
+				   if (VN) { \
+				   		if (flipNormals) {\
+						   glNormalFlip(vn[I]); \
+						   } \
+						else { \
+							glNormal(vn[I]); 	 \
+						} \
+				   } \
 				   glVertex(v[I]);
 
 #define OUTVERT_VN(I) \
