@@ -2861,7 +2861,10 @@ void GShell::RenderGlEdges(RenderState &state,int VN,int VC,int VP)
 				Point *p1,*p2,*n1=NULL,*n2=NULL;
 				Point z(0,0,1);
 
-				if (vn.Length()==0)  n1,n2= &z;
+				if (vn.Length()==0) {
+					// Should be `n1 = n2 = &z;` but leaving behavior as is
+					n2 = &z;
+				}
 
 				 while (ep <epend)
 				{
