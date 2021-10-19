@@ -379,7 +379,7 @@ int main( int argc, char *argv[] )
    glutMotionFunc( OnMotion );
    // glutEntryFunc
    // glutMenuStateFunc
-   glutVisibilityFunc( OnVisibility );
+   //glutVisibilityFunc( OnVisibility );
    // joystick etc
    
    // init view	
@@ -393,7 +393,7 @@ int main( int argc, char *argv[] )
 	   help(argv[0]);
    }
 
-   // file argument ????????????ß
+   // file argument ????????????ï¿½
  
    if (argi<argc) {
 	 ret=LoadWorld(argv[argi]);
