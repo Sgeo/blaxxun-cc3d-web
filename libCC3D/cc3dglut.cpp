@@ -370,7 +370,7 @@ int main( int argc, char *argv[] )
    
    glutInit( &argc, argv );
    glutInitWindowPosition( 0, 0 );
-   glutInitWindowSize( 400, 400 );
+   glutInitWindowSize( 800, 600 );
    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
    glutCreateWindow(argv[0]);
    glutReshapeFunc( OnSize );
@@ -388,7 +388,8 @@ int main( int argc, char *argv[] )
    
    // init view	
    view->Initialize((HWND) NULL,NULL);
-   view->Resize( 400, 400 );
+   //view->Resize( 400, 400 );
+   view->SetTextureFiltering(1);
 
    ret=0;
    
