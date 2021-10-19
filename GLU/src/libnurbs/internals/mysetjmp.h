@@ -50,6 +50,7 @@ extern "C" int mysetjmp( JumpBuffer * );
 #endif
 
 #if defined(LIBRARYBUILD) || defined(GLBUILD)
+#pragma message("LIBRARYBUILD | GLBUILD")
 #include <setjmp.h>
 #include <stdlib.h>
 
@@ -72,14 +73,16 @@ deleteJumpbuffer(JumpBuffer *jb)
 inline void
 mylongjmp( JumpBuffer *j, int code ) 
 {
-    ::longjmp( j->buf, code );
+    abort();
 }
 
 inline int
 mysetjmp( JumpBuffer *j )
 {
-    return setjmp( j->buf );
+    return 0;
 }
 #endif
+
+#pragma message("LIBRARYBUILD | GLBUILD endif")
 
 #endif /* __glumysetjmp_h_ */
