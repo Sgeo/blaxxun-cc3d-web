@@ -6,6 +6,8 @@
  * A skeleton/template GLUT program - Written by Brian Paul and in the public domain.
  */
 
+#include <gl4esinit.h>
+
 // CC3D global headers
 #include "stdafx.h"
 #include "greporter.h"
@@ -350,6 +352,8 @@ int main( int argc, char *argv[] )
    int ret=0;
 
    // init reporter object (needed !)
+
+   initialize_gl4es();
 
    GReporter *reporter = new GReporter();
    GReporter::current = reporter;
