@@ -49,6 +49,7 @@ Todo :
 #include "gunzip.h"
 
 #include "gzreadstream.h"
+#include <unistd.h>
 
 
 #define UNGET_SIZE 16 
@@ -126,7 +127,7 @@ int GZReadStream::Open(FILE *infile,BOOL isZipped)
 		this->isZipped = FALSE;
 	} else {
 
-		in = gzopenFromFile(infile, "rb");
+		in = gzdopen(dup(fileno(infile)), "rb");
 
 
 		if (in == NULL) {
