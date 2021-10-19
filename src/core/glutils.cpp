@@ -276,7 +276,7 @@ gbool get_image_2power(int &sizeX,int &sizeY,	// the input size / modified on ou
 
 
 	if ((xSize2 == sizeX) && (ySize2 == sizeY)) {
-		// don´t need a scale 
+		// donÂ´t need a scale 
 		return FALSE;
 	} else {
 		sizeX = xSize2;
@@ -361,7 +361,7 @@ int image_scale_2power(image *im, int minSizeX,int minSizeY, int maxSizeX,int ma
 	
 
 	if ((xSize2 == sizeX) && (ySize2 == sizeY)) {
-		// don´t need a scale 
+		// donÂ´t need a scale 
 	} else {
 
 		image iscaled;
@@ -405,7 +405,7 @@ int image_scale(image *im, int xSize2,int ySize2,gbool filteredScale)
 	int sizeY = im->height;
 
 	if ((xSize2 == sizeX) && (ySize2 == sizeY)) {
-		// don´t need a scale 
+		// donÂ´t need a scale 
 	} else {
 
 		image iscaled;
@@ -930,15 +930,7 @@ int glSetTexture(GLenum format,int sizeX,int sizeY, int components,
 		iyPow2++;
 #endif
 
-	gbool square = gtrue; 
 
-	if ( (ixPow2 != iyPow2) && square) {
-		// need square texture, take minimum 
-
-		if (ixPow2 < iyPow2) iyPow2 = ixPow2;
-		else ixPow2= iyPow2;
-
-	}
 
 
 
@@ -950,7 +942,7 @@ int glSetTexture(GLenum format,int sizeX,int sizeY, int components,
     cur_sizeY = ySize2;
 
 	if ((xSize2 == sizeX) && (ySize2 == sizeY)) {
-		// don´t need a scale 
+		// donÂ´t need a scale 
 	} else 
 	if (!buildMipmaps)
 	{
