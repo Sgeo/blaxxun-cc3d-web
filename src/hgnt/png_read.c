@@ -13,13 +13,14 @@
    */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "image.h"
 
 
 #include "png_read.h"
 
 
-#include "libpng/png.h"
+#include <png.h>
 
 /* check to see if a file is a png file using png_check_sig() */
 int check_png(char * file_name)
@@ -46,14 +47,14 @@ int check_png(char * file_name)
 void
 user_error_fn(png_struct *png_ptr, char *message)
 {
-
-	longjmp(png_ptr->jmpbuf, 1);
+   printf("PNG Error: %s\n", message);
+	abort();
 }
 
 void
 user_warning_fn(png_struct *png_ptr, char *message)
 {
-
+   printf("PNG Warning: %s\n", message);
 }
 
 /* read a png file. 
@@ -65,6 +66,8 @@ int png_read(const char *file_name,image *im)
    FILE *fp;
    png_structp png_ptr;
    png_infop info_ptr;
+
+   printf("PNG: Reading file %s\n", file_name);
 
    int ret=0;
 
@@ -103,7 +106,7 @@ int png_read(const char *file_name,image *im)
    }
 
    /* set error handling if you are using the setjmp/longjmp method */
-   if (setjmp(png_ptr->jmpbuf))
+   if (setjmp(png_jmpbuf(png_ptr)))
    {
       /* Free all of the memory associated with the png_ptr and info_ptr */
       png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
@@ -130,12 +133,22 @@ int png_read(const char *file_name,image *im)
 //   if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
 //      png_set_expand(png_ptr);
 
-   if ((info_ptr->color_type == PNG_COLOR_TYPE_GRAY) || (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)) {
+   png_uint_32 width = 0;
+   png_uint_32 height = 0;
+   int bit_depth = 0;
+   int color_type = 0;
+   int interlace_method = 0;
+   int compression_method = 0;
+   int filter_method = 0;
+
+   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, &compression_method, &filter_method);
+
+   if ((color_type == PNG_COLOR_TYPE_GRAY) || (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)) {
 		im->isGray = 1;
 	}
 
    /* expand grayscale images to the full 8 bits */
-   if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY && info_ptr->bit_depth < 8)
+   if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
       png_set_expand(png_ptr);
 
 
@@ -144,7 +157,7 @@ int png_read(const char *file_name,image *im)
 //   if (info_ptr->valid & PNG_INFO_tRNS)
 //      png_set_expand(png_ptr);
 
-   if (info_ptr->valid & PNG_INFO_tRNS) {
+   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
 	   // expand alpha keys ? 
 /*	  
 	  // hg seem to be problematic 22.06.98	
@@ -153,23 +166,27 @@ int png_read(const char *file_name,image *im)
 	  else 
 */
 	  {
-		  if ( (info_ptr->num_trans>1) || 
-			((info_ptr->color_type == PNG_COLOR_TYPE_RGB) && (info_ptr->num_trans>0))) 
+        png_bytep trans;
+        int num_trans;
+        png_color_16p trans_values;
+        png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, &trans_values);
+		  if ( (num_trans>1) || 
+			((color_type == PNG_COLOR_TYPE_RGB) && (num_trans>0))) 
 		  { //  alpha 
 			png_set_expand(png_ptr);
 		  } else 	
-		  if (info_ptr->num_trans>0) { // get color key 
-			  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB) {
+		  if (num_trans>0) { // get color key 
+			  if (color_type == PNG_COLOR_TYPE_RGB) {
 				png_set_expand(png_ptr); // RGB color key not supported 
 			  }	
 
 			  if (1) { 
-				im->colorKeyRgb.r = info_ptr->trans_values.red;
-				im->colorKeyRgb.g = info_ptr->trans_values.green;
-				im->colorKeyRgb.b = info_ptr->trans_values.blue;
-				im->colorKeyIndex = info_ptr->trans_values.index;
-				if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
-					im->colorKeyIndex = info_ptr->trans_values.gray;
+				im->colorKeyRgb.r = trans_values->red;
+				im->colorKeyRgb.g = trans_values->green;
+				im->colorKeyRgb.b = trans_values->blue;
+				im->colorKeyIndex = trans_values->index;
+				if (color_type == PNG_COLOR_TYPE_GRAY)
+					im->colorKeyIndex = trans_values->gray;
 				im->colorKey = 1;
 			}
 /*
@@ -209,7 +226,7 @@ int png_read(const char *file_name,image *im)
 */
 
    /* tell libpng to strip 16 bit/color files down to 8 bits/color */
-   if (info_ptr->bit_depth == 16)
+   if (bit_depth == 16)
       png_set_strip_16(png_ptr);
 
 #if 0
@@ -237,7 +254,7 @@ int png_read(const char *file_name,image *im)
    if (info_ptr->bit_depth == 1 && info_ptr->color_type == PNG_COLOR_GRAY)
       png_set_invert(png_ptr);
 #endif
-   if (info_ptr->bit_depth < 8)	 // new 22 .08
+   if (bit_depth < 8)	 // new 22 .08
       png_set_packing(png_ptr);
 
 #if 0
@@ -279,33 +296,35 @@ int png_read(const char *file_name,image *im)
    fmt = IM_RGB;
    ret = 0;
 
-   if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+   if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
 	   fmt = IM_RGBA;
-   else if (info_ptr->color_type == PNG_COLOR_TYPE_RGB)
+   else if (color_type == PNG_COLOR_TYPE_RGB)
 	   fmt = IM_RGB;
-   else if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+   else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
 	   fmt = IM_GRAYA;
-   else if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
+   else if (color_type == PNG_COLOR_TYPE_GRAY)
 	   fmt = IM_GRAY;
-   else if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
+   else if (color_type == PNG_COLOR_TYPE_PALETTE)
 	   fmt = IM_MAPPED8;
    else { 
 	   ret = IME_BADFILE;
    }
-   if (info_ptr->bit_depth != 8) {
+   if (bit_depth != 8) {
 	   ret = IME_BADFILE;
    }	
 
    if (ret<0) goto error_exit;
 
    // get the palette	
-   if (info_ptr->num_palette>0) {
+   png_colorp palette;
+   int num_palette;
+   png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
+   if (num_palette>0) {
 	   int i;
-	   png_colorp palette = info_ptr->palette;
 
-	   image_alloc_cmap(im,info_ptr->num_palette);
+	   image_alloc_cmap(im,num_palette);
 
-	   for (i=0; i<info_ptr->num_palette; i++) {
+	   for (i=0; i<num_palette; i++) {
 		   image_set_cmap(im,i,palette[i].red,palette[i].green,palette[i].blue);
 	   }	
 
@@ -325,24 +344,24 @@ int png_read(const char *file_name,image *im)
 */
 
 
-   ret = image_alloc(im,fmt,info_ptr->width,info_ptr->height);
+   ret = image_alloc(im,fmt,width,height);
 
    if (ret<0) goto error_exit;
 
 
    /* the easiest way to read the image */
  
-   row_pointers = (png_bytep *)malloc(info_ptr->height * sizeof(png_bytep *));
+   row_pointers = (png_bytep *)malloc(height * sizeof(png_bytep *));
    if (row_pointers == NULL) {
 	   ret = IME_NOMEM;
 	   goto error_exit;
    }	
 
 
-   for (row = 0; row < info_ptr->height; row++)
+   for (row = 0; row < height; row++)
    {
      if (1) // flip 
-		 row_pointers[row] = IROW(im,info_ptr->height-1-row);
+		 row_pointers[row] = IROW(im,height-1-row);
 	 else
 		 row_pointers[row] = IROW(im,row);
    }
