@@ -119,7 +119,7 @@ GvNavigationInfo::GvNavigationInfo() :
     GV_NODE_ADD_FIELD(type);
     GV_NODE_ADD_FIELD(visibilityLimit);
    
-	GV_NODE_ADD_EVENT_IN(GvNavigationInfo::set_bind,GvSFBool);
+	GV_NODE_ADD_EVENT_IN_NAME(set_bind,GvNavigationInfo::set_bind,GvSFBool);
 
     GV_NODE_ADD_EVENT_OUT(isBound);
 
@@ -173,7 +173,7 @@ GvBackground::GvBackground() :
     GV_NODE_ADD_FIELD(skyAngle);
     GV_NODE_ADD_FIELD(skyColor);
 
-    GV_NODE_ADD_EVENT_IN(GvBackground::set_bind,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_bind,GvBackground::set_bind,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isBound);
     skyColor.values[0] = skyColor.values[1] = skyColor.values[2] = 0.0; 
 
@@ -224,7 +224,7 @@ GvFog::GvFog() :
     GV_NODE_ADD_FIELD(fogType);
     GV_NODE_ADD_FIELD(visibilityRange);
 
-    GV_NODE_ADD_EVENT_IN(GvFog::set_bind,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_bind,GvFog::set_bind,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isBound);
 
     fogType.value = "LINEAR";
@@ -276,7 +276,7 @@ GvFog2::GvFog2(): visibilityStart(0),density(1.0f)
     GV_NODE_ADD_FIELD(visibilityStart);
     GV_NODE_ADD_FIELD(density);
 
-    GV_NODE_ADD_EVENT_IN(GvFog2::set_bind,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_bind,GvFog2::set_bind,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isBound);
 
     fogType.value = "LINEAR";

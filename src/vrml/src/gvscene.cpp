@@ -91,8 +91,8 @@ GvScene::GvScene() :
     GV_NODE_ADD_FIELD(bboxSize);
     GV_NODE_ADD_FIELD(bboxCenter);
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(Gv2Group::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(Gv2Group::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,Gv2Group::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,Gv2Group::removeChildren,GvMFNode);
 
 
     GV_NODE_ADD_FIELD(protos);

@@ -304,11 +304,11 @@ Gv2Inline::Gv2Inline() : url(0),isLoaded(FALSE),lastRenderTime(0),parser(NULL),i
     // normally hidden
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(Gv2Inline::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(Gv2Inline::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,Gv2Inline::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,Gv2Inline::removeChildren,GvMFNode);
 
 	// extra
-    GV_NODE_ADD_EVENT_IN(Gv2Inline::set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_unload,Gv2Inline::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 }
@@ -961,8 +961,8 @@ Gv2CreateVrmlFromUrl::Gv2CreateVrmlFromUrl() : nodeEvent(-1)
 
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(Gv2CreateVrmlFromUrl::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(Gv2CreateVrmlFromUrl::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,Gv2CreateVrmlFromUrl::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,Gv2CreateVrmlFromUrl::removeChildren,GvMFNode);
 
 	GV_NODE_ADD_FIELD(node);
 	GV_NODE_ADD_FIELD(nodeEvent);
@@ -1019,14 +1019,14 @@ GvAvatar::GvAvatar():
 	// from Gv2Inline
 	GV_NODE_ADD_FIELD(url);
 
-    GV_NODE_ADD_EVENT_IN(GvAvatar::set_unload,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_unload,GvAvatar::set_unload,GvSFBool);
     GV_NODE_ADD_EVENT_OUT(isLoaded);
 
 
     //from Gv2group
 	GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(GvAvatar::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvAvatar::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvAvatar::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvAvatar::removeChildren,GvMFNode);
 
 	// avatar 
 	GV_NODE_ADD_FIELD(avatarURL);	

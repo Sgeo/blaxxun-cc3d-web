@@ -101,8 +101,8 @@ GvTimeSensor::GvTimeSensor() : loop(FALSE),
     GV_NODE_ADD_FIELD(enabled);
     GV_NODE_ADD_FIELD(loop);
 
-    GV_NODE_ADD_EVENT_IN(GvTimeSensor::set_startTime,GvSFTime);
-    GV_NODE_ADD_EVENT_IN(GvTimeSensor::set_stopTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN_NAME(set_startTime,GvTimeSensor::set_startTime,GvSFTime);
+    GV_NODE_ADD_EVENT_IN_NAME(set_stopTime,GvTimeSensor::set_stopTime,GvSFTime);
     
     GV_NODE_ADD_FIELD(stopTime);
     GV_NODE_ADD_FIELD(startTime);

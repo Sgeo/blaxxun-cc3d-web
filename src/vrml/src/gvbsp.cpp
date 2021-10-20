@@ -1784,8 +1784,8 @@ GvBspGroup::GvBspGroup() : buildBspTree(TRUE)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(GvBspGroup::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvBspGroup::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvBspGroup::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvBspGroup::removeChildren,GvMFNode);
 
 	// for testing 
     GV_NODE_ADD_EVENT_OUT(bspTree);
@@ -1873,8 +1873,8 @@ GvOcclusion::GvOcclusion() : enabled(TRUE), isActive(FALSE),lastPosition(-1e35f,
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(GvOcclusion::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvOcclusion::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvOcclusion::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvOcclusion::removeChildren,GvMFNode);
 
     GV_NODE_ADD_EVENT_OUT(isActive);
     GV_NODE_ADD_EVENT_OUT(enterTime);
@@ -2045,8 +2045,8 @@ lastPosition(-1e35f,0,0)
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(GvInclusion::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvInclusion::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvInclusion::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvInclusion::removeChildren,GvMFNode);
 
     GV_NODE_ADD_EVENT_OUT(isActive);
     GV_NODE_ADD_EVENT_OUT(isInside);
@@ -2319,8 +2319,8 @@ GvMetaverse::GvMetaverse() : initialized(FALSE),
 
     // from Gv2group
     GV_NODE_ADD_FIELD(children);
-    GV_NODE_ADD_EVENT_IN(GvMetaverse::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvMetaverse::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvMetaverse::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvMetaverse::removeChildren,GvMFNode);
 
 //    GV_NODE_ADD_EVENT_OUT(isActive);
 //    GV_NODE_ADD_EVENT_OUT(enterTime);

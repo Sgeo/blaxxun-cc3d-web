@@ -84,7 +84,7 @@ GvViewpoint::GvViewpoint() : fieldOfView(0.785398),jump(TRUE),isBound(FALSE),isR
     GV_NODE_CONSTRUCTOR(GvViewpoint);
     isBuiltIn = TRUE;
 
-    GV_NODE_ADD_EVENT_IN(GvViewpoint::set_bind,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_bind,GvViewpoint::set_bind,GvSFBool);
 
     //
     GV_NODE_ADD_FIELD(fieldOfView)

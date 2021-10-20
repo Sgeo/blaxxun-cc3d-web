@@ -161,24 +161,24 @@ Todo :
 /*! \def GV_NODE_ADD_EVENT_IN(eventName,typeClass)
  * add an eventIn given a member function
  */
-#define GV_NODE_ADD_EVENT_IN(eventName,typeClass)	\
-    if (firstInstance) {							      \
-        void (GvNode::*func)(typeClass *val); \
-        func = (void (GvNode::*)(typeClass *val))  &eventName; \
-	    fieldData->addEventIn(this, GV__QUOTE(eventName), (GvNodeEventInMethod) func,typeClass::ClassId(),typeClass::getClassFieldType(),GV_NODE_EVENT_IN);    \
-    }
+// #define GV_NODE_ADD_EVENT_IN(eventName,typeClass)	\
+//     if (firstInstance) {							      \
+//         void (GvNode::*func)(typeClass *val); \
+//         func = (void (GvNode::*)(typeClass *val))  &eventName; \
+// 	    fieldData->addEventIn(this, GV__QUOTE(eventName), (GvNodeEventInMethod) func,typeClass::ClassId(),typeClass::getClassFieldType(),GV_NODE_EVENT_IN);    \
+//     }
 
 // hg: VC does not like  &function
 /*! \def GV_NODE_ADD_EVENT_IN_NAME(eventName,function,typeClass)
  * add an eventIn given the name and a member function
  */
 
-// #define GV_NODE_ADD_EVENT_IN_NAME(eventName,function,typeClass)	\
-//     if (firstInstance) {							      \
-//         void (GvNode::*func)(typeClass *val); \
-//         func = (void (GvNode::*)(typeClass *val)) function; \
-// 	    fieldData->addEventIn(this, GV__QUOTE(eventName), (GvNodeEventInMethod) func,typeClass::ClassId(),typeClass::getClassFieldType(),GV_NODE_EVENT_IN);    \
-//     }
+#define GV_NODE_ADD_EVENT_IN_NAME(eventName,function,typeClass)	\
+    if (firstInstance) {							      \
+        void (GvNode::*func)(typeClass *val); \
+        func = (void (GvNode::*)(typeClass *val)) &function; \
+	    fieldData->addEventIn(this, GV__QUOTE(eventName), (GvNodeEventInMethod) func,typeClass::ClassId(),typeClass::getClassFieldType(),GV_NODE_EVENT_IN);    \
+    }
 
 /*! \def GV_NODE_ADD_EVENT_OUT(fieldName)
  * add an eventOut field to Node given name of field member

@@ -1723,11 +1723,11 @@ GView::GView(/* GModel *Model */) :
 
     GV_NODE_ADD_FIELD(sharedZone);
 
-    GV_NODE_ADD_EVENT_IN(GView::set_myAvatarNodes,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GView::set_myAvatarURL,GvSFString);
-    GV_NODE_ADD_EVENT_IN(GView::set_myAvatarName,GvSFString);
-    GV_NODE_ADD_EVENT_IN(GView::set_showMyAvatar,GvSFBool);
-    GV_NODE_ADD_EVENT_IN(GView::set_myAvatarGesture,GvSFInt32);
+    GV_NODE_ADD_EVENT_IN_NAME(set_myAvatarNodes,GView::set_myAvatarNodes,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(set_myAvatarURL,GView::set_myAvatarURL,GvSFString);
+    GV_NODE_ADD_EVENT_IN_NAME(set_myAvatarName,GView::set_myAvatarName,GvSFString);
+    GV_NODE_ADD_EVENT_IN_NAME(set_showMyAvatar,GView::set_showMyAvatar,GvSFBool);
+    GV_NODE_ADD_EVENT_IN_NAME(set_myAvatarGesture,GView::set_myAvatarGesture,GvSFInt32);
     GV_NODE_ADD_EVENT_OUT(myAvatarGesture);
 
     GV_NODE_ADD_FIELD(myAvatarURL);

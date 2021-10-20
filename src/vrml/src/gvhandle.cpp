@@ -65,8 +65,8 @@ GvHandle::GvHandle()
     GV_NODE_ADD_FIELD(bboxCenter);
     GV_NODE_ADD_FIELD(children);
 
-    GV_NODE_ADD_EVENT_IN(GvHandle::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvHandle::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvHandle::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvHandle::removeChildren,GvMFNode);
 }
 
 GvHandle::~GvHandle()
@@ -87,8 +87,8 @@ GvBoxHandle::GvBoxHandle()
     GV_NODE_ADD_FIELD(bboxCenter);
     GV_NODE_ADD_FIELD(children);
 
-    GV_NODE_ADD_EVENT_IN(GvBoxHandle::addChildren,GvMFNode);
-    GV_NODE_ADD_EVENT_IN(GvBoxHandle::removeChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(addChildren,GvBoxHandle::addChildren,GvMFNode);
+    GV_NODE_ADD_EVENT_IN_NAME(removeChildren,GvBoxHandle::removeChildren,GvMFNode);
 }
 
 GvBoxHandle::~GvBoxHandle()
