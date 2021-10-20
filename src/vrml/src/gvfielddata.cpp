@@ -246,6 +246,11 @@ GvFieldData::addEventIn(GvNode *defObject,
 							 GvFieldClass eventFieldClass,
                              GvFieldType type)
 {
+    // Skip past classname:: that macro fix adds
+    while(eventName[0] != ':') {
+        eventName += 1;
+    }
+    eventName += 2;
 
     GvFieldEntry *newField = new GvFieldEntry(eventName,
 							0,
