@@ -78,12 +78,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-CGLViewCtrlApp NEAR theApp;
-
-const GUID CDECL BASED_CODE _tlid =
-		{ 0x4b6e3010, 0x6e45, 0x11d0, { 0x93, 0x9, 0, 0x20, 0xaf, 0xe0, 0x5c, 0xc8 } };
-const WORD _wVerMajor = 1;
-const WORD _wVerMinor = 0;
+CGLViewCtrlApp theApp;
 
 
 #ifdef _COM
@@ -108,19 +103,17 @@ extern BOOL KatmaiInit();
 
 //_PNH _set_new_handler( _PNH );
 
-static _PNH cc3d_old_new_handler = (_PNH) NULL;
-static int cc3d_old_new_mode=0;
 
-int __cdecl cc3d_new_handler(size_t s)
-{
-	MessageBox(NULL,"Fatal Error : out of memory \nPlease terminate program " ,_PROGRAM,MB_OK);
+// int __cdecl cc3d_new_handler(size_t s)
+// {
+// 	MessageBox(NULL,"Fatal Error : out of memory \nPlease terminate program " ,_PROGRAM,MB_OK);
 
-	TRACE("Fatal Error: out of memory during alloaction of %d bytes\n",s);
+// 	TRACE("Fatal Error: out of memory during alloaction of %d bytes\n",s);
 	
-	if (cc3d_old_new_handler) return cc3d_old_new_handler(s);
-	ASSERT(0); // go into debugger
-	return 0;
-}
+// 	if (cc3d_old_new_handler) return cc3d_old_new_handler(s);
+// 	ASSERT(0); // go into debugger
+// 	return 0;
+// }
 
 
 
@@ -130,9 +123,6 @@ int __cdecl cc3d_new_handler(size_t s)
 BOOL CGLViewCtrlApp::InitInstance()
 {
 	TRACE("CGLViewCtrlApp::InitInstance() \n");
-
-	cc3d_old_new_handler=_set_new_handler(cc3d_new_handler); 
-	cc3d_old_new_mode=_set_new_mode(1); // for malloc too 
 
 
 
@@ -148,10 +138,8 @@ BOOL CGLViewCtrlApp::InitInstance()
 #endif
 
 
-	BOOL bInit = COleControlModule::InitInstance();
+	BOOL bInit = true;
 	
-	// Initialize the ATL Module
-	_Module.Init(ObjectMap,m_hInstance);
 
 #if 0 // only for EXE's
 #ifdef _AFXDLL
@@ -160,7 +148,7 @@ BOOL CGLViewCtrlApp::InitInstance()
 	Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 #endif
-	VERIFY(SUCCEEDED(_Module.RegisterServer(TRUE)));// ATL Classes
+	//VERIFY(SUCCEEDED(_Module.RegisterServer(TRUE)));// ATL Classes
 	//VERIFY(SUCCEEDED(_Module.RegisterTypeLib("glviewvrml.tlb")));// type lib
 
 
@@ -192,34 +180,16 @@ BOOL CGLViewCtrlApp::InitInstance()
 		CString installDir;
 
 		if (1) { // use local install directory 
-			GetModuleFileName(AfxGetInstanceHandle( ), tmp.GetBuffer(_MAX_PATH),_MAX_PATH);
-			tmp.ReleaseBuffer();
-			int iBackslash = tmp.ReverseFind('\\');
-			if (iBackslash != -1) 	tmp = tmp.Left(iBackslash+1);
-			installDir = tmp;
+			installDir = CString("/usr/local/blaxxun/");
 
-		} else {
-			GetTempPath(_MAX_PATH,tmp.GetBuffer(_MAX_PATH));
-			tmp.ReleaseBuffer();
 		}
-		if (tmp.GetLength()>0) {
-		  int l = tmp.GetLength();
-		  if (tmp[l-1] != '\\')
-			  tmp += '\\';
-		}
-		tmp += "cache";
-		GFile::cacheDirectory = tmp;
+		GFile::cacheDirectory = CString("/tmp/cache");
 		TRACE("Cache directory is : %s \n",(const char *)tmp);
 		
 		// set the new ini-file name (stored in the ccpro directory, name is cc3d.ini)	
 		tmp = installDir + "cc3d.ini";
-		if (m_pszProfileName)  free( (void*)m_pszProfileName );
-		m_pszProfileName = _tcsdup( tmp );
 
 		TRACE("Ini file is : %s \n",(const char *)tmp);
-
-		if (m_pszAppName)  free( (void*)m_pszAppName );
-		m_pszAppName = _tcsdup(_PROGRAM);
 
 
 	}
@@ -253,15 +223,8 @@ int CGLViewCtrlApp::ExitInstance()
 		GReporter::SetDefault(NULL);
 	}
 
-	// MFC's class factories registration is automatically revoked by MFC itself
-	_Module.RevokeClassObjects(); // Revoke class factories for ATL
-	_Module.Term();				  // cleanup ATL GLobal Module
 
-	_set_new_handler(cc3d_old_new_handler); 
-	_set_new_mode(cc3d_old_new_mode); // for malloc too 
-
-
-	return COleControlModule::ExitInstance();
+	return 0;
 }
 
 
@@ -287,9 +250,9 @@ STDAPI DllCanUnloadNow(void)
 
 #endif
 
-// declaration of global UID´s from GLViewVrml.idl
+// declaration of global UIDï¿½s from GLViewVrml.idl
 
-#include <initguid.h>
+//#include <initguid.h>
 
 // RSX 
 #include "GSound.h"
@@ -308,54 +271,6 @@ STDAPI DllCanUnloadNow(void)
 
 
 
-/////////////////////////////////////////////////////////////////////////////
-// DllRegisterServer - Adds entries to the system registry
-
-STDAPI DllRegisterServer(void)
-{
-	AFX_MANAGE_STATE(_afxModuleAddrThis);
-
-	if (!AfxOleRegisterTypeLib(AfxGetInstanceHandle(), _tlid))
-		return ResultFromScode(SELFREG_E_TYPELIB);
-
-	if (!AfxOleRegisterTypeLib(AfxGetInstanceHandle(), LIBID_blaxxunVRMLLib, "blaxxunVRML.tlb")) {
-//#ifdef _DEBUG
-		MessageBox(NULL,"Can´t register blaxxunVRML.tlb type library\nEAI may not work",_PROGRAM,MB_OK);
-	//	return ResultFromScode(SELFREG_E_TYPELIB);
-//#endif
-	}
-
-
-
-	if (!COleObjectFactoryEx::UpdateRegistryAll(TRUE))
-		return ResultFromScode(SELFREG_E_CLASS);
-
-	return NOERROR;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-// DllUnregisterServer - Removes entries from the system registry
-
-STDAPI DllUnregisterServer(void)
-{
-	AFX_MANAGE_STATE(_afxModuleAddrThis);
-
-	if (!AfxOleUnregisterTypeLib(_tlid, _wVerMajor, _wVerMinor))
-		return ResultFromScode(SELFREG_E_TYPELIB);
-
-	if (!AfxOleUnregisterTypeLib(LIBID_blaxxunVRMLLib)) {
-//#ifdef _DEBUG
-		MessageBox(NULL,"Can´t unregister blaxxunVRML.tlb type library",_PROGRAM,MB_OK);
-	//	return ResultFromScode(SELFREG_E_TYPELIB);
-//#endif
-	}
-
-	if (!COleObjectFactoryEx::UpdateRegistryAll(FALSE))
-		return ResultFromScode(SELFREG_E_CLASS);
-
-	return NOERROR;
-}
 
 
 

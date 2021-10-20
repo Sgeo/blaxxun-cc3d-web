@@ -19,7 +19,7 @@ THE NAMES GIVEN SAID CODE.
 ==============================================================================*/
 // blaxxunCC3D.h : main header file for blaxxunCC3D.ocx
 
-#if !defined( __AFXCTL_H__ )
+#if !defined( __AFXCTL_H__ ) && !defined(__EMSCRIPTEN__)
 	#error include 'afxctl.h' before including this file
 #endif
 
@@ -28,13 +28,9 @@ THE NAMES GIVEN SAID CODE.
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlApp : See GLViewCtrl.cpp for implementation.
 
-class CGLViewCtrlApp : public COleControlModule
+class CGLViewCtrlApp
 {
 public:
 	BOOL InitInstance();
 	int ExitInstance();
 };
-
-extern const GUID CDECL _tlid;
-extern const WORD _wVerMajor;
-extern const WORD _wVerMinor;
