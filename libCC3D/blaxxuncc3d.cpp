@@ -58,7 +58,7 @@ Todo :
 
 #include "GVersion.h"
 
-#include "WWW.h"
+#include "www.h"
 
 
 #include "GReporter.h"

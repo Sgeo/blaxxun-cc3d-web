@@ -66,13 +66,9 @@ THE NAMES GIVEN SAID CODE.
 #include "COpenGL.h"
 #endif
 
-#include "dispids.h"
-#include "ArrayNew.h"
+#include "arraynew.h"
 
 
-// OLE_DATAPATH + GUID for interesting MIME-Types
-// #include "datapath.h"
-typedef BSTR OLE_DATAPATH;
 
 
 // Forward classes
@@ -174,7 +170,7 @@ enum UIMode {
 // CTranslator
 // translates messages 
 //
-#include <fstream.h>
+#include <fstream>
 
 class CTranslator {
 public:
