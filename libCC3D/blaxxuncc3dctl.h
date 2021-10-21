@@ -794,27 +794,10 @@ struct	NavCollision
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CGLViewCtrlCtrl)
 	public:
-	virtual void DoPropExchange();
-	virtual void OnResetState();
-	virtual BOOL OnSetExtent(LPSIZEL lpSizeL);
-	virtual void OnSetClientSite();
-	virtual DWORD GetControlFlags();
-	virtual BOOL OnSetObjectRects(LPCRECT lpRectPos, LPCRECT lpRectClip);
-	virtual BOOL OnSetData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStgMedium,BOOL bRelease);
-	virtual BOOL OnRenderFileData(LPFORMATETC lpFormatEtc, CFile* pFile);
-	virtual BOOL OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStgMedium);
-	virtual BOOL OnRenderGlobalData(LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal);
+	virtual void DoPropExchange(); // IMPORTANT: CALL THIS TO RECEIVE PROPERTIES
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual void OnMnemonic(LPMSG pMsg);
 	virtual void OnKeyDownEvent(USHORT nChar, USHORT nShiftState);
-	virtual void OnAmbientPropertyChange(DISPID dispid);
-	virtual BOOL OnEdit(LPMSG lpMsg, HWND hWndParent, LPCRECT lpRect);
 	virtual void OnGetControlInfo(LPCONTROLINFO pControlInfo);
-	virtual HMENU OnGetInPlaceMenu();
-	virtual BOOL OnGetNaturalExtent(DWORD dwAspect, LONG lindex, DVTARGETDEVICE* ptd, HDC hicTargetDev, DVEXTENTINFO* pExtentInfo, LPSIZEL psizel);
-	virtual void Serialize(CArchive& ar);
-	virtual BOOL OnProperties(LPMSG lpMsg, HWND hWndParent, LPCRECT lpRect);
-	virtual void OnFinalRelease();
 	protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);

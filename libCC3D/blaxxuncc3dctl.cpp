@@ -3654,15 +3654,6 @@ void CGLViewCtrlCtrl::DoPropExchange()
 }
 
 
-/////////////////////////////////////////////////////////////////////////////
-// CGLViewCtrlCtrl::OnResetState - Reset control to default state
-
-void CGLViewCtrlCtrl::OnResetState()
-{
-	COleControl::OnResetState();  // Resets defaults found in DoPropExchange
-	// TODO: Reset any other control state here.
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl::AboutBox - Display an "About" box to the user
@@ -3681,12 +3672,7 @@ void CGLViewCtrlCtrl::AboutBox()
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl message handlers
 
-BOOL CGLViewCtrlCtrl::OnSetExtent(LPSIZEL lpSizeL) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	return COleControl::OnSetExtent(lpSizeL);
-}
+
 
 BOOL CGLViewCtrlCtrl::PreCreateWindow(CREATESTRUCT& cs) 
 {
@@ -5620,19 +5606,6 @@ void CGLViewCtrlCtrl::OnMove(int x, int y)
 }
 
 
-
-void CGLViewCtrlCtrl::OnSetClientSite() 
-{
-//	RecreateControlWindow(); // from time cntrl
-	TRACE("CGLViewCtrlCtrl::OnSetClientSite()  %p\n",this);
-	
-	COleControl::OnSetClientSite();
-	// if client site NULL, control disabled / no longer visibe ?
-	if (m_pClientSite == NULL) 
-    {
-		TRACE("OnSetClientSite:: now null\n"); 
-	}		
-}
 
 
 int CGLViewCtrlCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct) 
@@ -7758,20 +7731,6 @@ BOOL CGLViewCtrlCtrl::removeNode(LPUNKNOWN node)
 }
 
 
-DWORD CGLViewCtrlCtrl::GetControlFlags() 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	//pointerInactive
-	return COleControl::GetControlFlags(); // 
-}
-
-BOOL CGLViewCtrlCtrl::OnSetObjectRects(LPCRECT lpRectPos, LPCRECT lpRectClip) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	return COleControl::OnSetObjectRects(lpRectPos, lpRectClip);
-}
-
 void CGLViewCtrlCtrl::OnActivateApp(BOOL bActive, HTASK hTask) 
 {
 	TRACE("CGLViewCtrlCtrl::OnActivateApp %d %p \n",bActive, hTask);
@@ -8466,61 +8425,11 @@ void CGLViewCtrlCtrl::SetWorld(LPCTSTR lpszNewValue)
 
 	SetModifiedFlag();
 }
-//IDataObject
-BOOL CGLViewCtrlCtrl::OnSetData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStgMedium,
-	BOOL bRelease)
-{
-	TRACE("CGLViewCtrlCtrl::OnSetData(...) %p\n",this);
 
-	ASSERT_VALID(this);
-	ASSERT(AfxIsValidAddress(lpFormatEtc, sizeof(FORMATETC), FALSE));
-	ASSERT(AfxIsValidAddress(lpStgMedium, sizeof(STGMEDIUM)));
-
-	return COleControl::OnSetData(lpFormatEtc,lpStgMedium,bRelease);
-/*
-	// default implementation supports propset format
-	BOOL bSuccess = FALSE;
-	CLSID fmtid;
-	if (_AfxOleMatchPropsetClipFormat(lpFormatEtc->cfFormat, &fmtid))
-	{
-		bSuccess = SetPropsetData(lpFormatEtc, lpStgMedium, fmtid);
-
-		if (bSuccess && bRelease)
-			ReleaseStgMedium(lpStgMedium);
-	}
-
-	return bSuccess;
-
-*/
-}
 
 
 //void CMyDataPathProperty::OnDataAvailable(DWORD dwSize, DWORD grfBSCF)
 	
-BOOL CGLViewCtrlCtrl::OnRenderFileData(LPFORMATETC lpFormatEtc, CFile* pFile) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("CGLViewCtrlCtrl::OnRenderFileData(...) %p\n",this);
-	
-	return COleControl::OnRenderFileData(lpFormatEtc, pFile);
-}
-
-BOOL CGLViewCtrlCtrl::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStgMedium) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("CGLViewCtrlCtrl::OnRenderData(...) %p\n",this);
-	
-	return COleControl::OnRenderData(lpFormatEtc, lpStgMedium);
-}
-
-BOOL CGLViewCtrlCtrl::OnRenderGlobalData(LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("CGLViewCtrlCtrl::OnRenderGlobalData(...) %p\n",this);
-	
-	return COleControl::OnRenderGlobalData(lpFormatEtc, phGlobal);
-
-}
 //OLE Controls OLE Controls: Advanced Topics
 BOOL CGLViewCtrlCtrl::PreTranslateMessage(MSG* pMsg) 
 
@@ -8929,15 +8838,6 @@ afx_msg LRESULT CGLViewCtrlCtrl::OnCaptureChanged(WPARAM wParam, LPARAM lParam)
 }
 
 
-
-void CGLViewCtrlCtrl::OnMnemonic(LPMSG pMsg) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("OnMnemonic\n");
-
-	COleControl::OnMnemonic(pMsg);
-}
-
 void CGLViewCtrlCtrl::OnKeyDownEvent(USHORT nChar, USHORT nShiftState) 
 {
 	// TODO: Add your specialized code here and/or call the base class
@@ -9073,19 +8973,7 @@ void CGLViewCtrlCtrl::OnUpdateSettingsReload(CCmdUI* pCmdUI)
 	
 }
 
-void CGLViewCtrlCtrl::OnAmbientPropertyChange(DISPID dispid) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	COleControl::OnAmbientPropertyChange(dispid);
-}
 
-BOOL CGLViewCtrlCtrl::OnEdit(LPMSG lpMsg, HWND hWndParent, LPCRECT lpRect) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	return COleControl::OnEdit(lpMsg, hWndParent, lpRect);
-}
 
 void CGLViewCtrlCtrl::OnGetControlInfo(LPCONTROLINFO pControlInfo) 
 {
@@ -9104,29 +8992,6 @@ void CGLViewCtrlCtrl::OnGetControlInfo(LPCONTROLINFO pControlInfo)
 
 //OLE Controls: Advanced Topics
 
-HMENU CGLViewCtrlCtrl::OnGetInPlaceMenu() 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	return COleControl::OnGetInPlaceMenu();
-}
-
-BOOL CGLViewCtrlCtrl::OnGetNaturalExtent(DWORD dwAspect, LONG lindex, DVTARGETDEVICE* ptd, HDC hicTargetDev, DVEXTENTINFO* pExtentInfo, LPSIZEL psizel) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	
-	return COleControl::OnGetNaturalExtent(dwAspect, lindex, ptd, hicTargetDev, pExtentInfo, psizel);
-}
-
-void CGLViewCtrlCtrl::Serialize(CArchive& ar) 
-{
-	if (ar.IsStoring())
-	{	// storing code
-	}
-	else
-	{	// loading code
-	}
-}
 /*
 void CGLViewCtrlCtrl::OnClose() 
 {
@@ -10507,13 +10372,6 @@ void CGLViewCtrlCtrl::OnDevModeChange(LPTSTR lpDeviceName)
 	
 }
 
-BOOL CGLViewCtrlCtrl::OnProperties(LPMSG lpMsg, HWND hWndParent, LPCRECT lpRect) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("CGLViewCtrlCtrl::OnProperties \n");
-	
-	return COleControl::OnProperties(lpMsg, hWndParent, lpRect);
-}
 
 
 void CGLViewCtrlCtrl::OnGoBack() 
@@ -11497,13 +11355,6 @@ void CGLViewCtrlCtrl::OnInitMenu(CMenu* pMenu)
 
 }
 
-void CGLViewCtrlCtrl::OnFinalRelease() 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	TRACE("CGLViewCtrlCtrl::OnFinalRelease() %p\n",this);	
-	
-	COleControl::OnFinalRelease();
-}
 
 void CGLViewCtrlCtrl::OnContextMenu(CWnd* pWnd, CPoint point) 
 {
