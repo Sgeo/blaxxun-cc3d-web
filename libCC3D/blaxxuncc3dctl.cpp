@@ -252,9 +252,9 @@ BOOL CModalThread::InitInstance()
 
 void CGLViewCtrlCtrl::DoThreadModalUpdateMenu(CMenu* menu) 
 {
-	// thilo 15.07.99: zusätzlicher code damit die checkmarks
-	// im popup-menü funktionieren. vor anzeige des menüs wird
-	// die menüstruktur durchlaufen und für jedes item der ent-
+	// thilo 15.07.99: zusÃ¤tzlicher code damit die checkmarks
+	// im popup-menÃ¼ funktionieren. vor anzeige des menÃ¼s wird
+	// die menÃ¼struktur durchlaufen und fÃ¼r jedes item der ent-
 	// sprechende command-update handler aufgeufen.
 
 	CCmdUI state;
@@ -2586,28 +2586,6 @@ void CGLViewCtrlCtrl::Print(const char *message)
 	if (reporter) reporter->Trace1(message);
 }
 
-// see COleControl::GetMessageString
-void CGLViewCtrlCtrl::GetMessageString(UINT nID, CString& rMessage) const
-{	// need to get ride of constness. translator caches strings 
-	((CGLViewCtrlCtrl *)this)->TranslateMessageString(nID,rMessage);
-/*	return;	
-	// load appropriate string
-	LPTSTR lpsz = rMessage.GetBuffer(255);
-	if (AfxLoadString(nID, lpsz) != 0)
-	{
-		// first newline terminates actual string
-		lpsz = _tcschr(lpsz, '\n');
-		if (lpsz != NULL)
-			*lpsz = '\0';
-	}
-	else
-	{
-		// not found
-		TRACE1("Warning: no message line prompt for ID 0x%04X.\n", nID);
-	}
-	rMessage.ReleaseBuffer();
-*/
-}
 
 
 // set state, if user currently is in collision during movement
@@ -2788,7 +2766,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
 
 	// initialize cursors 
-	hCurrentCursor = AfxGetApp()->LoadStandardCursor(IDC_ARROW);
+	hCurrentCursor = "default";
 /*
 	for(int i=0; i<= ANCHOR_CURSOR;i++) cursors[i] = hCurrentCursor;
 	cursors[STANDARD_LOADING_CURSOR] = AfxGetApp()->LoadStandardCursor(IDC_APPSTARTING);
@@ -2802,40 +2780,56 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 */
    	// NavCursors[NAV_NONE]			= AfxGetApp()->LoadCursor(IDC_CURSOR22);
    	// hg 29.03.99 use same cursor as in IE ! 
-	NavCursors[NAV_NONE]			= AfxGetApp()->LoadStandardCursor(IDC_ARROW);
+	NavCursors[NAV_NONE]			= "default";
 
-   	NavCursors[NAV_WALK]			= AfxGetApp()->LoadCursor(IDC_CURSOR1);
-   	NavCursors[NAV_SLIDE]			= AfxGetApp()->LoadCursor(IDC_CURSOR2);
-   	NavCursors[NAV_ROTATE]			= AfxGetApp()->LoadCursor(IDC_CURSOR3);
-   	NavCursors[NAV_EXAMINE]			= AfxGetApp()->LoadCursor(IDC_CURSOR4);
-   	NavCursors[NAV_FLY]				= AfxGetApp()->LoadCursor(IDC_CURSOR5);
-   	NavCursors[NAV_WALK_ROT]		= AfxGetApp()->LoadCursor(IDC_CURSOR17);
-   	NavCursors[NAV_WALK_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR18);
-   	NavCursors[NAV_WALK_ROT_SLIDE]	= AfxGetApp()->LoadCursor(IDC_CURSOR19);
-   	NavCursors[NAV_SLIDE_ROT]		= AfxGetApp()->LoadCursor(IDC_CURSOR16);
-   	NavCursors[NAV_ROT_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR13);
-   	NavCursors[NAV_EXA_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR14);
-   	NavCursors[NAV_JUMP_TO]			= AfxGetApp()->LoadCursor(IDC_CURSOR20);
-   	NavCursors[NAV_FOLLOW]			= AfxGetApp()->LoadCursor(IDC_CURSOR21);
+	#pragma message("TO DO: GET CURSORS!")
+
+   	// NavCursors[NAV_WALK]			= AfxGetApp()->LoadCursor(IDC_CURSOR1);
+   	// NavCursors[NAV_SLIDE]			= AfxGetApp()->LoadCursor(IDC_CURSOR2);
+   	// NavCursors[NAV_ROTATE]			= AfxGetApp()->LoadCursor(IDC_CURSOR3);
+   	// NavCursors[NAV_EXAMINE]			= AfxGetApp()->LoadCursor(IDC_CURSOR4);
+   	// NavCursors[NAV_FLY]				= AfxGetApp()->LoadCursor(IDC_CURSOR5);
+   	// NavCursors[NAV_WALK_ROT]		= AfxGetApp()->LoadCursor(IDC_CURSOR17);
+   	// NavCursors[NAV_WALK_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR18);
+   	// NavCursors[NAV_WALK_ROT_SLIDE]	= AfxGetApp()->LoadCursor(IDC_CURSOR19);
+   	// NavCursors[NAV_SLIDE_ROT]		= AfxGetApp()->LoadCursor(IDC_CURSOR16);
+   	// NavCursors[NAV_ROT_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR13);
+   	// NavCursors[NAV_EXA_SLIDE]		= AfxGetApp()->LoadCursor(IDC_CURSOR14);
+   	// NavCursors[NAV_JUMP_TO]			= AfxGetApp()->LoadCursor(IDC_CURSOR20);
+   	// NavCursors[NAV_FOLLOW]			= AfxGetApp()->LoadCursor(IDC_CURSOR21);
+
+   	NavCursors[NAV_WALK]			= "crosshair";
+   	NavCursors[NAV_SLIDE]			= "crosshair";
+   	NavCursors[NAV_ROTATE]			= "crosshair";
+   	NavCursors[NAV_EXAMINE]			= "grab";
+   	NavCursors[NAV_FLY]				= "crosshair";
+   	NavCursors[NAV_WALK_ROT]		= "crosshair";
+   	NavCursors[NAV_WALK_SLIDE]		= "crosshair";
+   	NavCursors[NAV_WALK_ROT_SLIDE]	= "crosshair";
+   	NavCursors[NAV_SLIDE_ROT]		= "crosshair";
+   	NavCursors[NAV_ROT_SLIDE]		= "crosshair";
+   	NavCursors[NAV_EXA_SLIDE]		= "crosshair";
+   	NavCursors[NAV_JUMP_TO]			= "pointer";
+   	NavCursors[NAV_FOLLOW]			= "pointer";
    	
-	NavCursors[NAV_ANCHOR]			= AfxGetApp()->LoadCursor(IDC_CURSOR11); // hand
+	NavCursors[NAV_ANCHOR]			= "pointer"; // hand
    	
 	// NavCursors[NAV_NONE_SENSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR15);
-   	NavCursors[NAV_NONE_SENSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR11); // point hand test hg 16.01.00
+   	NavCursors[NAV_NONE_SENSOR]		= "pointer"; // point hand test hg 16.01.00
 
-   	NavCursors[NAV_WALK_SENSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR6);
-   	NavCursors[NAV_SLIDE_SENSOR]	= AfxGetApp()->LoadCursor(IDC_CURSOR7);
-   	NavCursors[NAV_ROTATE_SENSOR]	= AfxGetApp()->LoadCursor(IDC_CURSOR8);
-   	NavCursors[NAV_EXAMINE_SENSOR]	= AfxGetApp()->LoadCursor(IDC_CURSOR9);
-   	NavCursors[NAV_FLY_SENSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR10);
+   	NavCursors[NAV_WALK_SENSOR]		= "pointer";
+   	NavCursors[NAV_SLIDE_SENSOR]	= "pointer";
+   	NavCursors[NAV_ROTATE_SENSOR]	= "pointer";
+   	NavCursors[NAV_EXAMINE_SENSOR]	= "pointer";
+   	NavCursors[NAV_FLY_SENSOR]		= "pointer";
    	
 	// NavCursors[NAV_ANCHOR_SENSOR]	= AfxGetApp()->LoadCursor(IDC_CURSOR12);
-   	NavCursors[NAV_ANCHOR_SENSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR11); // point hand test hg 16.01.00
+   	NavCursors[NAV_ANCHOR_SENSOR]		= "pointer"; // point hand test hg 16.01.00
 
-   	NavCursors[NAV_PANEL_CURSOR]	= AfxGetApp()->LoadCursor(IDC_CURSOR23);
-   	NavCursors[NAV_PAN]				= AfxGetApp()->LoadCursor(IDC_CURSOR24);
-   	NavCursors[NAV_NO_CURSOR]		= AfxGetApp()->LoadCursor(IDC_CURSOR25);
-	NavCursors[NAV_COLLISION]		= AfxGetApp()->LoadStandardCursor(IDC_NO);
+   	NavCursors[NAV_PANEL_CURSOR]	= "default";
+   	NavCursors[NAV_PAN]				= "move";
+   	NavCursors[NAV_NO_CURSOR]		= "none";
+	NavCursors[NAV_COLLISION]		= "not-allowed";
 	
 	// try to load IE urlmon.lib
 #ifdef G_URLMON
@@ -4157,7 +4151,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
     case (UINT)'9' : view->followOrbit.setx(view->followOrbit.x() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)'0' : view->followOrbit.setx(view->followOrbit.x() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
-    case (UINT)'§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
+    case (UINT)'Â§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)')' : view->followOrbit.sety(view->followOrbit.y() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
 
     case (UINT)'A' : {
@@ -5184,7 +5178,7 @@ void CGLViewCtrlCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 
 
-	// we don´t need timers 
+	// we donÂ´t need timers 
 	if (m_timerRunning && updateLock >0) 
 		StopTimer();
 
@@ -5809,7 +5803,7 @@ BOOL CGLViewCtrlCtrl::OnEraseBkgnd(CDC* pDC)
 		return COleControl::OnEraseBkgnd(pDC);
 #endif
 
-	return TRUE; // don´t erase 
+	return TRUE; // donÂ´t erase 
 
 	//return COleControl::OnEraseBkgnd(pDC);
 }
@@ -7136,7 +7130,7 @@ void CGLViewCtrlCtrl::OnOptionsDriver(UINT id)
 		else SetProfile(_T("Direct3D.driverOk"),1);				
 
 	} else {
-		 // couldn´t handle, fallback to software 			
+		 // couldnÂ´t handle, fallback to software 			
 		if (view->device->CurrDriver != view->device->SoftwareDriver)		
         if (!view->device->ChangeDriver(view->device->SoftwareDriver,NULL)) {
 				view->ReportD3DError();
@@ -7393,7 +7387,7 @@ void CGLViewCtrlCtrl::replaceWorld(LPUNKNOWN node)
 }
 
 // load the url given, parameter could be "target=frameName"
-// EAI url and parameter are MF´s !!
+// EAI url and parameter are MFÂ´s !!
 void CGLViewCtrlCtrl::loadURL(LPCTSTR url, LPCTSTR parameter) 
 {
 	EAI_CALL("loadURL")
@@ -8584,11 +8578,6 @@ BOOL CGLViewCtrlCtrl::PreTranslateMessage(MSG* pMsg)
 
 
 
-void CGLViewCtrlCtrl::SetInitialDataFormats()
-{
-	COleControl::SetInitialDataFormats();
-
-}
 
 
 long CGLViewCtrlCtrl::setTimerInterval(long interval) 
@@ -11412,7 +11401,7 @@ void CGLViewCtrlCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 		{
 			// HG test, try to set prev module state // see
 			
-			// thilo 15.07.99: folgende zeile führt zum crash in netscape
+			// thilo 15.07.99: folgende zeile fÃ¼hrt zum crash in netscape
 			// verstehe auch nicht, was die hier bewirken soll, deshalb auskommentiert.
 			// AFX_MANAGE_STATE(AfxGetThreadState()->m_pPrevModuleState);
 

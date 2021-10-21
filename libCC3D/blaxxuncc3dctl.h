@@ -172,75 +172,30 @@ enum UIMode {
 //
 #include <fstream>
 
-class CTranslator {
-public:
-	CTranslator();
-	~CTranslator();
-	// translate unique string into language denpendent string, entryDefault is the default english string
-	BOOL Translate(LPCTSTR key,LPCTSTR valueDefault, CString& value);
-	BOOL Lookup(LPCTSTR key,CString& value);
-	
-protected:
-#ifdef _DEBUG
-	//ofstream out;
-#endif
-
-	CWinApp*			m_pApp;			//!> app, for GetProfileString
-	CString				m_section;		//!> section where strings are stored
-	CMapStringToString  m_hashTable;	//!>/ mapping keys to strings 
-};
 
 #include "gviewcontrol.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl : See GLViewCtrlCtl.cpp for implementation.
 
-class CGLViewCtrlCtrl : 
-	
-	public COleControl
-	, public GViewController
+class CGLViewCtrlCtrl : public GViewController
 
 {
-	DECLARE_DYNCREATE(CGLViewCtrlCtrl)
 
 // Constructor
 public:
 	//CGLViewCtrlCtrl();
 	CGLViewCtrlCtrl();
 
-
-	// Netscape thread dialog handling
-	UINT DoThreadModal(CDialog* dialog, UINT timeout=60000, BOOL menu=FALSE);
-	UINT DoThreadModal(CMenu* menu, POINT* menuPos, CWnd* parent);
-	void DoThreadModalUpdateMenu(CMenu* menu); 
-	BOOL m_threadFinished;
-	CWinThread* m_pt;
-	CDialog*	m_pd;
-	
-	BOOL IsModalThreadActive() { return (m_threadFinished)? FALSE: TRUE; }
+ 
 
 
 	// overrides 
-	virtual void SetInitialDataFormats();
-
-	// For customizing the default messages on the status bar
-	virtual void GetMessageString(UINT nID, CString& rMessage) const;
 
 
 	// @cmember GView objects contains the renderState and model information
 	GView	*view;
 
-	CTranslator m_translator;
-
-	// translate a message 
-	BOOL Translate(LPCTSTR key,LPCTSTR valueDefault, CString& value);
-	BOOL Translate(LPCTSTR valueDefault, CString& value);
-	BOOL TranslateMessageString(UINT nID, CString& value);
-	CString Translate(LPCTSTR valueDefault) { CString value; Translate(valueDefault,value); return value; }
-	
-	// Translate a CMenu
-	void Translate(CMenu &m); 
-	void Translate(CPropertySheet &ps);
 
 
 
@@ -352,6 +307,9 @@ public:
 
 	// set state, if user currently is in collision during movement
 	void SetCollisionState(BOOL newState);
+
+	typedef const char * HCURSOR; // Cursor represented as a string containing a valid value for the 'cursor' CSS property
+								  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
 
 	
 	HCURSOR NavCursors[NAV_CURSOR_MAX]; //!> cursor handles 
