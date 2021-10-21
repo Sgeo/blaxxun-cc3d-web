@@ -3531,8 +3531,8 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 
 }
 
-BOOL PX_String(const char *propName, CString *value, CString default) {
-	char *value_c = (*value)();
+BOOL PX_String(const char *propName, CString& value, CString default) {
+	char *value_c = value();
 	EM_ASM({
 		let propName = UTF8ToString($0);
 		let result = Module?.params[propName];
@@ -3541,10 +3541,10 @@ BOOL PX_String(const char *propName, CString *value, CString default) {
 			stringToUTF8(result, resultHeap);
 			setValue($1, resultHeap, '*');
 		} else {
-
+			setValue($1, $2, '*');
 		}
-	}, propName, value_c, default);
-	*value = value_c;
+	}, propName, value_c, default());
+	value = value_c;
 	return 1;
 }
 
@@ -3563,13 +3563,13 @@ void CGLViewCtrlCtrl::DoPropExchange()
 	ULONG	timerInterval=0;
 
 	if (1) {
-		PX_String("URL", &url);
-		PX_String("Media", &media);
-		PX_String("VRML-DASHBOARD", &dash);
+		PX_String("URL", url);
+		PX_String("Media", media);
+		PX_String("VRML-DASHBOARD", dash);
 		
-		PX_String("FULLSCREEN", &fullscreen); // 4.3
+		PX_String("FULLSCREEN", fullscreen); // 4.3
 		
-		PX_String("FULLSCREEN-MODE", &fullscreenMode); // 4.3
+		PX_String("FULLSCREEN-MODE", fullscreenMode); // 4.3
 	
 		PX_ULong(pPX,  "TIMER-INTERVAL", timerInterval, 0); //4.3
 
@@ -3605,14 +3605,14 @@ void CGLViewCtrlCtrl::DoPropExchange()
 		}
 
 		if (url.GetLength() == 0) 
-			PX_String("DATA", &url);
+			PX_String("DATA", url);
 
 		if (url.GetLength() == 0) 
-			PX_String("WORLD", &url);
+			PX_String("WORLD", url);
 		
 		// see KB mimetype example (used from EMBED etc. ) 
 		if (url.GetLength() == 0) 
-			PX_String("SRC", &url);
+			PX_String("SRC", url);
 
 
 		if (url.GetLength()>0) {
@@ -3647,7 +3647,7 @@ void CGLViewCtrlCtrl::DoPropExchange()
 		else
 			url = view->GetUrl();
 
-		PX_String("URL", &url);
+		PX_String("URL", url);
 	}
    
 
