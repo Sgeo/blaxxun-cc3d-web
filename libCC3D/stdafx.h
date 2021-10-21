@@ -145,6 +145,15 @@ typedef int32_t INT32;
 
 typedef LONG HRESULT;
 
+typedef double SYSTEMTIME;
+
+#define afx_msg
+
+typedef LONG LRESULT;
+
+typedef LONG LPARAM;
+typedef unsigned int WPARAM;
+
 typedef void				*LPVOID;
 #endif
 

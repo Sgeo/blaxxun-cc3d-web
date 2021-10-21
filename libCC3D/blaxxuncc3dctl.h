@@ -332,7 +332,6 @@ public:
 	// initiialized ?? 
 	
 	BOOL m_initialized;
-	CDC	*m_pDC;
 
 	BOOL m_enableInteraction; //!> state of OLECMDID_ENABLE_INTERACTION
 
@@ -355,7 +354,6 @@ public:
 	// dialogs 
 	DAskHardware *m_dAskHardware;
 	DConsole	 *m_dConsole;
-	CPropertySheet	 *m_dPad; //!> navigation pad
 
 	// close all the opened dialogs
 	void CloseAllDialogs();
@@ -369,8 +367,6 @@ public:
 	//! get the reporter object 
 	GReporter *GetReporter(); 
 
-	//! Get the application object 
-	CGLViewCtrlApp * GetApp() { return ((CGLViewCtrlApp *) AfxGetApp());  }
 
 	
 	//! set the current viewer mode to one of the above move modes
@@ -798,8 +794,7 @@ struct	NavCollision
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CGLViewCtrlCtrl)
 	public:
-	virtual void OnDraw(CDC* pdc, const CRect& rcBounds, const CRect& rcInvalid);
-	virtual void DoPropExchange(CPropExchange* pPX);
+	virtual void DoPropExchange();
 	virtual void OnResetState();
 	virtual BOOL OnSetExtent(LPSIZEL lpSizeL);
 	virtual void OnSetClientSite();

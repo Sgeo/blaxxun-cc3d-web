@@ -216,6 +216,8 @@ Changes:
 #include "dispids.h"
 #include <idispids.h> // READYSTATE 
 
+#include <emscripten.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -3529,23 +3531,28 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 
 }
 
+BOOL PX_String(const char *propName, CString *value, CString default) {
+	char *value_c = (*value)();
+	EM_ASM({
+		let propName = UTF8ToString($0);
+		let result = Module?.params[propName];
+		if(result !== undefined) {
+			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
+			stringToUTF8(result, resultHeap);
+			setValue($1, resultHeap, '*');
+		} else {
 
-/////////////////////////////////////////////////////////////////////////////
-// CGLViewCtrlCtrl::OnDraw - Drawing function
-
-void CGLViewCtrlCtrl::OnDraw(CDC* pdc, const CRect& rcBounds, const CRect& rcInvalid)
-{
-
+		}
+	}, propName, value_c, default);
+	*value = value_c;
+	return 1;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl::DoPropExchange - Persistence support
 
-void CGLViewCtrlCtrl::DoPropExchange(CPropExchange* pPX)
+void CGLViewCtrlCtrl::DoPropExchange()
 {
-	ExchangeVersion(pPX, MAKELONG(_wVerMinor, _wVerMajor));
-	COleControl::DoPropExchange(pPX);
 
 
 //	PX_DataPath(pPX, _T("WORLD"), m_world);
@@ -3555,19 +3562,19 @@ void CGLViewCtrlCtrl::DoPropExchange(CPropExchange* pPX)
 	CString url,media,dash, fullscreen,fullscreenMode,avatarUrl,avatarMode;
 	ULONG	timerInterval=0;
 
-	if (pPX->IsLoading()) {
-		PX_String(pPX, "URL", url);
-		PX_String(pPX, "Media", media);
-		PX_String(pPX, "VRML-DASHBOARD", dash);
+	if (1) {
+		PX_String("URL", &url);
+		PX_String("Media", &media);
+		PX_String("VRML-DASHBOARD", &dash);
 		
-		PX_String(pPX, "FULLSCREEN", fullscreen); // 4.3
+		PX_String("FULLSCREEN", &fullscreen); // 4.3
 		
-		PX_String(pPX, "FULLSCREEN-MODE", fullscreenMode); // 4.3
+		PX_String("FULLSCREEN-MODE", &fullscreenMode); // 4.3
 	
 		PX_ULong(pPX,  "TIMER-INTERVAL", timerInterval, 0); //4.3
 
-		PX_String(pPX, "AVATAR-URL", avatarUrl);  //4.3
-		PX_String(pPX, "AVATAR-DISPLAY", avatarMode);  //4.3
+		PX_String("AVATAR-URL", avatarUrl);  //4.3
+		PX_String("AVATAR-DISPLAY", avatarMode);  //4.3
 
 		//
 		PX_Bool(pPX, "FORCE-HW", m_driverHints->m_useHW);  //4.3
@@ -3598,14 +3605,14 @@ void CGLViewCtrlCtrl::DoPropExchange(CPropExchange* pPX)
 		}
 
 		if (url.GetLength() == 0) 
-			PX_String(pPX, "DATA", url);
+			PX_String("DATA", &url);
 
 		if (url.GetLength() == 0) 
-			PX_String(pPX, "WORLD", url);
+			PX_String("WORLD", &url);
 		
 		// see KB mimetype example (used from EMBED etc. ) 
 		if (url.GetLength() == 0) 
-			PX_String(pPX, "SRC", url);
+			PX_String("SRC", &url);
 
 
 		if (url.GetLength()>0) {
@@ -3640,10 +3647,7 @@ void CGLViewCtrlCtrl::DoPropExchange(CPropExchange* pPX)
 		else
 			url = view->GetUrl();
 
-		PX_String(pPX, "URL", url);
-	}
-    if (pPX->GetVersion() >= MAKELONG(0, 2)) 
-    {
+		PX_String("URL", &url);
 	}
    
 
@@ -5756,9 +5760,6 @@ void CGLViewCtrlCtrl::OnDestroy()
 
 	// TO DO: kill all observer connections to Java
 
-    // release the DC 
-	if (m_pDC) ReleaseDC(m_pDC);
-	m_pDC = NULL;
 
 
 
