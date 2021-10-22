@@ -22,6 +22,7 @@
 
 //#include <GL/gl.h>
 #include <GL/glut.h>
+#include <emscripten.h>
 
 
 //#include <stdio.h>
@@ -353,6 +354,17 @@ int main( int argc, char *argv[] )
 
    // init reporter object (needed !)
 
+   int width, height;
+   EM_ASM({
+      if(getComputedStyle(Module.canvas).padding !== '0px') {
+         console.warn('Padding non-0:', getComputedStyle(Module.canvas).padding);
+      }
+      setValue($0, Module.canvas.clientWidth, 'i32');
+      setValue($1, Module.canvas.clientHeight, 'i32');
+   }, &width, &height);
+   printf("Emscripten screen size: %ix%i\n", width, height);
+
+
    initialize_gl4es();
 
    GReporter *reporter = new GReporter();
@@ -370,7 +382,7 @@ int main( int argc, char *argv[] )
    
    glutInit( &argc, argv );
    glutInitWindowPosition( 0, 0 );
-   glutInitWindowSize( 800, 600 );
+   glutInitWindowSize( width, height );
    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
    glutCreateWindow(argv[0]);
    glutReshapeFunc( OnSize );
