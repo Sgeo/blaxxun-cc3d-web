@@ -795,7 +795,7 @@ struct	NavCollision
 	//{{AFX_VIRTUAL(CGLViewCtrlCtrl)
 	public:
 	virtual void DoPropExchange(); // IMPORTANT: CALL THIS TO RECEIVE PROPERTIES
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	// virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnKeyDownEvent(USHORT nChar, USHORT nShiftState);
 	protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

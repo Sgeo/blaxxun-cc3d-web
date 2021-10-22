@@ -8431,60 +8431,60 @@ void CGLViewCtrlCtrl::SetWorld(LPCTSTR lpszNewValue)
 //void CMyDataPathProperty::OnDataAvailable(DWORD dwSize, DWORD grfBSCF)
 	
 //OLE Controls OLE Controls: Advanced Topics
-BOOL CGLViewCtrlCtrl::PreTranslateMessage(MSG* pMsg) 
+// BOOL CGLViewCtrlCtrl::PreTranslateMessage(MSG* pMsg) 
 
 
-{
-	// http://www.microsoft.com/kb/articles/q168/7/77.htm
-	switch (pMsg->message)
-      {
-         case WM_KEYDOWN:
-         case WM_KEYUP:
-            switch (pMsg->wParam)
-            {
-               case VK_UP:
-               case VK_DOWN:
-               case VK_LEFT:
-               case VK_RIGHT:
-               case VK_HOME:
-               case VK_END:
-                  SendMessage (pMsg->message, pMsg->wParam, pMsg->lParam);
-                  // Windowless controls won't be able to call SendMessage.
-                  // Instead, just respond to the message here.
-                  return TRUE;
-            }
-            break;
-      }
+// {
+// 	// http://www.microsoft.com/kb/articles/q168/7/77.htm
+// 	switch (pMsg->message)
+//       {
+//          case WM_KEYDOWN:
+//          case WM_KEYUP:
+//             switch (pMsg->wParam)
+//             {
+//                case VK_UP:
+//                case VK_DOWN:
+//                case VK_LEFT:
+//                case VK_RIGHT:
+//                case VK_HOME:
+//                case VK_END:
+//                   SendMessage (pMsg->message, pMsg->wParam, pMsg->lParam);
+//                   // Windowless controls won't be able to call SendMessage.
+//                   // Instead, just respond to the message here.
+//                   return TRUE;
+//             }
+//             break;
+//       }
 
-	//called from : TranslateAccelerator
-	//COleControl::XOleInPlaceActiveObject::TranslateAccelerator(LPMSG lpmsg)
-	if (pMsg->message == WM_KEYDOWN) {
-		OnKeyDown(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
-		// RETURN FALSE if not handled 
-		return TRUE;
-	}
-	else if (pMsg->message == WM_KEYUP) {
-		OnKeyUp(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
-		// RETURN FALSE if not handled 
-		return TRUE;
-	}
-/*
-	else if (pMsg->message == WM_CHAR) {
-		OnChar(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
-		// RETURN FALSE if not handled 
-		return TRUE;
-	}
-*/
-	else if (pMsg->message == WM_SIZING) {
-		// OnKeyDown(nChar,
-		return TRUE;
-	}
-	else				  
-	if (pMsg->message == WM_KEYDOWN) {
-		TRACE("Key Down %d %d \n",(int) pMsg->wParam, (int) pMsg->lParam);
-	}
-	return COleControl::PreTranslateMessage(pMsg);
-}
+// 	//called from : TranslateAccelerator
+// 	//COleControl::XOleInPlaceActiveObject::TranslateAccelerator(LPMSG lpmsg)
+// 	if (pMsg->message == WM_KEYDOWN) {
+// 		OnKeyDown(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
+// 		// RETURN FALSE if not handled 
+// 		return TRUE;
+// 	}
+// 	else if (pMsg->message == WM_KEYUP) {
+// 		OnKeyUp(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
+// 		// RETURN FALSE if not handled 
+// 		return TRUE;
+// 	}
+// /*
+// 	else if (pMsg->message == WM_CHAR) {
+// 		OnChar(pMsg->wParam,LOWORD(pMsg->lParam),HIWORD(pMsg->lParam));
+// 		// RETURN FALSE if not handled 
+// 		return TRUE;
+// 	}
+// */
+// 	else if (pMsg->message == WM_SIZING) {
+// 		// OnKeyDown(nChar,
+// 		return TRUE;
+// 	}
+// 	else				  
+// 	if (pMsg->message == WM_KEYDOWN) {
+// 		TRACE("Key Down %d %d \n",(int) pMsg->wParam, (int) pMsg->lParam);
+// 	}
+// 	return COleControl::PreTranslateMessage(pMsg);
+// }
 
 
 
