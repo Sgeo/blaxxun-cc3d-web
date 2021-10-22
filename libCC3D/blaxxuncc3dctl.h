@@ -798,12 +798,10 @@ struct	NavCollision
 	// virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnKeyDownEvent(USHORT nChar, USHORT nShiftState);
 	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	//}}AFX_VIRTUAL
 
 	// Non-in-place activation
-	virtual HRESULT OnOpen(BOOL bTryInPlace, LPMSG pMsg);
 	virtual HRESULT OnHide();
 
 
@@ -811,10 +809,6 @@ struct	NavCollision
 protected:
 	~CGLViewCtrlCtrl();
 
-	DECLARE_OLECREATE_EX(CGLViewCtrlCtrl)    //!> Class factory and guid
-	DECLARE_OLETYPELIB(CGLViewCtrlCtrl)      //!> GetTypeInfo
-	DECLARE_PROPPAGEIDS(CGLViewCtrlCtrl)     //!> Property page IDs
-	DECLARE_OLECTLTYPE(CGLViewCtrlCtrl)		//!> Type name and misc status
 
 public:
 	// update registry settings 
@@ -841,7 +835,7 @@ protected:
 	afx_msg void OnMove(int x, int y);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg int OnCreate();
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnTimer(UINT nIDEvent);

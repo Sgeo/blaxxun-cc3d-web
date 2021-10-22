@@ -3674,28 +3674,6 @@ void CGLViewCtrlCtrl::AboutBox()
 
 
 
-BOOL CGLViewCtrlCtrl::PreCreateWindow(CREATESTRUCT& cs) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	cs.style = cs.style | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-/*	MFC adds Parent DC for OCX wnd ??
-	// hg test 07/07/99
-
-	if (cs.style |= CS_PARENTDC) {
-		cs.style &= ~CS_PARENTDC; 
-	}
-	// cs.style |= CS_OWNDC;
-*/
-
-	if (cs.lpszClass == NULL) 
-    {   // see wordpad for more detailed example 
-		// Register New Class for Private DC
-		// hg test 07/07/99 // alreday class in MFC OCX case ??
-		// cs.lpszClass = AfxRegisterWndClass(CS_OWNDC|CS_DBLCLKS|CS_HREDRAW|CS_VREDRAW);
-	}
-	
-	return COleControl::PreCreateWindow(cs);
-}
 //
 // Navigation
 //
@@ -5608,7 +5586,7 @@ void CGLViewCtrlCtrl::OnMove(int x, int y)
 
 
 
-int CGLViewCtrlCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int CGLViewCtrlCtrl::OnCreate() 
 {
 	EAI_TRACE("CGLViewCtrlCtrl::OnCreate() %p\n",this);
 	EAI_FLUSH();
@@ -5618,14 +5596,10 @@ int CGLViewCtrlCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// lpCreateStruct->cy-=20;
 
-	if (COleControl::OnCreate(lpCreateStruct) == -1)
-		return -1;
 
 	if (!m_initialized) 
     {
-		HWND hwnd = GetSafeHwnd();
-		if (!m_pDC) m_pDC = GetDC(); 
-		if (!Initialize(m_pDC->m_hDC)) return -1;
+		if (!Initialize((HDC)NULL) return -1;
 
 		// start loading 
 		if (m_initialUrl.GetLength()>0)
@@ -5652,15 +5626,21 @@ int CGLViewCtrlCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: Add your specialized creation code here
 	// could get initial window size from createStruct
 
-	TRACEREF();
+	//TRACEREF();
 
-	LPUNKNOWN pCC3D = GetInterface(&IID_IUnknown); // (does not AddRef)
-    ::SetProp(GetSafeHwnd(), "CC3D_LPUNK", (HANDLE)pCC3D);
+	// LPUNKNOWN pCC3D = GetInterface(&IID_IUnknown); // (does not AddRef)
+    // ::SetProp(GetSafeHwnd(), "CC3D_LPUNK", (HANDLE)pCC3D);
 
-	TRACEREF();
+	//TRACEREF();
 
 
-	GetClientRect(&m_clientRect);
+	// GetClientRect(&m_clientRect);
+	m_clientRect.left = 0;
+	m_clientRect.top = 0;
+	EM_ASM({
+		setValue($0, Module.canvas.clientHeight, 'i32');
+		setValue($1, Module.canvas.clientWidth, 'i32');
+	}, &m_clientRect.bottom, &m_clientRect.right);
 
 	return 0;
 }
@@ -8850,19 +8830,6 @@ void CGLViewCtrlCtrl::OnKeyDownEvent(USHORT nChar, USHORT nShiftState)
 
 // called when HTML page redisplays
 
-HRESULT CGLViewCtrlCtrl::OnOpen(BOOL bTryInPlace, LPMSG pMsg)
-{
-	HRESULT res;
-
-	TRACE("CGLViewCtrlCtrl::OnOpen(%d ) %p\n",bTryInPlace,this);
-
-	res = COleControl::OnOpen(bTryInPlace,pMsg);
-
-	LPUNKNOWN pCC3D = GetInterface(&IID_IUnknown); // (does not AddRef)
-    ::SetProp(GetSafeHwnd(), "CC3D_LPUNK", (HANDLE)pCC3D);
-
-	return(res);
-}
 
 // called when HTML page changes 
 HRESULT CGLViewCtrlCtrl::OnHide()
