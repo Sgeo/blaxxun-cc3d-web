@@ -8975,20 +8975,6 @@ void CGLViewCtrlCtrl::OnUpdateSettingsReload(CCmdUI* pCmdUI)
 
 
 
-void CGLViewCtrlCtrl::OnGetControlInfo(LPCONTROLINFO pControlInfo) 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	//see Help "Appendices / Netw Interface for Controls / Keyboard Interface"
-	COleControl::OnGetControlInfo(pControlInfo);
-	
-	pControlInfo->dwFlags |= CTRLINFO_EATS_ESCAPE;
-				//	Accelerator
-	//HACCEL hAccel;
-	//LoadAccelTable CWinApp
-	CWinApp *a= AfxGetApp();
-
-	pControlInfo->hAccel= ::LoadAccelerators(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR));
-}
 
 //OLE Controls: Advanced Topics
 

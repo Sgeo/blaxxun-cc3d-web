@@ -797,7 +797,6 @@ struct	NavCollision
 	virtual void DoPropExchange(); // IMPORTANT: CALL THIS TO RECEIVE PROPERTIES
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnKeyDownEvent(USHORT nChar, USHORT nShiftState);
-	virtual void OnGetControlInfo(LPCONTROLINFO pControlInfo);
 	protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
