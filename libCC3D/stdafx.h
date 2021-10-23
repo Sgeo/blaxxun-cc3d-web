@@ -171,6 +171,8 @@ typedef unsigned int    _TINT;
 
 #define __TCHAR_DEFINED
 
+typedef char * BSTR;
+
 /* String functions */
 #define _tcscat     strcat
 #define _tcscpy     strcpy

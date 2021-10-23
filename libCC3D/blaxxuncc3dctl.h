@@ -964,7 +964,6 @@ protected:
 	afx_msg LRESULT OnCaptureChanged(WPARAM wParam, LPARAM lParam);
 	
 	
-	DECLARE_MESSAGE_MAP()
 
 // Dispatch maps
 	//{{AFX_DISPATCH(CGLViewCtrlCtrl)
