@@ -885,7 +885,7 @@ protected:
 	afx_msg void OnUpdateCameraCollision(CCmdUI* pCmdUI);
 	afx_msg void OnDropFiles(HDROP hDropInfo);
 	afx_msg void OnEnable(BOOL bEnable);
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
+	afx_msg void OnKillFocus(BOOL);
 	afx_msg void OnPopupHelpManual();
 	afx_msg void OnPopupHelpVisit();
 	afx_msg void OnPopupHelpAbout();

@@ -7724,12 +7724,12 @@ void CGLViewCtrlCtrl::OnSetFocus(CWnd* pOldWnd)
 }
 
 
-void CGLViewCtrlCtrl::OnKillFocus(CWnd* pNewWnd) 
+void CGLViewCtrlCtrl::OnKillFocus(BOOL newWndIsThis) 
 {
 	TRACE("CGLViewCtrlCtrl::OnKillFocus(%p) \n",pNewWnd);
 
 	// got focus 
-	if (pNewWnd != this)
+	if (!newWndIsThis)
 	{
 		// hg temp test SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 		m_NavCursorModeOld = -2;
