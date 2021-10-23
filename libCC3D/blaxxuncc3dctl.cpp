@@ -7684,17 +7684,8 @@ void CGLViewCtrlCtrl::OnEnable(BOOL bEnable)
 	// TODO: Add your message handler code here
 }
 
-void CGLViewCtrlCtrl::OnEnterIdle(UINT nWhy, CWnd* pWho) 
-{
-	TRACE("CGLViewCtrlCtrl::OnEnterIdle(%d %p) \n",nWhy,pWho);
 
-	COleControl::OnEnterIdle(nWhy, pWho);
-	
-	// TODO: Add your message handler code here
-	
-}
-
-void CGLViewCtrlCtrl::OnSetFocus(CWnd* pOldWnd) 
+void CGLViewCtrlCtrl::OnSetFocus() 
 {
 	COleControl::OnSetFocus(pOldWnd);
 	
@@ -9746,23 +9737,7 @@ STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::Exec(
    return S_OK;
 }
 
-// see OnActivateInPlace
-// PRB: MFC ActiveX Control in IE Doesn't Detect Keystrokes
-// Article ID: Q168777
 
- 
-
-
-int CGLViewCtrlCtrl::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message) 
-{
-
-	TRACE("CGLViewCtrlCtrl::OnMouseActivate %d %d \n",nHitTest, message);
-
-	if (view && !view->GetFullScreen()) // hg to check 
-		OnActivateInPlace (TRUE, NULL); // == UI-Activate the control	
-
-	return COleControl::OnMouseActivate(pDesktopWnd, nHitTest, message);
-}
 
 
 
@@ -10182,24 +10157,6 @@ void CGLViewCtrlCtrl::OnUpdatePopupSpeedVeryfast(CCmdUI* pCmdUI)
 
 
 
-void CGLViewCtrlCtrl::OnDevModeChange(LPTSTR lpDeviceName) 
-{
-	COleControl::OnDevModeChange(lpDeviceName);
-	TRACE("CGLViewCtrlCtrl::OnDevModeChange(%s)\n",lpDeviceName);
-	
-
-#ifdef _D3D
-	view->NavigationPanelDestroy();
-
-	if (view->device->ChangeDriver(view->device->CurrDriver,D3DAPP_ONLYWINDOW)) {
-		if (view->m_navPanelOn)
-			view->NavigationPanelCreate(0);
-		Redraw();
-	}
-
-#endif
-	
-}
 
 
 
@@ -11172,21 +11129,4 @@ void CGLViewCtrlCtrl::OnMButtonDblClk(UINT nFlags, CPoint point)
 	}
 
 	COleControl::OnMButtonDblClk(nFlags, point);
-}
-
-void CGLViewCtrlCtrl::OnInitMenu(CMenu* pMenu) 
-{
-
-	TRACE("CGLViewCtrlCtrl::OnInitMenu() %p\n",this);	
-	COleControl::OnInitMenu(pMenu);
-	
-	// TODO: Add your message handler code here
-
-}
-
-
-void CGLViewCtrlCtrl::OnContextMenu(CWnd* pWnd, CPoint point) 
-{
-	// TODO: Add your message handler code here
-	TRACE("CGLViewCtrlCtrl::OnContextMenu() %p\n",this);	
 }

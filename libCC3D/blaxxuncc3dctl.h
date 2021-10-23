@@ -904,7 +904,6 @@ protected:
 	afx_msg void OnRenderTextureSmooth();
 	afx_msg void OnUpdateRenderTextureSmooth(CCmdUI* pCmdUI);
 	afx_msg void OnSettingsPreferences();
-	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
 	afx_msg void OnPopupHelpCheckversion();
 	afx_msg void OnCameraRotate();
 	afx_msg void OnUpdateCameraRotate(CCmdUI* pCmdUI);
@@ -921,7 +920,6 @@ protected:
 	afx_msg void OnCameraZoomout();
 	afx_msg void OnCameraStraightenUp();
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnDevModeChange(LPTSTR lpDeviceName);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnGoBack();
 	afx_msg void OnUpdateGoBack(CCmdUI* pCmdUI);
@@ -929,8 +927,7 @@ protected:
 	afx_msg void OnUpdateCameraGravity(CCmdUI* pCmdUI);
 	afx_msg void OnSettingsConsole();
 	afx_msg void OnUpdateSettingsConsole(CCmdUI* pCmdUI);
-	afx_msg void OnEnterIdle(UINT nWhy, CWnd* pWho);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnSetFocus();
 	afx_msg void OnView3rdPerson();
 	afx_msg void OnUpdateView3rdPerson(CCmdUI* pCmdUI);
 	afx_msg void OnViewPad();
@@ -943,8 +940,6 @@ protected:
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonDblClk(UINT nFlags, CPoint point);
-	afx_msg void OnInitMenu(CMenu* pMenu);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	//}}AFX_MSG
 
 	// standard OnClose is without dwSaveOption
