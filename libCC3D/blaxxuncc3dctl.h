@@ -837,7 +837,6 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg int OnCreate();
 	afx_msg void OnDestroy();
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnCameraNone();
 	afx_msg void OnUpdateCameraNone(CCmdUI* pCmdUI);

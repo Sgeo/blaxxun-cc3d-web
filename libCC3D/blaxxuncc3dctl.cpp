@@ -5743,24 +5743,6 @@ void CGLViewCtrlCtrl::OnDestroy()
 
 
 
-BOOL CGLViewCtrlCtrl::OnEraseBkgnd(CDC* pDC) 
-{
-	// TODO: Add your message handler code here and/or call default
-
-#ifdef _D3D
-	if (m_initialized && view && view->device->bInitialized 	&& (view->currentTraversal == NULL)) 
-		return(FALSE);
-	else 
-		return COleControl::OnEraseBkgnd(pDC);
-#else
-	if (!m_initialized)
-		return COleControl::OnEraseBkgnd(pDC);
-#endif
-
-	return TRUE; // don´t erase 
-
-	//return COleControl::OnEraseBkgnd(pDC);
-}
 
 
 
