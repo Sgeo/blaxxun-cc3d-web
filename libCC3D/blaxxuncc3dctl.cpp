@@ -7748,59 +7748,13 @@ void CGLViewCtrlCtrl::OnKillFocus(CWnd* pNewWnd)
 	
 }
 
-void CGLViewCtrlCtrl::OnPaletteChanged(CWnd* pFocusWnd) 
-{
-	TRACE("CGLViewCtrlCtrl::OnPaletteChanged  %d \n",pFocusWnd != this);
-	//	COleControl::OnPaletteChanged(pFocusWnd);
-    // See if the change was caused by us and ignore it if not.
-    if (pFocusWnd != this) {
-        //OnQueryNewPalette();
-    }	
-}
 
-void CGLViewCtrlCtrl::OnPaletteIsChanging(CWnd* pRealizeWnd) 
-{
-	TRACE("CGLViewCtrlCtrl::OnPaletteIsChanging \n");
-//	COleControl::OnPaletteIsChanging(pRealizeWnd);
-	
-	// TODO: Add your message handler code here
-	
-}
 
-BOOL CGLViewCtrlCtrl::OnQueryNewPalette() 
-{
-	TRACE("Query on New Palette \n");
-	if (view) {
-#ifdef _OGL
-/* 
-	CPalette* pPal = CPalette::FromHandle(m_glptr->m_hPalette); //GetPalette() ;
-    if (pPal) {   	
-        CDC* pDC = GetDC();
-        pDC->SelectPalette(pPal, FALSE);
-        UINT u = pDC->RealizePalette();
-        ReleaseDC(pDC);
-    }
-*/
 
-	view->device->SetPalette();
-	return TRUE;
-#endif
-#ifdef _D3D
-	view->device->SetPalette();
-	return TRUE;
-#endif
-	}
-	return COleControl::OnQueryNewPalette();
-}
 
-void CGLViewCtrlCtrl::OnWindowPosChanged(WINDOWPOS FAR* lpwndpos) 
-{
-	
-	COleControl::OnWindowPosChanged(lpwndpos);
-	
-	// TODO: Add your message handler code here
-	
-}
+
+
+
 
 /*
 STDMETHODIMP COleControl::XOleObject::SetMoniker(DWORD, LPMONIKER)
@@ -8711,29 +8665,6 @@ void CGLViewCtrlCtrl::OnPopupHelpAbout()
 
 }
 
-BOOL CGLViewCtrlCtrl::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message) 
-{
-	//TRACE("OnSetCursor(%p %d %d  \n",pWnd, nHitTest, message);
-	if (message == 0) // menue mode 
-		return (COleControl::OnSetCursor(pWnd, nHitTest, message));
-
-/*
-	if (pWnd != this)
-		{
-		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-		m_NavNotActive = TRUE;
-		}
-	else
-		m_NavNotActive = FALSE;
-*/
-//	else
-//		return CDialog::OnSetCursor(pWnd, nHitTest, message);
-
-
-	//if (!COleControl::OnSetCursor(pWnd, nHitTest, message))
-//	SetCursor(hCurrentCursor);
-	return(TRUE);
-}
 
 // WM_MOVING
 afx_msg LRESULT CGLViewCtrlCtrl::OnMoving(WPARAM wParam, LPARAM lParam)

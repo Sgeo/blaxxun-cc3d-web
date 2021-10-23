@@ -886,14 +886,9 @@ protected:
 	afx_msg void OnDropFiles(HDROP hDropInfo);
 	afx_msg void OnEnable(BOOL bEnable);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
-	afx_msg void OnPaletteChanged(CWnd* pFocusWnd);
-	afx_msg void OnPaletteIsChanging(CWnd* pRealizeWnd);
-	afx_msg BOOL OnQueryNewPalette();
-	afx_msg void OnWindowPosChanged(WINDOWPOS FAR* lpwndpos);
 	afx_msg void OnPopupHelpManual();
 	afx_msg void OnPopupHelpVisit();
 	afx_msg void OnPopupHelpAbout();
-	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnCameraJump();
 	afx_msg void OnUpdateCameraJump(CCmdUI* pCmdUI);
 	afx_msg void OnSettingsStopLoading();
