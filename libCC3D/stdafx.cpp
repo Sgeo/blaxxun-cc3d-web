@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#include <stdio.h>
+
  
 
 // emulation for MFC CString 
@@ -245,3 +247,18 @@ bool  operator==(const CString& string1,const CString& string2)
 }
 
 
+void CCmdUI::Enable(BOOL enable) {
+    printf("CCmdUI::Enable not implemented yet!\n");
+}
+
+void CCmdUI::SetCheck(int check) {
+    printf("CCmdUI::SetCheck not implemented yet!\n");   
+}
+
+void CCmdUI::SetRadio(BOOL radio) {
+    printf("CCmdUI::SetRadio not implemented yet!\n");   
+}
+
+void CCmdUI::SetText(LPCTSTR text) {
+    printf("CCmdUI::SetText not implemented yet!\n");   
+}

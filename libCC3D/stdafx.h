@@ -242,6 +242,20 @@ typedef unsigned short      WORD;
 #define TRUE                1
 #endif
 
+class CCmdUI {
+	public:
+	void Enable(BOOL);
+	void SetCheck(int);
+	void SetRadio(BOOL);
+	void SetText(LPCTSTR);
+	UINT m_nID;
+	UINT m_nIndex;
+	// CMenu *m_pMenu;
+	void *m_pMenu;
+	void *m_pOther;
+	void *m_pSubMenu;
+};
+
 
 // WIN32 Critical section
 // need if multiple plugins are sharing global data
