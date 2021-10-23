@@ -7273,20 +7273,13 @@ BSTR CGLViewCtrlCtrl::getWorldURL()
 // otherwise a new scene containing node is created
 // note : no bounding is currently done !
 // no naming is done 
-void CGLViewCtrlCtrl::replaceWorld(LPUNKNOWN node) 
+void CGLViewCtrlCtrl::replaceWorld(GvNode *node) 
 {
-	EAI_CALL("replaceWorld")
+
 
 	if (!view) return;
 
-	// get Node interface 
-	Node *result=NULL;
-	node->QueryInterface(IID_Node, (void **)&result);
-	if (!result) return;
-
-	// get the pointer to native GLView node 
-	GvNode *n = NULL;
-	result->getNative((long *) &n);
+	GvNode *n = node;
 
 	if (n) {
 		view->SetNode(n);
@@ -7298,7 +7291,6 @@ void CGLViewCtrlCtrl::replaceWorld(LPUNKNOWN node)
 		// to do: bind initial nodes ??? 
 		if (updateLock == 0) Redraw();
 	}
-	result->Release();
 
 }
 
@@ -7346,9 +7338,8 @@ void CGLViewCtrlCtrl::setDescription(LPCTSTR description)
 
 // create Vrml from String
 // returns Scene Pseudo Node containings nodes
-LPUNKNOWN CGLViewCtrlCtrl::createVrmlFromString(LPCTSTR vrmlSyntax) 
+GvScene* CGLViewCtrlCtrl::createVrmlFromString(LPCTSTR vrmlSyntax) 
 {
-	EAI_CALL("createVrmlFromString")
 
 	if (!view)  {
 		Reporter.Error("View not initialized\n");
@@ -7374,19 +7365,16 @@ LPUNKNOWN CGLViewCtrlCtrl::createVrmlFromString(LPCTSTR vrmlSyntax)
 
 	if (!newScene) return NULL;
 
-	IUnknown* result=NULL;
-	newScene->QueryInterface(IID_IUnknown, (void **)&result);
-	return result;
+	return newScene;
 
 }
 
 // create vrml from URL 
 
 // EAI url is MFString, no waz  
-void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, LPDISPATCH nodeDP, LPCTSTR event) 
+void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event) 
 {
 
-	EAI_CALL("createVrmlFromURL")
 
 //	CWaitCursor wait;
 	CString msg;
@@ -7417,21 +7405,9 @@ void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, LPDISPATCH nodeDP, LPCTSTR 
 
 	vrmlFromUrl->url.set_(url);
 
-	if (nodeDP) {
-		// get Node interface 
-		Node *nodeI=NULL;
-		nodeDP->QueryInterface(IID_Node, (void **)&nodeI);
-    
-		// get the pointer to native GLView node 
-		GvNode *node = NULL;
-		if (nodeI) {
-			nodeI->getNative((long *) &node);
-			nodeI->Release();
-		}
-		if (node) { // set node and get eventIn Index 
-			 vrmlFromUrl->node.set(node);
-			 vrmlFromUrl->nodeEvent.set(node->getFieldData()->getEventInIndex(node,event));
-		}
+	if (node) { // set node and get eventIn Index 
+			vrmlFromUrl->node.set(node);
+			vrmlFromUrl->nodeEvent.set(node->getFieldData()->getEventInIndex(node,event));
 	}
 
 	// for resolving relative urls 
@@ -7470,7 +7446,7 @@ void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, LPDISPATCH nodeDP, LPCTSTR 
 
 // get node of current scene by name
 // nodes added from createVrmlFromString, createVrmlFromUrl are not available !
-LPUNKNOWN CGLViewCtrlCtrl::getNode(LPCTSTR name) 
+GvNode* CGLViewCtrlCtrl::getNode(LPCTSTR name) 
 {
 	EAI_CALL("getNode")
 
@@ -7492,42 +7468,17 @@ LPUNKNOWN CGLViewCtrlCtrl::getNode(LPCTSTR name)
 
 	if (!node) return NULL;
 
-	IUnknown* result=NULL;
-	node->QueryInterface(IID_IUnknown, (void **)&result);
-
-	return result;
+	return node;
 }
 
 // add a ROUTE
-void CGLViewCtrlCtrl::addRoute(LPUNKNOWN fromNodeU, LPCTSTR fromEventOut, LPUNKNOWN toNodeU, LPCTSTR toEventIn) 
+void CGLViewCtrlCtrl::addRoute(GvNode *fromNode, LPCTSTR fromEventOut, GvNode *toNode, LPCTSTR toEventIn) 
 {
 	EAI_CALL("addRoute")
 
 	if (!view) return;
 	ViewLock viewLock(view);
 
-	GvNode *fromNode=NULL;
-	GvNode *toNode=NULL;
-
-	// get nodes 
-	if (fromNodeU) { // get Node interface 
-		Node *nodeI=NULL;
-		fromNodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
-	if (toNodeU) { 	// get Node interface 
-		Node *nodeI=NULL;
-		toNodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &toNode);
-			nodeI->Release();
-		}
-	}
 
 	if (!fromNode || !toNode) return; //ERROR
 
@@ -7536,37 +7487,14 @@ void CGLViewCtrlCtrl::addRoute(LPUNKNOWN fromNodeU, LPCTSTR fromEventOut, LPUNKN
 }
 
 // delete a ROUTE
-void CGLViewCtrlCtrl::deleteRoute(LPUNKNOWN fromNodeU, LPCTSTR fromEventOut, LPUNKNOWN toNodeU, LPCTSTR toEventIn) 
+void CGLViewCtrlCtrl::deleteRoute(GvNode *fromNode, LPCTSTR fromEventOut, GvNode *toNode, LPCTSTR toEventIn) 
 {
-	EAI_CALL("deleteRoute")
 
 	if (!view) return;
 	
 	ViewLock viewLock(view);
 
 
-	GvNode *fromNode=NULL;
-	GvNode *toNode=NULL;
-
-	// get nodes 
-	if (fromNodeU) { // get Node interface 
-		Node *nodeI=NULL;
-		fromNodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
-	if (toNodeU) { 	// get Node interface 
-		Node *nodeI=NULL;
-		toNodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &toNode);
-			nodeI->Release();
-		}
-	}
 
 	if (!fromNode || !toNode) return; //ERROR
 
@@ -7576,7 +7504,7 @@ void CGLViewCtrlCtrl::deleteRoute(LPUNKNOWN fromNodeU, LPCTSTR fromEventOut, LPU
 }
 
 // create a new node of type nodeClass (could be name of PROTO/EXTERNPROTO)
-LPUNKNOWN CGLViewCtrlCtrl::createNode(LPCTSTR nodeclass) 
+GvNode* CGLViewCtrlCtrl::createNode(LPCTSTR nodeclass) 
 {
 	EAI_CALL("createNode")
 
@@ -7597,30 +7525,19 @@ LPUNKNOWN CGLViewCtrlCtrl::createNode(LPCTSTR nodeclass)
 	else { 
 		node->setBrowser(view);
 
-		IUnknown* result=NULL;
-		node->QueryInterface(IID_IUnknown, (void **)&result);
-		return result;
+		return node;
 	}
 }
 
 
 // add a new toplevel node to scene
-void CGLViewCtrlCtrl::addNode(LPUNKNOWN node) 
+void CGLViewCtrlCtrl::addNode(GvNode* n) 
 {
 	EAI_CALL("addNode")
 
-    if (node == NULL) return;
+    if (n == NULL) return;
 	
 	ViewLock viewLock(view); 
-
-	// get Node interface 
-	Node *result=NULL;
-	node->QueryInterface(IID_Node, (void **)&result);
-	if (!result) return;
-    
-	// get the pointer to native GLView node 
-	GvNode *n = NULL;
-	result->getNative((long *) &n);
 
 	if (n && view) {
 		GvScene * s = view->GetScene();
@@ -7635,11 +7552,10 @@ void CGLViewCtrlCtrl::addNode(LPUNKNOWN node)
 			view->SetScene(s);
 		}
 	}
-	result->Release();
 }
 
 // remove a toplevel node from scene
-BOOL CGLViewCtrlCtrl::removeNode(LPUNKNOWN node) 
+BOOL CGLViewCtrlCtrl::removeNode(GvNode* node) 
 {
 	EAI_CALL("removeNode")
 
@@ -7652,18 +7568,8 @@ BOOL CGLViewCtrlCtrl::removeNode(LPUNKNOWN node)
 
 	ViewLock viewLock(view); 
 
-	Node *result=NULL;
-
-	node->QueryInterface(IID_Node, (void **)&result);
-
-	if (!result) return FALSE;
-
-	// get the pointer to native GLView node 
-	GvNode *n = NULL;
-	result->getNative((long *) &n);
-
-	if (n && view ) {
-	    if (view->GetScene()->removeNode(n)) {
+	if (node && view ) {
+	    if (view->GetScene()->removeNode(node)) {
 			view->doUpdateSceneInfo++;
 		}
 
@@ -7958,14 +7864,12 @@ void CGLViewCtrlCtrl::SetWalkSpeed(float newValue)
 }
 
 // get top level scene node of node type scene
-LPDISPATCH CGLViewCtrlCtrl::getWorld() 
+GvScene* CGLViewCtrlCtrl::getWorld() 
 {
 	if (!view) return NULL;
 	GvScene *scene =  view->GetScene();
 	if (!scene) return NULL;
-	IDispatch *result=NULL;
-	scene->QueryInterface(IID_IDispatch, (void **)&result);
-	return result;
+	return scene;
 }
 
 // lock update and animation activity
@@ -8385,9 +8289,8 @@ BOOL CGLViewCtrlCtrl::isSceneLoaded()
 
 }
 
-void CGLViewCtrlCtrl::setNodeName(LPUNKNOWN nodeU, LPCTSTR name) 
+void CGLViewCtrlCtrl::setNodeName(GvNode *node, LPCTSTR name) 
 {
-	EAI_CALL("setNodeName")
 
 	if (!view) return;
 	GvScene * scene =  view->GetScene();
@@ -8395,43 +8298,22 @@ void CGLViewCtrlCtrl::setNodeName(LPUNKNOWN nodeU, LPCTSTR name)
 
 	GvNode *fromNode=NULL;
 
-	// get nodes 
-	if (nodeU) { // get Node interface 
-		Node *nodeI=NULL;
-		nodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
-	if (fromNode)
-		scene->setNodeName(fromNode,name);
+	if (node)
+		scene->setNodeName(node,name);
 
 
 }
 
-BSTR CGLViewCtrlCtrl::getNodeName(LPUNKNOWN nodeU) 
+BSTR CGLViewCtrlCtrl::getNodeName(GvNode *fromNode) 
 {
 	CString strResult;
 	// TODO: Add your dispatch handler code here
-	GvNode *fromNode=NULL;
 
-	// get nodes 
-	if (nodeU) { // get Node interface 
-		Node *nodeI=NULL;
-		nodeU->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
 	if (fromNode)
 		strResult = fromNode->getName().getString();
 
 	
-	return strResult.AllocSysString();
+	return strResult();
 }
 
 // get collision detection flag 
@@ -8451,36 +8333,27 @@ void CGLViewCtrlCtrl::SetCollisionDetection(BOOL bNewValue)
 
 // search for eventOut on browser 
 // can be used to set callback on SFString worldUrl_changed
-LPUNKNOWN CGLViewCtrlCtrl::getEventOut(LPCTSTR eventOutName) 
+GvField* CGLViewCtrlCtrl::getEventOut(LPCTSTR eventOutName) 
 {
 	if (!view)  {
 		Reporter.Error("View not initialized\n");
 		return NULL;
 	}
-	EventOut *result=NULL;
 
-	CComBSTR name(eventOutName);
-
-	HRESULT res = view->getEventOut(name,&result);
-
-	return(result);
+	return view->getEventOut(name);
 }
 
 // search for eventIn on browser 
 
-LPUNKNOWN CGLViewCtrlCtrl::getEventIn(LPCTSTR eventInName) 
+GvField* CGLViewCtrlCtrl::getEventIn(LPCTSTR eventInName) 
 {
 	if (!view) {
 		Reporter.Error("View not initialized\n");
 		return NULL;
 	}
-	EventIn *result=NULL;
 
-	CComBSTR name(eventInName);
+	return view->getEventIn(name,&result);
 
-	HRESULT res = view->getEventIn(name,&result);
-
-	return(result);
 }
 
 // return the full path to the control
@@ -10737,90 +10610,90 @@ BSTR CGLViewCtrlCtrl::getNodeEventOut(LPCTSTR nodeName, LPCTSTR eventOutName)//,
 
 */
 
-LPUNKNOWN CGLViewCtrlCtrl::getObject(long objectId) 
-{
-	LPUNKNOWN ret = NULL;
+// LPUNKNOWN CGLViewCtrlCtrl::getObject(long objectId) 
+// {
+// 	LPUNKNOWN ret = NULL;
 	
-	if (view) 
-	switch(objectId) {
+// 	if (view) 
+// 	switch(objectId) {
 
 
-	case	BROWSER_OBJECT_DIRECTDRAW:
-			ret = view->GetDirectDraw(); break;
+// 	case	BROWSER_OBJECT_DIRECTDRAW:
+// 			ret = view->GetDirectDraw(); break;
 
-#ifdef _D3D
+// #ifdef _D3D
 
-	case	BROWSER_OBJECT_DIRECT3D:
-				ret = view->device->lpD3D; break;
+// 	case	BROWSER_OBJECT_DIRECT3D:
+// 				ret = view->device->lpD3D; break;
 
-	case	BROWSER_OBJECT_DIRECT3DDEVICE:
-				ret = view->device->lpD3DDevice; break;
+// 	case	BROWSER_OBJECT_DIRECT3DDEVICE:
+// 				ret = view->device->lpD3DDevice; break;
 
-	case	BROWSER_OBJECT_DIRECT3DVIEWPORT:
-				ret = view->device->lpD3DViewport; break;
+// 	case	BROWSER_OBJECT_DIRECT3DVIEWPORT:
+// 				ret = view->device->lpD3DViewport; break;
 
-	case	BROWSER_OBJECT_DD_FRONTBUFFER:
-			ret = view->device->lpFrontBuffer; break;
+// 	case	BROWSER_OBJECT_DD_FRONTBUFFER:
+// 			ret = view->device->lpFrontBuffer; break;
 
-	case	BROWSER_OBJECT_DD_BACKBUFFER:
-			ret = view->device->lpBackBuffer; break;
+// 	case	BROWSER_OBJECT_DD_BACKBUFFER:
+// 			ret = view->device->lpBackBuffer; break;
 
-	case	BROWSER_OBJECT_DD_ZBUFFER:
-			ret = view->device->lpZBuffer; break;
-#endif
-
-
-	case	BROWSER_OBJECT_DIRECTSOUND: {
-				GSoundDevice *s = view->GetSoundDevice();
-				if (!s) break;
-				if (RTISA(s,GDSSoundDevice)) {
-					ret = ((GDSSoundDevice *) s)->m_lpDS;
-				}
-
-			};
-			break;
-	case	BROWSER_OBJECT_DIRECTSOUND3DLISTENER:
-			{
-				GSoundDevice *s = view->GetSoundDevice();
-				if (!s) break;
-				if (RTISA(s,GDSSoundDevice)) {
-					ret = ((GDSSoundDevice *) s)->m_lpDL;
-				}
-
-			};
-			break;
+// 	case	BROWSER_OBJECT_DD_ZBUFFER:
+// 			ret = view->device->lpZBuffer; break;
+// #endif
 
 
-	case	BROWSER_OBJECT_RSX:
-			{
-				GSoundDevice *s = view->GetSoundDevice();
-				if (!s) break;
-				if (RTISA(s,GRSXSoundDevice)) {
-					ret = ((GRSXSoundDevice *) s)->m_lpRSX;
-				}
+// 	case	BROWSER_OBJECT_DIRECTSOUND: {
+// 				GSoundDevice *s = view->GetSoundDevice();
+// 				if (!s) break;
+// 				if (RTISA(s,GDSSoundDevice)) {
+// 					ret = ((GDSSoundDevice *) s)->m_lpDS;
+// 				}
 
-			};
-			break;
-	case	BROWSER_OBJECT_RSX_LISTENER:
-			{
-				GSoundDevice *s = view->GetSoundDevice();
-				if (!s) break;
-				if (RTISA(s,GRSXSoundDevice)) {
-					ret = ((GRSXSoundDevice *) s)->m_lpDL;
-				}
+// 			};
+// 			break;
+// 	case	BROWSER_OBJECT_DIRECTSOUND3DLISTENER:
+// 			{
+// 				GSoundDevice *s = view->GetSoundDevice();
+// 				if (!s) break;
+// 				if (RTISA(s,GDSSoundDevice)) {
+// 					ret = ((GDSSoundDevice *) s)->m_lpDL;
+// 				}
 
-			};
-			break;
-	default : break;
-	}
+// 			};
+// 			break;
 
 
-	if (ret) {
-		ret->AddRef();
-	}
+// 	case	BROWSER_OBJECT_RSX:
+// 			{
+// 				GSoundDevice *s = view->GetSoundDevice();
+// 				if (!s) break;
+// 				if (RTISA(s,GRSXSoundDevice)) {
+// 					ret = ((GRSXSoundDevice *) s)->m_lpRSX;
+// 				}
 
-	return ret;
-}
+// 			};
+// 			break;
+// 	case	BROWSER_OBJECT_RSX_LISTENER:
+// 			{
+// 				GSoundDevice *s = view->GetSoundDevice();
+// 				if (!s) break;
+// 				if (RTISA(s,GRSXSoundDevice)) {
+// 					ret = ((GRSXSoundDevice *) s)->m_lpDL;
+// 				}
+
+// 			};
+// 			break;
+// 	default : break;
+// 	}
+
+
+// 	if (ret) {
+// 		ret->AddRef();
+// 	}
+
+// 	return ret;
+// }
 
 void CGLViewCtrlCtrl::OnPopupPanel() 
 {
