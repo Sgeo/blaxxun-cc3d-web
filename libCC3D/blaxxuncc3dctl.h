@@ -839,7 +839,6 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	afx_msg void OnCameraNone();
 	afx_msg void OnUpdateCameraNone(CCmdUI* pCmdUI);
 	afx_msg void OnCameraOrbit();
@@ -884,7 +883,6 @@ protected:
 	afx_msg void OnCameraFollowObject();
 	afx_msg void OnCameraCollision();
 	afx_msg void OnUpdateCameraCollision(CCmdUI* pCmdUI);
-	afx_msg void OnActivateApp(BOOL bActive, HTASK hTask);
 	afx_msg void OnDropFiles(HDROP hDropInfo);
 	afx_msg void OnEnable(BOOL bEnable);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);

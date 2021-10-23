@@ -6109,26 +6109,6 @@ void CGLViewCtrlCtrl::StopTimer()
 }
 
 
-void CGLViewCtrlCtrl::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized) 
-{	BOOL mActive;
-
-	COleControl::OnActivate(nState, pWndOther, bMinimized); // new 12.06.99
-	
-	TRACE("CGLViewCtrlCtrl::OnActivate(%d, %p, %d) \n",nState, pWndOther,bMinimized);
-
-	if (nState == WA_INACTIVE || bMinimized) 
-    {
-		mActive = FALSE;
-	}		
-	else mActive = TRUE;
-/*
-	if (!mActive) {
-		AfxMessageBox("deactivated",MB_OK,0);
-	}
-	else 
-		AfxMessageBox("activated",MB_OK,0);
-*/
-}
 
 
 // get the current URL (DISPATCH property)
@@ -7711,23 +7691,6 @@ BOOL CGLViewCtrlCtrl::removeNode(LPUNKNOWN node)
 }
 
 
-void CGLViewCtrlCtrl::OnActivateApp(BOOL bActive, HTASK hTask) 
-{
-	TRACE("CGLViewCtrlCtrl::OnActivateApp %d %p \n",bActive, hTask);
-
-	COleControl::OnActivateApp(bActive, hTask);
-	
-	// TODO: Add your message handler code here
-	
-}
-
-void CGLViewCtrlCtrl::OnDropFiles(HDROP hDropInfo) 
-{
-	// TODO: Add your message handler code here and/or call default
-	TRACE("CGLViewCtrlCtrl::On Drop Files .... ");
-	
-	COleControl::OnDropFiles(hDropInfo);
-}
 
 
 void CGLViewCtrlCtrl::OnEnable(BOOL bEnable) 
