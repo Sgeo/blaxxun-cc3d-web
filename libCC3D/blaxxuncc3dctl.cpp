@@ -276,57 +276,18 @@ public :
 int 
 CCtrlReporter::Status1(const char * message)
 {
-	m_msg = message;
-    ::PostMessage(m_ctrl->GetSafeHwnd(),WM_STATUSMESSAGE, (WPARAM) (const char *) m_msg, (LPARAM) PROGRESS_MESSAGE) ;
-	return 0;
-
-
-	if (!TryLock()) return -1;
-		m_ctrl->Message(message,PROGRESS_MESSAGE);
-	UnLock();
+	EM_ASM({
+		console.log(UTF8ToString($0));
+	}, message);
 	return 0;
 }
 
 int 
 CCtrlReporter::Warning1(const char * message)
 {	
-	if (ignoreWarnings) return -1;
-
-	if (verbose) Status1(message);
-
-	if (m_print.GetLength()>0) m_print += "\n";
-	m_print += message;
-    ::PostMessage(m_ctrl->GetSafeHwnd(),WM_CONSOLE_MESSAGE, (WPARAM) (!verbose), (LPARAM) PROGRESS_MESSAGE) ;
-	return 0;
-
-	if (!TryLock()) return -1;
-
-	if (m_ctrl) {
-		if (verbose) m_ctrl->Message(message,PROGRESS_MESSAGE);
-
-		// protected !!!!!!! AFX_MANAGE_STATE(m_ctrl->m_pModuleState); // XX
-		if (m_ctrl->m_dConsole) {
-			m_ctrl->m_dConsole->AddText(message); 
-			if (verbose) if (!m_ctrl->m_dConsole->m_hide) m_ctrl->m_dConsole->ShowWindow(SW_SHOWNOACTIVATE); //SW_SHOWNA);
-		}
-		else {
-
-
-		CString caption;
-		caption = _PROGRAM;
-		//caption += " ";
-		//if (view) capation += view->GetUrl();
-
-
-		//m_ctrl->MessageBox(message, caption,MB_OK);
-
-		if (::MessageBox(m_ctrl->GetSafeHwnd(),message,caption,MB_OKCANCEL | MB_ICONEXCLAMATION) != IDOK) {
-		   ignoreWarnings= TRUE;
-		}
-		}
-	}
-
-	UnLock();
+	EM_ASM({
+		console.warn(UTF8ToString($0));
+	}, message);
 
 	return 0;
 }
@@ -334,25 +295,10 @@ CCtrlReporter::Warning1(const char * message)
 int 
 CCtrlReporter::Trace1(const char * message)
 {
-	// if (ignoreWarnings) return -1;
-	if (m_print.GetLength()>0) m_print += "\n";
-	m_print += message;
-    ::PostMessage(m_ctrl->GetSafeHwnd(),WM_CONSOLE_MESSAGE, (WPARAM) (const char *) NULL, (LPARAM) PROGRESS_MESSAGE) ;
-	return 0;
+	EM_ASM({
+		console.info(UTF8ToString($0));
+	}, message);
 
-	if (!TryLock()) return -1;
-
-	//Lock();
-
-	if (m_ctrl) {
-		// protected !!!!!!! AFX_MANAGE_STATE(m_ctrl->m_pModuleState); // XX
-		if (m_ctrl->m_dConsole) {
-			m_ctrl->m_dConsole->AddText(message); 
-			if (!m_ctrl->m_dConsole->m_hide) m_ctrl->m_dConsole->ShowWindow(SW_SHOWNA);
-		}
-	}
-
-	UnLock();
 	return 0;
 }
 
@@ -360,42 +306,9 @@ CCtrlReporter::Trace1(const char * message)
 int 
 CCtrlReporter::Error1(const char * message)
 {
-	if (ignoreErrors) return -1;
-	// Status1(message); already called from GReporter.error
-	if (m_print.GetLength()>0) m_print += "\n";
-	m_print += message;
-    ::PostMessage(m_ctrl->GetSafeHwnd(),WM_CONSOLE_MESSAGE, (WPARAM) (const char *) NULL, (LPARAM) PROGRESS_MESSAGE) ;
-	return 0;
-
-	if (!TryLock()) return -1;
-
-	// Lock();
-
-	if (m_ctrl) {
-		m_ctrl->Message(message,PROGRESS_MESSAGE);
-		//GReporter::Error1(message);
-		// changed to MessageBox on Wnd
-
-		// protected !!!!!!! AFX_MANAGE_STATE(m_ctrl->m_pModuleState); // XX
-		if (m_ctrl->m_dConsole) {
-			m_ctrl->m_dConsole->AddText(message); 
-			if (!m_ctrl->m_dConsole->m_hide) m_ctrl->m_dConsole->ShowWindow(SW_SHOWNA);
-		}
-		else {
-			CString caption;
-			caption = _PROGRAM;
-
-			_AFX_THREAD_STATE* pThreadState = AfxGetThreadState();
-
-			//m_ctrl->MessageBox(message, caption,MB_OK);
-			if (::MessageBox(m_ctrl->GetSafeHwnd(),message,caption,MB_OKCANCEL | MB_ICONEXCLAMATION) != IDOK) {
-				ignoreErrors= TRUE;
-			}
-		}
-
-	}
-
-	UnLock();
+	EM_ASM({
+		console.error(UTF8ToString($0));
+	}, message);
 
 	return 0;
 }
