@@ -135,33 +135,33 @@ Changes:
 
 //#include "RenderThread.h"
 
-#include "blaxxunCC3DInterface.h"
+//#include "blaxxunCC3DInterface.h"
 
 // register mime types 
-#define REG_MIME
+//#define REG_MIME
 
 // #include "Urlmon.h"
-#include "hlink.h"
+//#include "hlink.h"
 
-#include "mmsystem.h"
+//#include "mmsystem.h"
 
 // Dialogs
-#include "DlgMenuThread.h"
+//#include "DlgMenuThread.h"
 
-#include "DAbout.h"
-#include "DWorldInfo.h"
-#include "DProp.h"
-#include "DPad.h"
+// #include "DAbout.h"
+// #include "DWorldInfo.h"
+// #include "DProp.h"
+// #include "DPad.h"
 
 
-#include "DConsole.h"
+// #include "DConsole.h"
 
-#include "GVersion.h"
+// #include "GVersion.h"
 
 #include <malloc.h>
 
-#include <objsafe.h>
-#include "helpers.h"
+//#include <objsafe.h>
+//#include "helpers.h"
 
 #ifdef _OGL
 #include "COpenGL.h"
@@ -178,43 +178,43 @@ Changes:
 //#include "RenderThread.h"
 
 
-#include <GvScene.h>
-#include <GvDB.h>
-#include <GvConnection.h>
-#include <GvTraverse.h>
-#include <GvWWWAnchor.h>
-#include <GvWWWInline.h>
-#include <GvPerspectiveCamera.h>
-#include <GvInfo.h>
-#include <GvProto.h>
-#include <GvSensors.h>
+#include <gvscene.h>
+#include <gvdb.h>
+#include <gvconnection.h>
+#include <gvtraverse.h>
+#include <gvwwwanchor.h>
+#include <gvwwwinline.h>
+#include <gvperspectivecamera.h>
+#include <gvinfo.h>
+#include <gvproto.h>
+#include <gvsensors.h>
 
-#include "GPanel.h"
-#include "GModel.h"
-#include "GRaySelect.h"
+#include "gpanel.h"
+#include "gmodel.h"
+#include "grayselect.h"
 
-#include "GSound.h"
-#include "GRSXSound.h"
-#include "GDSSound.h"
+#include "gsound.h"
+#include "grsxsound.h"
+#include "gdssound.h"
 
 
 
 // if io wished 
-#include "GIoTraversal.h"
+#include "giotraversal.h"
 
-// EventHandlers
-#include "GSound.h"
+// eventhandlers
+#include "gsound.h"
 
-// EventHandlers
-#include "GEvent.h"
-#include "GCameraUtil.h"
+// eventhandlers
+#include "gevent.h"
+#include "gcamerautil.h"
 
-#include "GKatmai.h"
+#include "gkatmai.h"
 
 #include <time.h>
 
-#include "dispids.h"
-#include <idispids.h> // READYSTATE 
+// #include "dispids.h"
+// #include <idispids.h> // READYSTATE 
 
 #include <emscripten.h>
 
