@@ -10254,23 +10254,13 @@ void CGLViewCtrlCtrl::getViewpointByValue(float * positionX, float * positionY, 
 
 
 */
-BOOL CGLViewCtrlCtrl::getNodeBoundingBox(LPUNKNOWN node, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax) 
+BOOL CGLViewCtrlCtrl::getNodeBoundingBox(GvNode *n, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax) 
 {
 	if (!view) return FALSE;
 
 	BBox bbox;
-	Node *result=NULL;
-	GvNode *n = NULL;
+
 	int ret;
-	  
-    if (node != NULL) {
-		// get Node interface 
-		node->QueryInterface(IID_Node, (void **)&result);
-		if (!result) return FALSE;
-		// get the pointer to native GLView node 
-		result->getNative((long *) &n);
-		result->Release();
-	}
 
 
 
@@ -10370,23 +10360,12 @@ BOOL CGLViewCtrlCtrl::getThirdPersonView()
 
 */
 
-LPUNKNOWN CGLViewCtrlCtrl::computeRayHit(LPUNKNOWN startNode, float startx, float starty, float startz, float endx, float endy, float endz, long mode) 
+GvRayHitInfo* CGLViewCtrlCtrl::computeRayHit(GvNode* startNode, float startx, float starty, float startz, float endx, float endy, float endz, long mode) 
 {
 	if (!view) return NULL;
 
-	GvNode *fromNode=NULL;
-    LPUNKNOWN rayHitInfo = NULL;
+	GvNode *fromNode=startNode;
 
-	// get nodes 
-	if (startNode) { // get Node interface 
-		Node *nodeI=NULL;
-		startNode->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
 	Point p1(startx,starty,startz),p2(endx,endy,endz);
 
 	GvRayHitInfo *info=NULL;
@@ -10396,35 +10375,22 @@ LPUNKNOWN CGLViewCtrlCtrl::computeRayHit(LPUNKNOWN startNode, float startx, floa
 
 	// trigger selection
 	if (info->OnTrigger(view,p1,p2,fromNode)) {
-		info->QueryInterface(IID_IUnknown, (void **)&rayHitInfo); // and return node 
-		return rayHitInfo;
+		return info;
 	}
 	else {
 		delete info;
 
-		return rayHitInfo;
+		return NULL;
 	}
 }
 
 /*
 	set the third person avatar node 
 */
-void CGLViewCtrlCtrl::setMyAvatarNode(LPUNKNOWN node) 
+void CGLViewCtrlCtrl::setMyAvatarNode(GvNode* fromNode) 
 {
 	if (!view) return;
 
-	GvNode *fromNode=NULL;
-
-	// get nodes 
-	if (node) { // get Node interface 
-		Node *nodeI=NULL;
-		node->QueryInterface(IID_Node, (void **)&nodeI);
-		// get the pointer to native GLView node 
-		if (nodeI) {
-			nodeI->getNative((long *) &fromNode);
-			nodeI->Release();
-		}
-	}
 
 	view->myAvatar.set(fromNode);
 	if (view->thirdPersonView) { // currently active, reload new 
@@ -10439,17 +10405,14 @@ void CGLViewCtrlCtrl::setMyAvatarNode(LPUNKNOWN node)
 */
 
 
-LPUNKNOWN CGLViewCtrlCtrl::getMyAvatarNode() 
+GvNode* CGLViewCtrlCtrl::getMyAvatarNode() 
 {
 	if (!view) return NULL;
 
 	GvNode  *node= view->myAvatar.get();
 	if (!node) return NULL;
 
-	IUnknown* result=NULL;
-	node->QueryInterface(IID_IUnknown, (void **)&result);
-
-	return result;
+	return node;
 }
 
 /*
@@ -10490,26 +10453,16 @@ BSTR CGLViewCtrlCtrl::getMyAvatarURL()
 	if node is NULL follow mode is turned off
 */
 
-BOOL CGLViewCtrlCtrl::setViewpointFollow(LPUNKNOWN node, float refX, float refY, float refZ, long mode) 
+BOOL CGLViewCtrlCtrl::setViewpointFollow(GvNode *fromNode, float refX, float refY, float refZ, long mode) 
 {
 	if (!view) return FALSE;
 
 	Point p(refX,refY,refZ);
-	if (node == NULL) {
+	if (fromNode == NULL) {
 		view->SetFollowObjectOff();
 		return FALSE;
 	}
 
-	GvNode *fromNode=NULL;
-
-	Node *nodeI=NULL;
-	node->QueryInterface(IID_Node, (void **)&nodeI);
-	// get the pointer to native GLView node 
-	if (nodeI) {
-		nodeI->getNative((long *) &fromNode);
-		nodeI->Release();
-		
-	}
 
 	return view->SetFollowObject(fromNode,p);
 

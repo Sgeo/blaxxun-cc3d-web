@@ -96,6 +96,7 @@ class GvMFString;
 class GvNode;
 class GvScene;
 class GvField;
+class GvRayHitInfo;
 
 
 /*
@@ -1041,17 +1042,17 @@ protected:
 	afx_msg void printMessage(LPCTSTR message);
 	afx_msg void setViewpointByValue(float positionX, float positionY, float positionZ, float orientationX, float orientationY, float orientationZ, float orientationAngle, long mode);
 	afx_msg void getViewpointByValue(float * positionX, float * positionY, float * positionZ, float * orientationX, float * orientationY, float * orientationZ, float * orientationAngle, long mode);
-	afx_msg BOOL getNodeBoundingBox(LPUNKNOWN node, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax);
+	afx_msg BOOL getNodeBoundingBox(GvNode *node, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax);
 	afx_msg void setUrl2(LPCTSTR url, long lastModified, long mode);
 	afx_msg long getInterfaceVersion();
 	afx_msg void setThirdPersonView(BOOL mode);
 	afx_msg BOOL getThirdPersonView();
-	afx_msg LPUNKNOWN computeRayHit(LPUNKNOWN startNode, float startx, float starty, float startz, float endx, float endy, float endz, long mode);
-	afx_msg void setMyAvatarNode(LPUNKNOWN node);
-	afx_msg LPUNKNOWN getMyAvatarNode();
+	afx_msg GvRayHitInfo* computeRayHit(GvNode* startNode, float startx, float starty, float startz, float endx, float endy, float endz, long mode);
+	afx_msg void setMyAvatarNode(GvNode* node);
+	afx_msg GvNode* getMyAvatarNode();
 	afx_msg void setMyAvatarURL(LPCTSTR url);
 	afx_msg BSTR getMyAvatarURL();
-	afx_msg BOOL setViewpointFollow(LPUNKNOWN node, float refX, float refY, float refZ, long mode);
+	afx_msg BOOL setViewpointFollow(GvNode* node, float refX, float refY, float refZ, long mode);
 	afx_msg BOOL setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, LPCTSTR value);
 	afx_msg BSTR getNodeEventOut(LPCTSTR nodeName, LPCTSTR eventOutName);
 	// afx_msg LPUNKNOWN getObject(long objectId);
