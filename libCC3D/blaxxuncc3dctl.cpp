@@ -131,9 +131,9 @@ Changes:
 #include "stdafx.h"
 #include "blaxxunCC3D.h"
 #include "blaxxunCC3dCtl.h"
-#include "blaxxunCC3dPpg.h"
+//#include "blaxxunCC3dPpg.h"
 
-#include "RenderThread.h"
+//#include "RenderThread.h"
 
 #include "blaxxunCC3DInterface.h"
 
@@ -175,7 +175,7 @@ Changes:
 
 #include "GRender.h"
 
-#include "RenderThread.h"
+//#include "RenderThread.h"
 
 
 #include <GvScene.h>
@@ -3264,7 +3264,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 #endif
 
 	if (m_useRenderThread) { // use rendering thread
-		if (!StartRenderThread()) 
+		if (1) 
 			m_useRenderThread = FALSE;
 	}
 	
@@ -5683,7 +5683,7 @@ void CGLViewCtrlCtrl::OnDestroy()
 	TRACEREF();
 
 	if (m_useRenderThread) 
-		StopRenderThread();
+		//StopRenderThread();
 
 	if (m_saveDriverSettings)  // save driver settings
 		SaveDriverSettings();
@@ -7879,7 +7879,7 @@ void CGLViewCtrlCtrl::beginUpdate()
 		&& (m_currentMode == NULL_MODE)	) 
 	{
 		if (m_useRenderThread) {
-			m_renderThread->PauseThread();
+			//m_renderThread->PauseThread();
 		} else  StopTimer();
 	}
 	updateLock ++;
@@ -7902,7 +7902,9 @@ void CGLViewCtrlCtrl::endUpdate()
 
     if (updateLock == 0 && m_initialized) {
 		if (m_useRenderThread) {
-			m_renderThread->UnpauseThread();
+			
+			ASSERT(FALSE);
+			//m_renderThread->UnpauseThread();
 		} else {  
 			if (!m_timerRunning) 	StartTimer();
 			// OnIdle(1); // check routes / timeSensors, done in next timer // hg test 3/3/98
@@ -8053,59 +8055,7 @@ UINT __cdecl CGLViewCtrlCtrlRenderWorker (LPVOID pParam )
   return me->RenderWorker();
 }
 
-//mk:@ivt:pdwbase/native/sdk/win32/sys/src/prothred_18.htm
-BOOL CGLViewCtrlCtrl::StartRenderThread()
-{
 
-	CRenderThread *pThread = new CRenderThread(this);
-	if (pThread == NULL)
-		return FALSE;
-
-	ASSERT_VALID(pThread);
-
-	// Create Thread in a suspended state so we can set the Priority 
-	// before it starts getting away from us
-	if (!pThread->CreateThread(CREATE_SUSPENDED))
-	{
-		delete pThread;
-		return FALSE;
-	}
-
-	// since everything is successful, add the thread to our list
-	m_renderThread = pThread;
-	TRACE("render thread started %p \n",m_renderThread);
-
-	// If you want to make the sample more sprightly, set the thread priority here 
-	// a little higher. It has been set at idle priority to keep from bogging down 
-	// other apps that may also be running.
-	// VERIFY(pThread->SetThreadPriority(THREAD_PRIORITY_IDLE));
-	// Now the thread can run wild
-	pThread->ResumeThread();
-
-
-	return TRUE;
-	
-/*
-
-	m_requestedState = RUN_STATE;
-
-	CWinThread * m_renderThread = AfxBeginThread(CGLViewCtrlCtrlRenderWorker, this,THREAD_PRIORITY_NORMAL,64*1024);	 	 	
-
-	return m_renderThread != NULL;
-*/
-
-}
-
-void CGLViewCtrlCtrl::StopRenderThread()
-{
-	TRACE("Stopping render thread %dp \n",m_renderThread);
-	if (m_renderThread) {
-		m_renderThread->KillThread();
-		m_renderThread = NULL;
-	}
-	m_useRenderThread = FALSE;
-	m_requestedState = STOP_STATE;
-}
 
 
 BOOL CGLViewCtrlCtrl::GetAnimateAllViewpoints() 
@@ -8586,7 +8536,7 @@ HRESULT CGLViewCtrlCtrl::OnHide()
     ::RemoveProp(GetSafeHwnd(), "CC3D_LPUNK");
 
 	if (m_useRenderThread) 
-		StopRenderThread();
+		ASSERT(FALSE)
 
 	if (m_saveDriverSettings)   // save driver settings
 		SaveDriverSettings();
