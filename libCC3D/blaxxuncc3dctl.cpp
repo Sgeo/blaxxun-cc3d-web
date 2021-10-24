@@ -10223,7 +10223,7 @@ void CGLViewCtrlCtrl::setViewpointByValue(float positionX, float positionY, floa
   mode 2 : third person mode viewpoint
 
 */
-void CGLViewCtrlCtrl::getViewpointByValue(float FAR* positionX, float FAR* positionY, float FAR* positionZ, float FAR* orientationX, float FAR* orientationY, float FAR* orientationZ, float FAR* orientationAngle, long mode) 
+void CGLViewCtrlCtrl::getViewpointByValue(float * positionX, float * positionY, float * positionZ, float * orientationX, float * orientationY, float * orientationZ, float * orientationAngle, long mode) 
 {
 	if (!view) return;
 
@@ -10254,7 +10254,7 @@ void CGLViewCtrlCtrl::getViewpointByValue(float FAR* positionX, float FAR* posit
 
 
 */
-BOOL CGLViewCtrlCtrl::getNodeBoundingBox(LPUNKNOWN node, long mode, float FAR* xmin, float FAR* ymin, float FAR* zmin, float FAR* xmax, float FAR* ymax, float FAR* zmax) 
+BOOL CGLViewCtrlCtrl::getNodeBoundingBox(LPUNKNOWN node, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax) 
 {
 	if (!view) return FALSE;
 
