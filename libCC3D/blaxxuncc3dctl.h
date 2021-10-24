@@ -814,11 +814,7 @@ protected:
 
 
 public:
-	// update registry settings 
-	BOOL UpdateRegistry() {
-		BOOL ret = factory.UpdateRegistry(TRUE);
-		return ret;
-	}
+
 
 	// get the progID 
 //	LPCTSTR GetProgID() {
@@ -1059,7 +1055,7 @@ protected:
 	afx_msg void setNavigationPanel(BOOL mode);
 	afx_msg BOOL getNavigationPanel();
 	//}}AFX_DISPATCH
-	DECLARE_DISPATCH_MAP()
+
 
 //	afx_msg BSTR GetUrl();
 //	afx_msg void SetUrl(LPCTSTR lpszNewValue);
@@ -1069,24 +1065,24 @@ protected:
 //	afx_msg BSTR GetCfformat();
 //	afx_msg void SetCfformat(LPCTSTR lpszNewValue);
 
-	DECLARE_INTERFACE_MAP()
+	// DECLARE_INTERFACE_MAP()
 
-	// IPersistMoniker
-	BEGIN_INTERFACE_PART(PersistMoniker, IPersistMoniker)
-		INIT_INTERFACE_PART(CGLViewCtrl, PersistMoniker)
-		STDMETHOD(GetClassID)(CLSID *clsid);
-		STDMETHOD(IsDirty)(void);
-		STDMETHOD(Load)(BOOL fFullyAvailable, IMoniker* pmkSrc, IBindCtx* pbc, DWORD grfMode);
-		STDMETHOD(Save)(IMoniker* pmkDst, IBindCtx* pbc, BOOL fRemember);
-		STDMETHOD(SaveCompleted)(IMoniker* pmkNew, IBindCtx* pbc);
-		STDMETHOD(GetCurMoniker)(IMoniker** ppmkCur);
-	END_INTERFACE_PART(PersistMoniker)
+	// // IPersistMoniker
+	// BEGIN_INTERFACE_PART(PersistMoniker, IPersistMoniker)
+	// 	INIT_INTERFACE_PART(CGLViewCtrl, PersistMoniker)
+	// 	STDMETHOD(GetClassID)(CLSID *clsid);
+	// 	STDMETHOD(IsDirty)(void);
+	// 	STDMETHOD(Load)(BOOL fFullyAvailable, IMoniker* pmkSrc, IBindCtx* pbc, DWORD grfMode);
+	// 	STDMETHOD(Save)(IMoniker* pmkDst, IBindCtx* pbc, BOOL fRemember);
+	// 	STDMETHOD(SaveCompleted)(IMoniker* pmkNew, IBindCtx* pbc);
+	// 	STDMETHOD(GetCurMoniker)(IMoniker** ppmkCur);
+	// END_INTERFACE_PART(PersistMoniker)
 
-	// IOleCommandTarget //http://www.microsoft.com/kb/articles/q167/9/56.htm
-    BEGIN_INTERFACE_PART(CmdTargetObj, IOleCommandTarget)
-         STDMETHOD(QueryStatus)(const GUID*, ULONG, OLECMD[], OLECMDTEXT*);
-         STDMETHOD(Exec)(const GUID*, DWORD, DWORD, VARIANTARG*, VARIANTARG*);
-     END_INTERFACE_PART(CmdTargetObj)
+	// // IOleCommandTarget //http://www.microsoft.com/kb/articles/q167/9/56.htm
+    // BEGIN_INTERFACE_PART(CmdTargetObj, IOleCommandTarget)
+    //      STDMETHOD(QueryStatus)(const GUID*, ULONG, OLECMD[], OLECMDTEXT*);
+    //      STDMETHOD(Exec)(const GUID*, DWORD, DWORD, VARIANTARG*, VARIANTARG*);
+    //  END_INTERFACE_PART(CmdTargetObj)
 
 
 
@@ -1097,14 +1093,14 @@ protected:
 
 // Event maps
 	//{{AFX_EVENT(CGLViewCtrlCtrl)
-	void FireOnSceneChanged(LPCTSTR url)
-		{FireEvent(eventidOnSceneChanged,EVENT_PARAM(VTS_BSTR), url);}
-	void FireOnEvent(LPCTSTR name, LPCTSTR value, double timeStamp)
-		{FireEvent(eventidOnEvent,EVENT_PARAM(VTS_BSTR  VTS_BSTR  VTS_R8), name, value, timeStamp);}
-	void FireOnProgress(long amount)
-		{FireEvent(DISPID_ONPROGRESS,EVENT_PARAM(VTS_I4), amount);}
-	//}}AFX_EVENT
-	DECLARE_EVENT_MAP()
+	// void FireOnSceneChanged(LPCTSTR url)
+	// 	{FireEvent(eventidOnSceneChanged,EVENT_PARAM(VTS_BSTR), url);}
+	// void FireOnEvent(LPCTSTR name, LPCTSTR value, double timeStamp)
+	// 	{FireEvent(eventidOnEvent,EVENT_PARAM(VTS_BSTR  VTS_BSTR  VTS_R8), name, value, timeStamp);}
+	// void FireOnProgress(long amount)
+	// 	{FireEvent(DISPID_ONPROGRESS,EVENT_PARAM(VTS_I4), amount);}
+	// //}}AFX_EVENT
+	// DECLARE_EVENT_MAP()
 
 
 	//void FireOnProgress(long amount) {FireEvent(DISPID_PROGRESS,EVENT_PARAM(VTS_I4), amount);}
