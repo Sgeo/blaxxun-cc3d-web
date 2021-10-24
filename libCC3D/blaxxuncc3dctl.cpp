@@ -328,156 +328,6 @@ CCtrlReporter::Error1(const char * message)
 //
 
 
-CTranslator::CTranslator() : m_section(_T("CC3D"))
-{
-	m_pApp = AfxGetApp();
-#ifdef _DEBUG
-	//out.open("c:/cc3d/translate.log");
-#endif
-
-}
-
-CTranslator::~CTranslator()
-{
-	CString key;					
-	CString entry;	
-    POSITION runPos = m_hashTable.GetStartPosition ();	// get start position for iteration
-    
-	while ( runPos != NULL )
-    {
-		m_hashTable.GetNextAssoc ( runPos, key, entry );
-		m_hashTable.SetAt ( key, NULL );
-	}
-
-	m_hashTable.RemoveAll();
-}
-
-BOOL Replace(const CString &val,LPCTSTR key,LPCTSTR replace,CString &ret) {
-	int arg = val.Find(key);
-
-	if (arg>=0) {	ret=val.Left(arg)+replace+val.Mid(arg+strlen(key));
-		return TRUE; }
-	else {
-		ret = val;
-		return FALSE;
-	}
-}			
-
-// translate unique string into language denpendent string, entryDefault is the default english string
-BOOL CTranslator::Translate(LPCTSTR key,LPCTSTR entryDefault, CString& value) 
-{
-	// lookup hashtable ?
-	if (m_hashTable.Lookup( key, value )) {
-		return TRUE;
-	}
-
-	// get from profile 
-	value  = m_pApp->GetProfileString(m_section, key,"");
-	if (value.GetLength() == 0) value = entryDefault; 
-	else Replace(value,"\\t","\t",value);
-	TRACE(" translate '%s' '%s' = '%s' \n",(const char *) key,(const char *) entryDefault,(const char *) value);
-	// and store in hash table
-	m_hashTable[key] = value;
-
-#ifdef _DEBUG
-	/*
-	char debugBuf[256];
-	sprintf(debugBuf, "'%s' '%s' = '%s' \n",(const char *) key,(const char *) entryDefault,(const char *) value);
-	out << debugBuf;*/
-	// write all existings keys to  file 
-	CString tmp;
-	Replace(value,"\t","\\t",tmp);
-	m_pApp->WriteProfileString(m_section, key, tmp);
-#endif
-
-	return TRUE;
-}
-
-
-
-BOOL CTranslator::Lookup(LPCTSTR key,CString& value) 
-{
-	// lookup hashtable ?
-	if (m_hashTable.Lookup( key, value )) {
-		return TRUE;
-	}
-
-	// get from profile 
-	value  = m_pApp->GetProfileString(m_section, key,"");
-	if (value.GetLength() == 0) 
-		return FALSE;
-	Replace(value,"\\t","\t",value);
-	TRACE(" Lookup '%s' = '%s' \n",(const char *) key,(const char *) value);
-	// and store in hash table
-	m_hashTable[key] = value;
-
-
-	return TRUE;
-}
-
-
-
-// translate a message 
-BOOL CGLViewCtrlCtrl::Translate(LPCTSTR key,LPCTSTR valueDefault, CString& value) {
-	return m_translator.Translate(key,valueDefault,value);
-}
-
-BOOL CGLViewCtrlCtrl::Translate(LPCTSTR valueDefault, CString& value) 
-{
-	return m_translator.Translate(valueDefault,valueDefault,value);
-}
-
-BOOL CGLViewCtrlCtrl::TranslateMessageString(UINT nID, CString& value)
-{
-	char buf[60];
-	buf[0]='s',
-	_itoa(nID,&buf[1],10); CString valueDefault;
-//	if (m_translator.Lookup(buf,value)) return TRUE;
-	//verhindert print in translate! wird doch in translate sowieso gemacht
-
-	COleControl::GetMessageString(nID, valueDefault);
-	return m_translator.Translate(buf,valueDefault,value);
-}
-//#define TRANS(a,b) Translate(#a,b)
-
-
-// Translate a CMenu
-void CGLViewCtrlCtrl::Translate(CMenu &m) 
-{
-
-	UINT cnt = m.GetMenuItemCount();
-	CString k,l;
-	//MENUITEMINFO mi;
-
-	for (UINT i=0; i<cnt;i++) {
-		k = "";
-		l= "";
-		int id= m.GetMenuItemID(i);
-		if (id == -1) { // sub menu;
-			if (m.GetMenuString(i,k,MF_BYPOSITION)>0) { 
-				if (Translate(k,l)) {
-					m.ModifyMenu(i,MF_BYPOSITION | MF_STRING,id,l);
-				}
-			}
-			CMenu *tmp = m.GetSubMenu(i);
-
-			if (tmp != NULL)
-				Translate(*tmp);
-		}
-		if (id >0) { // not a separator 
-			char buf[60];
-			buf[0]='m',
-			_itoa(id,&buf[1],10);
-			if (m.GetMenuString(i,k,MF_BYPOSITION)>0) { 
-				if (Translate(buf, k, l)) {
-					m.ModifyMenu(i,MF_BYPOSITION | MF_STRING,id,l);
-				}
-			}
-		}
-
-	}
-}
-
 
 
 // Utilities
@@ -490,173 +340,165 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 #define TRACEREF() TRACE("Ref %d %s %d \n",m_dwRef,__FILE__,__LINE__);
 
 
-IMPLEMENT_DYNCREATE(CGLViewCtrlCtrl, COleControl)
-
-/////////////////////////////////////////////////////////////////////////////
-// Special WM_PAINT message handler that includes the HDC
-// MFC ctlcore.cpp
-#define ON_WM_PAINT_SPECIAL() \
-	{ WM_PAINT, 0, 0, 0, AfxSig_vD, \
-		(AFX_PMSG)(AFX_PMSGW)(void (AFX_MSG_CALL CWnd::*)(CDC*))&OnPaint },
 
 
 /////////////////////////////////////////////////////////////////////////////
 // Message map
 
-BEGIN_MESSAGE_MAP(CGLViewCtrlCtrl, COleControl)
-	//{{AFX_MSG_MAP(CGLViewCtrlCtrl)
-	ON_WM_KEYDOWN()
-	ON_WM_LBUTTONDBLCLK()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	ON_WM_MOVE()
-	ON_WM_RBUTTONDOWN()
-	ON_WM_SIZE()
-	ON_WM_CREATE()
-	ON_WM_DESTROY()
-	ON_WM_ERASEBKGND()
-	ON_WM_TIMER()
-	ON_WM_ACTIVATE()
-	ON_COMMAND(ID_CAMERA_NONE, OnCameraNone)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_NONE, OnUpdateCameraNone)
-	ON_COMMAND(ID_CAMERA_ORBIT, OnCameraOrbit)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_ORBIT, OnUpdateCameraOrbit)
-	ON_COMMAND(ID_CAMERA_PAN, OnCameraPan)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_PAN, OnUpdateCameraPan)
-	ON_COMMAND(ID_CAMERA_ROLL, OnCameraRoll)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_ROLL, OnUpdateCameraRoll)
-	ON_COMMAND(ID_CAMERA_DOLLY_XY, OnCameraDollyXy)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_DOLLY_XY, OnUpdateCameraDollyXy)
-	ON_COMMAND(ID_CAMERA_FLY, OnCameraFly)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_FLY, OnUpdateCameraFly)
-	ON_COMMAND(ID_CAMERA_ANIMATE_VIEWPOINTS, OnCameraAnimateViewpoints)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_ANIMATE_VIEWPOINTS, OnUpdateCameraAnimateViewpoints)
-	ON_COMMAND(ID_CAMERA_RESET, OnCameraReset)
-	ON_COMMAND(ID_CAMERA_SEEKTO, OnCameraSeekto)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_SEEKTO, OnUpdateCameraSeekto)
-	ON_COMMAND(ID_CAMERA_VIEWPOINT_NEXT, OnCameraViewpointNext)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_VIEWPOINT_NEXT, OnUpdateCameraViewpointNext)
-	ON_COMMAND(ID_CAMERA_VIEWPOINT_PREV, OnCameraViewpointPrev)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_VIEWPOINT_PREV, OnUpdateCameraViewpointPrev)
-	ON_COMMAND(ID_CAMERA_WALK, OnCameraWalk)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_WALK, OnUpdateCameraWalk)
-	ON_COMMAND(ID_CAMERA_ZOOM, OnCameraZoom)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_ZOOM, OnUpdateCameraZoom)
-	ON_COMMAND(ID_RENDER_FLAT, OnRenderFlat)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_FLAT, OnUpdateRenderFlat)
-	ON_COMMAND(ID_RENDER_GOURAUD, OnRenderGouraud)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_GOURAUD, OnUpdateRenderGouraud)
-	ON_COMMAND(ID_RENDER_TEXTURED, OnRenderTextured)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_TEXTURED, OnUpdateRenderTextured)
-	ON_COMMAND(ID_RENDER_WIREFRAME, OnRenderWireframe)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_WIREFRAME, OnUpdateRenderWireframe)
-	ON_COMMAND(ID_POPUP_HEADLIGHTON, OnCameraHeadlight)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_HEADLIGHTON, OnUpdateCameraHeadlight)
-	ON_COMMAND(ID_RENDER_NONLIGHTED, OnRenderNonlighted)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_NONLIGHTED, OnUpdateRenderNonlighted)
-	ON_COMMAND(ID_RENDER_VERTICES, OnRenderVertices)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_VERTICES, OnUpdateRenderVertices)
-	ON_COMMAND(IDD_CAMERA_RELATIVE, OnCameraRelative)
-	ON_UPDATE_COMMAND_UI(IDD_CAMERA_RELATIVE, OnUpdateCameraRelative)
-	ON_COMMAND(ID_CAMERA_FOLLOW_OBJECT, OnCameraFollowObject)
-	ON_COMMAND(ID_CAMERA_COLLISION, OnCameraCollision)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_COLLISION, OnUpdateCameraCollision)
-	ON_WM_ACTIVATEAPP()
-	ON_WM_DROPFILES()
-	ON_WM_ENABLE()
-	ON_WM_KILLFOCUS()
-	ON_WM_PALETTECHANGED()
-	ON_WM_PALETTEISCHANGING()
-	ON_WM_QUERYNEWPALETTE()
-	ON_WM_WINDOWPOSCHANGED()
-	ON_COMMAND(ID_POPUP_HELP_MANUAL, OnPopupHelpManual)
-	ON_COMMAND(ID_POPUP_HELP_VISIT, OnPopupHelpVisit)
-	ON_COMMAND(ID_POPUP_HELP_ABOUT, OnPopupHelpAbout)
-	ON_WM_SETCURSOR()
-	ON_COMMAND(ID_CAMERA_JUMP, OnCameraJump)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_JUMP, OnUpdateCameraJump)
-	ON_COMMAND(ID_SETTINGS_STOP_LOADING, OnSettingsStopLoading)
-	ON_UPDATE_COMMAND_UI(ID_SETTINGS_STOP_LOADING, OnUpdateSettingsStopLoading)
-	ON_COMMAND(ID_SETTINGS_RELOAD, OnSettingsReload)
-	ON_UPDATE_COMMAND_UI(ID_SETTINGS_RELOAD, OnUpdateSettingsReload)
-	ON_WM_SHOWWINDOW()
-	ON_COMMAND(ID_SETTINGS_SOUND, OnSettingsSound)
-	ON_UPDATE_COMMAND_UI(ID_SETTINGS_SOUND, OnUpdateSettingsSound)
-	ON_COMMAND(ID_POPUP_HELP_WORLDINFO, OnPopupHelpWorldinfo)
-	ON_COMMAND(ID_POPUP_SETTINGS_STAYONGROUND, OnSettingsStayOnGround)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SETTINGS_STAYONGROUND, OnUpdateSettingsStayOnGround)
-	ON_COMMAND(ID_RENDER_DITHER, OnRenderDither)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_DITHER, OnUpdateRenderDither)
-	ON_COMMAND(ID_RENDER_TEXTURE_SMOOTH, OnRenderTextureSmooth)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_TEXTURE_SMOOTH, OnUpdateRenderTextureSmooth)
-	ON_COMMAND(ID_SETTINGS_PREFERENCES, OnSettingsPreferences)
-	ON_WM_MOUSEACTIVATE()
-	ON_COMMAND(ID_POPUP_HELP_CHECKVERSION, OnPopupHelpCheckversion)
-	ON_COMMAND(ID_CAMERA_ROTATE, OnCameraRotate)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_ROTATE, OnUpdateCameraRotate)
-	ON_COMMAND(ID_POPUP_SPEED_VERYSLOW, OnPopupSpeedVeryslow)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_VERYSLOW, OnUpdatePopupSpeedVeryslow)
-	ON_COMMAND(ID_POPUP_SPEED_SLOW, OnPopupSpeedSlow)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_SLOW, OnUpdatePopupSpeedSlow)
-	ON_COMMAND(ID_POPUP_SPEED_MEDIUM, OnPopupSpeedMedium)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_MEDIUM, OnUpdatePopupSpeedMedium)
-	ON_COMMAND(ID_POPUP_SPEED_FAST, OnPopupSpeedFast)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_FAST, OnUpdatePopupSpeedFast)
-	ON_COMMAND(ID_POPUP_SPEED_VERYFAST, OnPopupSpeedVeryfast)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_VERYFAST, OnUpdatePopupSpeedVeryfast)
-	ON_COMMAND(ID_CAMERA_ZOOMOUT, OnCameraZoomout)
-	ON_COMMAND(ID_CAMERA_STRAIGHTEN_UP, OnCameraStraightenUp)
-	ON_WM_KEYUP()
-	ON_WM_DEVMODECHANGE()
-	ON_WM_CHAR()
-	ON_COMMAND(ID_GO_BACK, OnGoBack)
-	ON_UPDATE_COMMAND_UI(ID_GO_BACK, OnUpdateGoBack)
-	ON_COMMAND(ID_CAMERA_GRAVITY, OnCameraGravity)
-	ON_UPDATE_COMMAND_UI(ID_CAMERA_GRAVITY, OnUpdateCameraGravity)
-	ON_COMMAND(ID_SETTINGS_CONSOLE, OnSettingsConsole)
-	ON_UPDATE_COMMAND_UI(ID_SETTINGS_CONSOLE, OnUpdateSettingsConsole)
-	ON_WM_ENTERIDLE()
-	ON_WM_SETFOCUS()
-	ON_COMMAND(ID_POPUP_3RPERSON, OnView3rdPerson)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_3RPERSON, OnUpdateView3rdPerson)
-	ON_COMMAND(ID_POPUP_PAD, OnViewPad)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_PAD, OnUpdateViewPad)
-	ON_COMMAND(ID_POPUP_PANEL, OnPopupPanel)
-	ON_UPDATE_COMMAND_UI(ID_POPUP_PANEL, OnUpdatePopupPanel)
-	ON_WM_RBUTTONUP()
-	ON_WM_RBUTTONDBLCLK()
-	ON_WM_MBUTTONDOWN()
-	ON_WM_MBUTTONUP()
-	ON_WM_MBUTTONDBLCLK()
-	ON_WM_INITMENU()
-	ON_WM_CONTEXTMENU()
-	//}}AFX_MSG_MAP
+// BEGIN_MESSAGE_MAP(CGLViewCtrlCtrl, COleControl)
+// 	//{{AFX_MSG_MAP(CGLViewCtrlCtrl)
+// 	ON_WM_KEYDOWN()
+// 	ON_WM_LBUTTONDBLCLK()
+// 	ON_WM_LBUTTONDOWN()
+// 	ON_WM_LBUTTONUP()
+// 	ON_WM_MOUSEMOVE()
+// 	ON_WM_MOVE()
+// 	ON_WM_RBUTTONDOWN()
+// 	ON_WM_SIZE()
+// 	ON_WM_CREATE()
+// 	ON_WM_DESTROY()
+// 	ON_WM_ERASEBKGND()
+// 	ON_WM_TIMER()
+// 	ON_WM_ACTIVATE()
+// 	ON_COMMAND(ID_CAMERA_NONE, OnCameraNone)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_NONE, OnUpdateCameraNone)
+// 	ON_COMMAND(ID_CAMERA_ORBIT, OnCameraOrbit)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_ORBIT, OnUpdateCameraOrbit)
+// 	ON_COMMAND(ID_CAMERA_PAN, OnCameraPan)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_PAN, OnUpdateCameraPan)
+// 	ON_COMMAND(ID_CAMERA_ROLL, OnCameraRoll)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_ROLL, OnUpdateCameraRoll)
+// 	ON_COMMAND(ID_CAMERA_DOLLY_XY, OnCameraDollyXy)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_DOLLY_XY, OnUpdateCameraDollyXy)
+// 	ON_COMMAND(ID_CAMERA_FLY, OnCameraFly)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_FLY, OnUpdateCameraFly)
+// 	ON_COMMAND(ID_CAMERA_ANIMATE_VIEWPOINTS, OnCameraAnimateViewpoints)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_ANIMATE_VIEWPOINTS, OnUpdateCameraAnimateViewpoints)
+// 	ON_COMMAND(ID_CAMERA_RESET, OnCameraReset)
+// 	ON_COMMAND(ID_CAMERA_SEEKTO, OnCameraSeekto)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_SEEKTO, OnUpdateCameraSeekto)
+// 	ON_COMMAND(ID_CAMERA_VIEWPOINT_NEXT, OnCameraViewpointNext)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_VIEWPOINT_NEXT, OnUpdateCameraViewpointNext)
+// 	ON_COMMAND(ID_CAMERA_VIEWPOINT_PREV, OnCameraViewpointPrev)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_VIEWPOINT_PREV, OnUpdateCameraViewpointPrev)
+// 	ON_COMMAND(ID_CAMERA_WALK, OnCameraWalk)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_WALK, OnUpdateCameraWalk)
+// 	ON_COMMAND(ID_CAMERA_ZOOM, OnCameraZoom)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_ZOOM, OnUpdateCameraZoom)
+// 	ON_COMMAND(ID_RENDER_FLAT, OnRenderFlat)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_FLAT, OnUpdateRenderFlat)
+// 	ON_COMMAND(ID_RENDER_GOURAUD, OnRenderGouraud)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_GOURAUD, OnUpdateRenderGouraud)
+// 	ON_COMMAND(ID_RENDER_TEXTURED, OnRenderTextured)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_TEXTURED, OnUpdateRenderTextured)
+// 	ON_COMMAND(ID_RENDER_WIREFRAME, OnRenderWireframe)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_WIREFRAME, OnUpdateRenderWireframe)
+// 	ON_COMMAND(ID_POPUP_HEADLIGHTON, OnCameraHeadlight)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_HEADLIGHTON, OnUpdateCameraHeadlight)
+// 	ON_COMMAND(ID_RENDER_NONLIGHTED, OnRenderNonlighted)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_NONLIGHTED, OnUpdateRenderNonlighted)
+// 	ON_COMMAND(ID_RENDER_VERTICES, OnRenderVertices)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_VERTICES, OnUpdateRenderVertices)
+// 	ON_COMMAND(IDD_CAMERA_RELATIVE, OnCameraRelative)
+// 	ON_UPDATE_COMMAND_UI(IDD_CAMERA_RELATIVE, OnUpdateCameraRelative)
+// 	ON_COMMAND(ID_CAMERA_FOLLOW_OBJECT, OnCameraFollowObject)
+// 	ON_COMMAND(ID_CAMERA_COLLISION, OnCameraCollision)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_COLLISION, OnUpdateCameraCollision)
+// 	ON_WM_ACTIVATEAPP()
+// 	ON_WM_DROPFILES()
+// 	ON_WM_ENABLE()
+// 	ON_WM_KILLFOCUS()
+// 	ON_WM_PALETTECHANGED()
+// 	ON_WM_PALETTEISCHANGING()
+// 	ON_WM_QUERYNEWPALETTE()
+// 	ON_WM_WINDOWPOSCHANGED()
+// 	ON_COMMAND(ID_POPUP_HELP_MANUAL, OnPopupHelpManual)
+// 	ON_COMMAND(ID_POPUP_HELP_VISIT, OnPopupHelpVisit)
+// 	ON_COMMAND(ID_POPUP_HELP_ABOUT, OnPopupHelpAbout)
+// 	ON_WM_SETCURSOR()
+// 	ON_COMMAND(ID_CAMERA_JUMP, OnCameraJump)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_JUMP, OnUpdateCameraJump)
+// 	ON_COMMAND(ID_SETTINGS_STOP_LOADING, OnSettingsStopLoading)
+// 	ON_UPDATE_COMMAND_UI(ID_SETTINGS_STOP_LOADING, OnUpdateSettingsStopLoading)
+// 	ON_COMMAND(ID_SETTINGS_RELOAD, OnSettingsReload)
+// 	ON_UPDATE_COMMAND_UI(ID_SETTINGS_RELOAD, OnUpdateSettingsReload)
+// 	ON_WM_SHOWWINDOW()
+// 	ON_COMMAND(ID_SETTINGS_SOUND, OnSettingsSound)
+// 	ON_UPDATE_COMMAND_UI(ID_SETTINGS_SOUND, OnUpdateSettingsSound)
+// 	ON_COMMAND(ID_POPUP_HELP_WORLDINFO, OnPopupHelpWorldinfo)
+// 	ON_COMMAND(ID_POPUP_SETTINGS_STAYONGROUND, OnSettingsStayOnGround)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SETTINGS_STAYONGROUND, OnUpdateSettingsStayOnGround)
+// 	ON_COMMAND(ID_RENDER_DITHER, OnRenderDither)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_DITHER, OnUpdateRenderDither)
+// 	ON_COMMAND(ID_RENDER_TEXTURE_SMOOTH, OnRenderTextureSmooth)
+// 	ON_UPDATE_COMMAND_UI(ID_RENDER_TEXTURE_SMOOTH, OnUpdateRenderTextureSmooth)
+// 	ON_COMMAND(ID_SETTINGS_PREFERENCES, OnSettingsPreferences)
+// 	ON_WM_MOUSEACTIVATE()
+// 	ON_COMMAND(ID_POPUP_HELP_CHECKVERSION, OnPopupHelpCheckversion)
+// 	ON_COMMAND(ID_CAMERA_ROTATE, OnCameraRotate)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_ROTATE, OnUpdateCameraRotate)
+// 	ON_COMMAND(ID_POPUP_SPEED_VERYSLOW, OnPopupSpeedVeryslow)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_VERYSLOW, OnUpdatePopupSpeedVeryslow)
+// 	ON_COMMAND(ID_POPUP_SPEED_SLOW, OnPopupSpeedSlow)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_SLOW, OnUpdatePopupSpeedSlow)
+// 	ON_COMMAND(ID_POPUP_SPEED_MEDIUM, OnPopupSpeedMedium)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_MEDIUM, OnUpdatePopupSpeedMedium)
+// 	ON_COMMAND(ID_POPUP_SPEED_FAST, OnPopupSpeedFast)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_FAST, OnUpdatePopupSpeedFast)
+// 	ON_COMMAND(ID_POPUP_SPEED_VERYFAST, OnPopupSpeedVeryfast)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_SPEED_VERYFAST, OnUpdatePopupSpeedVeryfast)
+// 	ON_COMMAND(ID_CAMERA_ZOOMOUT, OnCameraZoomout)
+// 	ON_COMMAND(ID_CAMERA_STRAIGHTEN_UP, OnCameraStraightenUp)
+// 	ON_WM_KEYUP()
+// 	ON_WM_DEVMODECHANGE()
+// 	ON_WM_CHAR()
+// 	ON_COMMAND(ID_GO_BACK, OnGoBack)
+// 	ON_UPDATE_COMMAND_UI(ID_GO_BACK, OnUpdateGoBack)
+// 	ON_COMMAND(ID_CAMERA_GRAVITY, OnCameraGravity)
+// 	ON_UPDATE_COMMAND_UI(ID_CAMERA_GRAVITY, OnUpdateCameraGravity)
+// 	ON_COMMAND(ID_SETTINGS_CONSOLE, OnSettingsConsole)
+// 	ON_UPDATE_COMMAND_UI(ID_SETTINGS_CONSOLE, OnUpdateSettingsConsole)
+// 	ON_WM_ENTERIDLE()
+// 	ON_WM_SETFOCUS()
+// 	ON_COMMAND(ID_POPUP_3RPERSON, OnView3rdPerson)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_3RPERSON, OnUpdateView3rdPerson)
+// 	ON_COMMAND(ID_POPUP_PAD, OnViewPad)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_PAD, OnUpdateViewPad)
+// 	ON_COMMAND(ID_POPUP_PANEL, OnPopupPanel)
+// 	ON_UPDATE_COMMAND_UI(ID_POPUP_PANEL, OnUpdatePopupPanel)
+// 	ON_WM_RBUTTONUP()
+// 	ON_WM_RBUTTONDBLCLK()
+// 	ON_WM_MBUTTONDOWN()
+// 	ON_WM_MBUTTONUP()
+// 	ON_WM_MBUTTONDBLCLK()
+// 	ON_WM_INITMENU()
+// 	ON_WM_CONTEXTMENU()
+// 	//}}AFX_MSG_MAP
 
-	ON_COMMAND_RANGE(ID_VIEWPOINT_0,ID_VIEWPOINT_19,OnCameraViewpoint)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEWPOINT_0,ID_VIEWPOINT_19,OnUpdateCameraViewpoint)
+// 	ON_COMMAND_RANGE(ID_VIEWPOINT_0,ID_VIEWPOINT_19,OnCameraViewpoint)
+// 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEWPOINT_0,ID_VIEWPOINT_19,OnUpdateCameraViewpoint)
 
-	ON_COMMAND_RANGE(ID_USER_MENU_START,ID_USER_MENU_END,OnUserMenu)
+// 	ON_COMMAND_RANGE(ID_USER_MENU_START,ID_USER_MENU_END,OnUserMenu)
 	
-	ON_COMMAND_RANGE(ID_DRIVER_0,ID_DRIVER_9,OnOptionsDriver)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_DRIVER_0,ID_DRIVER_9,OnUpdateOptionsDriver)
+// 	ON_COMMAND_RANGE(ID_DRIVER_0,ID_DRIVER_9,OnOptionsDriver)
+// 	ON_UPDATE_COMMAND_UI_RANGE(ID_DRIVER_0,ID_DRIVER_9,OnUpdateOptionsDriver)
 
-	ON_MESSAGE(WM_READFILECOMPLETED, OnReadFileCompleted) 
+// 	ON_MESSAGE(WM_READFILECOMPLETED, OnReadFileCompleted) 
 
-	ON_MESSAGE(WM_HARDWARECHECK, OnHardwareCheck) 
-	ON_MESSAGE(WM_STATUSMESSAGE, OnStatusMessage) 
-	ON_MESSAGE(WM_CONSOLE_MESSAGE, OnConsoleMessage) 
+// 	ON_MESSAGE(WM_HARDWARECHECK, OnHardwareCheck) 
+// 	ON_MESSAGE(WM_STATUSMESSAGE, OnStatusMessage) 
+// 	ON_MESSAGE(WM_CONSOLE_MESSAGE, OnConsoleMessage) 
 	
-	ON_MESSAGE(WM_SIZING, OnSizing) 
-	ON_MESSAGE(WM_MOVING, OnMoving)
-	ON_MESSAGE(WM_CAPTURECHANGED, OnCaptureChanged) 
+// 	ON_MESSAGE(WM_SIZING, OnSizing) 
+// 	ON_MESSAGE(WM_MOVING, OnMoving)
+// 	ON_MESSAGE(WM_CAPTURECHANGED, OnCaptureChanged) 
 	
 
-	ON_WM_PAINT()
-	ON_OLEVERB(AFX_IDS_VERB_EDIT, OnEdit)
-	ON_OLEVERB(AFX_IDS_VERB_PROPERTIES, OnProperties)
+// 	ON_WM_PAINT()
+// 	ON_OLEVERB(AFX_IDS_VERB_EDIT, OnEdit)
+// 	ON_OLEVERB(AFX_IDS_VERB_PROPERTIES, OnProperties)
 
-END_MESSAGE_MAP()
+// END_MESSAGE_MAP()
 
 /*
 #if _MFC_VER >= 0x0421 
@@ -669,6 +511,10 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // Dispatch map
+
+#pragma message("Consider writing BEGIN_DISPATCH_MAP/DISP_PROPERTY_EX/DISP_FUNCTION macros that expand to embind macros")
+
+#ifdef SGEO_EXPAND_DISPATCH_MAP
 
 BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	//{{AFX_DISPATCH_MAP(CGLViewCtrlCtrl)
@@ -755,29 +601,24 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 
 END_DISPATCH_MAP()
 
+#endif
+
 // aboutbox ?? 
 
-/////////////////////////////////////////////////////////////////////////////
-// CGLViewCtrlCtrl interface map
-
-BEGIN_INTERFACE_MAP(CGLViewCtrlCtrl,COleControl)
-//    INTERFACE_PART(CGLViewCtrlCtrl, IID_IPersistMoniker, PersistMoniker)
-//    INTERFACE_PART(CGLViewCtrlCtrl, IID_IOleCommandTarget, CmdTargetObj)
-END_INTERFACE_MAP()
   
 
 
 /////////////////////////////////////////////////////////////////////////////
 // Event map
 
-BEGIN_EVENT_MAP(CGLViewCtrlCtrl, COleControl)
-	//{{AFX_EVENT_MAP(CGLViewCtrlCtrl)
-	EVENT_CUSTOM("OnSceneChanged", FireOnSceneChanged, VTS_BSTR)
-	EVENT_CUSTOM("OnEvent", FireOnEvent, VTS_BSTR  VTS_BSTR  VTS_R8)
-	EVENT_STOCK_READYSTATECHANGE()
-	EVENT_CUSTOM_ID("OnProgress",DISPID_PROGRESS, FireOnProgress, VTS_I4)
-	//}}AFX_EVENT_MAP
-END_EVENT_MAP()
+// BEGIN_EVENT_MAP(CGLViewCtrlCtrl, COleControl)
+// 	//{{AFX_EVENT_MAP(CGLViewCtrlCtrl)
+// 	EVENT_CUSTOM("OnSceneChanged", FireOnSceneChanged, VTS_BSTR)
+// 	EVENT_CUSTOM("OnEvent", FireOnEvent, VTS_BSTR  VTS_BSTR  VTS_R8)
+// 	EVENT_STOCK_READYSTATECHANGE()
+// 	EVENT_CUSTOM_ID("OnProgress",DISPID_PROGRESS, FireOnProgress, VTS_I4)
+// 	//}}AFX_EVENT_MAP
+// END_EVENT_MAP()
 
 //	EVENT_CUSTOM("Progress", FireProgress, VTS_I4)
 
@@ -786,124 +627,10 @@ END_EVENT_MAP()
 // Property pages
 
 // TODO: Add more property pages as needed.  Remember to increase the count!
-BEGIN_PROPPAGEIDS(CGLViewCtrlCtrl, 1)
-	PROPPAGEID(CGLViewCtrlPropPage::guid)
-END_PROPPAGEIDS(CGLViewCtrlCtrl)
-
-//	PROPPAGEID(CGLViewCtrlPropPage::guid)
-//	PROPPAGEID(CRenderingPropPage::guid)
-//	PROPPAGEID(CNavigationPropPage::guid)
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Initialize class factory and guid
-
-IMPLEMENT_OLECREATE_EX(CGLViewCtrlCtrl, _PROGRAM "." _PROGRAM ".1",
-	0x4b6e3013, 0x6e45, 0x11d0, 0x93, 0x9, 0, 0x20, 0xaf, 0xe0, 0x5c, 0xc8)
-
-//IMPLEMENT_OLECREATE_EX(CGLViewCtrlCtrl, "GLVIEWCTRL.GLViewCtrlCtrl.1",
-//	0x4b6e3013, 0x6e45, 0x11d0, 0x93, 0x9, 0, 0x20, 0xaf, 0xe0, 0x5c, 0xc8)
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Type library ID and version
-
-IMPLEMENT_OLETYPELIB(CGLViewCtrlCtrl, _tlid, _wVerMajor, _wVerMinor)
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Interface IDs
-
-const IID BASED_CODE IID_DGLViewCtrl =
-		{ 0x4b6e3011, 0x6e45, 0x11d0, { 0x93, 0x9, 0, 0x20, 0xaf, 0xe0, 0x5c, 0xc8 } };
-const IID BASED_CODE IID_DGLViewCtrlEvents =
-		{ 0x4b6e3012, 0x6e45, 0x11d0, { 0x93, 0x9, 0, 0x20, 0xaf, 0xe0, 0x5c, 0xc8 } };
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Control type information see help : OLEMISC
-
-static const DWORD BASED_CODE _dwGLViewCtrlOleMisc =
-	OLEMISC_ACTIVATEWHENVISIBLE |
-	OLEMISC_SETCLIENTSITEFIRST |	//SetClientSite called 
-	OLEMISC_INSIDEOUT |
-	OLEMISC_CANTLINKINSIDE |
-	OLEMISC_RECOMPOSEONRESIZE 	// SetExtent
-	| OLEMISC_ACTSLIKEBUTTON  //  mk:@ivt:pdobj/native/activex/src/ctrlgde_15.htm
-	| OLEMISC_ACTSLIKELABEL;
-//	| OLEMISC_SIMPLEFRAME;
 
 
 
-IMPLEMENT_OLECTLTYPE(CGLViewCtrlCtrl, IDS_GLVIEWCTRL, _dwGLViewCtrlOleMisc)
 
-
-// Registry helpers
-static BOOL SetRegKey(HKEY hkey,LPCTSTR lpszKey, LPCTSTR lpszValue)
-{
-	if (::RegSetValueEx(hkey, lpszKey, 0, REG_SZ,
-		  (const BYTE*) lpszValue, lstrlen(lpszValue)*sizeof(TCHAR)) != ERROR_SUCCESS)
-	{
-		TRACE1("Warning: registration database update failed for key '%s'.\n",
-			lpszKey);
-		return FALSE;
-	}
-	return TRUE;
-}
-
-// HKEY_CURRENT_USER key to store settings 
-#define USER_KEY _T("Software\\" _COMPANY "\\" _PROGRAM)
-
-static BOOL SetRegKey(HKEY hkey,LPCTSTR lpszKey, int value)
-{
-	CString x;
-	x.Format("%d",value);
-	return SetRegKey(hkey,lpszKey,x);
-}
-
-
-
-// Registry helpers
-static BOOL GetRegKey(HKEY hkey, LPCTSTR lpszKey, CString &value)
-{
-	DWORD lSize = _MAX_PATH;
-	DWORD dType= REG_SZ;
-	long ret = ::RegQueryValueEx(hkey, lpszKey,0, &dType, (BYTE*) (value.GetBuffer(_MAX_PATH)),&lSize);
-
-    value.ReleaseBuffer();
-
-    if (ret == ERROR_SUCCESS && value.GetLength()>0)
-	{
-		return TRUE;
-	}
-	else return FALSE;
-}
-
-
-//additionaly the reg is opened and closed
-static BOOL GetRegKey(HKEY hkey, LPCTSTR lpSubKey, LPCTSTR lpszKey, CString &value)
-{
-
-	DWORD lSize = _MAX_PATH;
-	DWORD dType= REG_SZ;
-	HKEY hkResult; //the result of the opening
-
-    if (RegOpenKeyEx(hkey, lpSubKey, 0, KEY_READ, &hkResult) != ERROR_SUCCESS)
-	{
-		return gfalse;
-    }
-	
-	long ret = ::RegQueryValueEx(hkResult, lpszKey,0, &dType, (BYTE*) (value.GetBuffer(_MAX_PATH)),&lSize);
-
-    value.ReleaseBuffer();
-
-    RegCloseKey(hkResult);
-
-    if (ret == ERROR_SUCCESS && value.GetLength()>0)
-	{
-		return TRUE;
-	}
-	else return FALSE;
 
 
 /*
@@ -937,130 +664,6 @@ static BOOL GetRegKey(HKEY hkey, LPCTSTR lpSubKey, LPCTSTR lpszKey, CString &val
 	*/
 }
 
-static BOOL GetRegKey(HKEY hkey,LPCTSTR lpszKey, int &value)
-{
-	CString v;
-	if (GetRegKey(hkey,lpszKey,v)) {
-
-		int ret= sscanf((const char *)v,"%d",&value);
-		return ret == 1;
-	} else return FALSE;
-}
-
-static BOOL GetRegKey(HKEY hkey,LPCTSTR lpszKey, float &value)
-{
-	CString v;
-	if (GetRegKey(hkey,lpszKey,v)) {
-
-		int ret= sscanf((const char *)v,"%f",&value);
-		return ret == 1;
-	} else return FALSE;
-}
-
-
-static BOOL SetRegKey(HKEY hkey,LPCTSTR lpszSubKey,LPCTSTR lpszKey, LPCTSTR lpszValue)
-{
-	HKEY hSubKey = NULL;
-
-	if (::RegCreateKey(hkey, lpszSubKey, &hSubKey) == ERROR_SUCCESS) {
-
-		if (::RegSetValueEx(hSubKey, lpszKey, 0, REG_SZ,
-		  (const BYTE*) lpszValue, lstrlen(lpszValue)*sizeof(TCHAR)) != ERROR_SUCCESS)
-		{
-			TRACE1("Warning: registration database update failed for key '%s'.\n", 	lpszKey);
-			if (hSubKey != NULL) ::RegCloseKey(hSubKey);
-			return FALSE;
-		}
-		if (hSubKey != NULL) ::RegCloseKey(hSubKey);
-		return TRUE;
-    } 
-	else return FALSE;
-}
-
-static BOOL SetRegKeySimple(LPCTSTR lpszKey, LPCTSTR lpszValue, HKEY hKey = HKEY_CLASSES_ROOT)
-{
-	if (::RegSetValue(hKey, lpszKey, REG_SZ,
-		  lpszValue, lstrlen(lpszValue)) != ERROR_SUCCESS)
-	{
-		TRACE1("Warning: registration database update failed for key '%s'.\n",
-			lpszKey);
-		return FALSE;
-	}
-	return TRUE;
-}
-static BOOL DelRegKeySimple(LPCTSTR lpszKey, LPCTSTR lpszValue, HKEY hKey = HKEY_CLASSES_ROOT)
-{	CString value;
-	LONG lSize = _MAX_PATH;
-	DWORD dType= REG_SZ;
-	long ret = ::RegQueryValue(hKey, lpszKey,(value.GetBuffer(_MAX_PATH)),&lSize);
-
-    value.ReleaseBuffer();
-
-    if (ret == ERROR_SUCCESS && value == lpszValue)
-	{
-		if (::RegOpenKey(hKey, lpszKey, &hKey) == ERROR_SUCCESS) {		
-			::RegDeleteValue(hKey, NULL);
-			::RegCloseKey(hKey);		
-		} 
-		return TRUE;
-	}
-	return FALSE;
-}
-static BOOL DelRegKey(HKEY hKey,LPCTSTR lpszKey, LPCTSTR lpszValue)
-{	CString value;
-	DWORD lSize = _MAX_PATH;
-	DWORD dType= REG_SZ;
-	long ret = ::RegQueryValueEx(hKey, lpszKey,0, &dType, (BYTE*) (value.GetBuffer(_MAX_PATH)),&lSize);
-
-    value.ReleaseBuffer();
-
-    if (ret == ERROR_SUCCESS && value == lpszValue)
-	{
-		::RegDeleteValue(hKey, lpszKey);		
-		return TRUE;
-	}
-	return FALSE;
-}
-static BOOL DelRegKey(HKEY hKey,LPCTSTR lpszKey)
-{	
-	::RegDeleteValue(hKey, lpszKey);		
-	return TRUE;
-}
-
-// Under Win32, a reg key may not be deleted unless it is empty.
-// Thus, to delete a tree,  one must recursively enumerate and
-// delete all of the sub-keys.
-
-static LONG RecursiveRegDeleteKey(HKEY hParentKey, LPCTSTR szKeyName)
-{
-	DWORD   dwIndex = 0L;
-	TCHAR   szSubKeyName[256];
-	HKEY    hCurrentKey;
-	DWORD   dwResult;
-
-	if ((dwResult = ::RegOpenKey(hParentKey, szKeyName, &hCurrentKey)) ==
-		ERROR_SUCCESS)
-	{
-		// Remove all subkeys of the key to delete
-		while ((dwResult = RegEnumKey(hCurrentKey, 0, szSubKeyName, 255)) ==
-			ERROR_SUCCESS)
-		{
-			if ((dwResult = RecursiveRegDeleteKey(hCurrentKey,
-				szSubKeyName)) != ERROR_SUCCESS)
-				break;
-		}
-
-		// If all went well, we should now be able to delete the requested key
-		if ((dwResult == ERROR_NO_MORE_ITEMS) || (dwResult == ERROR_BADKEY))
-		
-		{
-			dwResult = ::RegDeleteKey(hParentKey, szKeyName);
-		}
-	}
-
-	::RegCloseKey(hCurrentKey);
-	return dwResult;
-}
 
 
 #define GUID_CCH    39  // Characters in string form of guid, including '\0'
@@ -1069,552 +672,6 @@ static LONG RecursiveRegDeleteKey(HKEY hParentKey, LPCTSTR szKeyName)
 // inetsdk\samples\basectrl\framewrk\util.cpp
 // see KB mimetype.exe sample 
 
-BOOL RegisterMimeTypes(CLSID &clsid,LPCTSTR lpszProgID,BOOL registerVrml,BOOL registerExt) 
-{
-	USES_CONVERSION;
-
-	BOOL bSuccess = FALSE;
-
-	TCHAR szKey[_MAX_PATH*2];
-
-
-	// Format class ID as a string
-	OLECHAR szClassID[GUID_CCH];
-	int cchGuid = ::StringFromGUID2(clsid, szClassID, GUID_CCH);
-	LPCTSTR lpszClassID = OLE2CT(szClassID);
-
-	ASSERT(cchGuid == GUID_CCH);    // Did StringFromGUID2 work?
-	if (cchGuid != GUID_CCH)
-		return FALSE;
-
-
-	{ // add additional Control and Enable FullPage keys 
-	HKEY hkeyClassID = NULL;
-
-	wsprintf(szKey, _T("CLSID\\%s"), lpszClassID);
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkeyClassID) != ERROR_SUCCESS) goto Error;
-
-
-	HKEY hkeyTmp = NULL;
-	wsprintf(szKey, _T("Control")); 
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS)  ::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.wrl"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.vrml"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.gz"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.wrz"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.bxwrl"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-	wsprintf(szKey, _T("EnableFullPage\\.bx3"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-
-/*
-	// found this for ActiveMovieControl, this enables the Netscape Plugin instead of control !!!!
-	wsprintf(szKey, _T("EnablePlugin\\.gz"));
-	if (::RegCreateKey(hkeyClassID, szKey, &hkeyTmp) == ERROR_SUCCESS) 	::RegCloseKey(hkeyTmp);
-*/
-
-    
-	::RegCloseKey(hkeyClassID);
-	
-	
-	}
-
-	//SOFTWARE\\Microsoft\\Internet Explorer\\EmbedExtnToClsidMappings	
-	if (registerVrml) {
-	HKEY hkey = NULL;
-	TCHAR szValue[_MAX_PATH];
-
-	wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\EmbedExtnToClsidMappings"));
-	if (::RegCreateKey(HKEY_LOCAL_MACHINE, szKey, &hkey) == ERROR_SUCCESS) {
-		wsprintf(szValue,_T("clsid:%s"),&lpszClassID[1]);
-		szValue[lstrlen(szValue)-1]=0;
-
-		SetRegKeySimple(_T(".wrl"),		szValue ,hkey); 
-		SetRegKeySimple(_T(".vrml"),	szValue ,hkey); 
-		SetRegKeySimple(_T(".wrz"),		szValue ,hkey); 
-		SetRegKeySimple(_T(".bxwrl"),	szValue ,hkey); 
-		SetRegKeySimple(_T(".bx3"),	szValue ,hkey); 
-		// SetRegKeySimple(_T(".wrl.gz"),	szValue ,hkey ); // won't work 
-		// SetRegKeySimple(_T(".wav.gz"),	szValue ,hkey ); // test
-
-		if (hkey != NULL) ::RegCloseKey(hkey);
-	}
-
-#if 1
-	 // remove cosmo plugin compatibility stuff !
-	// IE will anyway rescan netscape plugin directory 
-
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\MIME\\x-world/x-vrml"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\MIME\\model/vrml"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\Extension\\.cgi"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\Extension\\.wrl"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\Extension\\.wrz"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\Extension\\.vrml"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-	 wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\Plugins\\Extension\\.gz"));
-	 RecursiveRegDeleteKey(HKEY_LOCAL_MACHINE,szKey);
-#endif
-
-	}
-
-	if (!registerVrml) { // check if model/vrml exists, if not anyway register mime types
-		CString val;
-		if (GetRegKey(HKEY_CLASSES_ROOT,_T("MIME\\Database\\Content Type\\model/vrml"), _T("CLSID"),val)) {
-			//if already VRML ?
-		}
-		else {
-			registerVrml = TRUE;
-
-		}
-	}
-
-	// define MIME Types 
-	if (registerVrml) 
-	{
-	HKEY hkey = NULL;
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\x-world/x-vrml"));
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		SetRegKey(hkey, _T("CLSID"),		lpszClassID ); 
-		SetRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\model/vrml"));
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		SetRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		SetRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	// hg new 23.02.98
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\application/x-gzip-compressed"));
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		// SetRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		SetRegKey(hkey, _T("Extension"),	_T(".gz")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-/*
-	// hg new 23.02.98
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\application/x-gzip"));
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		// SetRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		SetRegKey(hkey, _T("Extension"),	_T(".gz")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-*/
-	}
-
-	// mime: application/x-blaxxuncc3d
-	{
-	HKEY hkey = NULL;
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\application/x-%s"),_PROGRAM);
-	if (::RegCreateKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		SetRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		SetRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	}
-
-	if (registerVrml) { // associate extension with control and set mime - type 
-		if (registerExt) SetRegKeySimple(_T(".wrl"),lpszProgID);
-		SetRegKey(HKEY_CLASSES_ROOT, _T(".wrl"),_T("Content Type"),	_T("model/vrml")); 
-
-		SetRegKeySimple(_T(".bxwrl"),lpszProgID);
-		SetRegKey(HKEY_CLASSES_ROOT, _T(".bxwrl"),_T("Content Type"),	_T("model/vrml")); 
-
-		//if (registerExt) SetRegKeySimple(_T(".wrl.gz"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wrl.gz"), _T("Content Type"),	_T("model/vrml")); 
-
-		// test 
-		//if (registerExt) SetRegKeySimple(_T(".wav.gz"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wav.gz"), _T("Content Type"),	_T("audio/wav")); 
-
-		if (registerExt) SetRegKeySimple(_T(".wrz"),lpszProgID);
-		SetRegKey(HKEY_CLASSES_ROOT, _T(".wrz"), _T("Content Type"),	_T("model/vrml")); 
-	
-		if (registerExt) SetRegKeySimple(_T(".vrml"),lpszProgID);
-	
-		SetRegKey(HKEY_CLASSES_ROOT, _T(".vrml"),_T("Content Type"),	_T("model/vrml")); 
-
-		// stupid, but we need to register for gz to get wrl.gz 
-		// TO DO : only for IE 3.01
-		/* removed 20.10.98, IE 3.0 obsolete ?
-		if (registerExt) 	SetRegKeySimple(_T(".gz"),lpszProgID);
-		*/
-
-		SetRegKey(HKEY_CLASSES_ROOT, _T(".gz"),_T("Content Type"),	_T("application/x-gzip")); 
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".gz"),_T("Content Type"),	_T("application/x-gzip-compressed"));  // hg 23.02.99
-		// IE 4.01 adds a PROTOCOLS/ entry
-
-	}
-	
-	// GLView file format extensions
-	// no SetRegKeySimple(_T(".vrl"),lpszProgID);
-
-
-	// get path TO IE-Explorer 
-	{
-	CString val;
-	CString ie;
-	CString ns;
-	CString html;
-
-	{	// path to IE 
-		long lSize;
-		lSize = _MAX_PATH;
-		long ret =::RegQueryValue(HKEY_LOCAL_MACHINE,_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE"), val.GetBuffer(_MAX_PATH),&lSize); 
-        val.ReleaseBuffer();
-        if (ret == ERROR_SUCCESS && val.GetLength()>0)
-		{
-			int arg = val.Find(';');
-			if (arg>0) val=val.Left(arg);
-			ie = val;
-		}
-		
-		// path to NS
-		{
-			lSize = _MAX_PATH;
-			ret =::RegQueryValue(HKEY_LOCAL_MACHINE,_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\Netscape.exe"), val.GetBuffer(_MAX_PATH),&lSize); 
-			val.ReleaseBuffer();
-			if (ret == ERROR_SUCCESS && val.GetLength()>0)
-			{
-				int arg = val.Find(';');
-				if (arg>0) val=val.Left(arg);
-				ns = val;
-			}
-		}
-
-	}
-
-	// get html browser 
-	{
-		CString val;
-		long lSize;
-		lSize = _MAX_PATH;
-		long ret =::RegQueryValue(HKEY_CLASSES_ROOT,_T(".htm"), val.GetBuffer(_MAX_PATH),&lSize); 
-        val.ReleaseBuffer();
-        if (ret == ERROR_SUCCESS && val.GetLength()>0)
-		{
-			CString key =  val + _T("\\shell\\open\\command");
-			lSize = _MAX_PATH;
-			ret =::RegQueryValue(HKEY_CLASSES_ROOT,key, val.GetBuffer(_MAX_PATH),&lSize); 
-            val.ReleaseBuffer();
-			// "C:\PROGRA~1\INTERN~1\iexplore.exe" -nohome
-			if (ret == ERROR_SUCCESS && val.GetLength()>0) {
-
-				int arg = val.Find('\"');
-		//		if (arg>0) 
-		//			val=val.Left(arg);
-				html = val;
-			}
-		}
-	}
-	
-	val = ns;
-	if (val.GetLength() == 0) val = ie;
-
-    html.MakeUpper();
-
-	if (ie.GetLength()>0 && html.Find("IEXPLORE")>=0) {
-		val = ie;
-	}
-
-	// associate progId shell open with iexplore // compare also with CLASSES_ROOT htmlfile 
-	// if registerExt 
-    if (val.GetLength()>0) 
-	{
-		// for 
-		CString path;
-		if (val[0] != '\"') path  = "\"" + val + "\"";
-		else path = val;
-
-		path += " \"%1\"";	// append argument 
-		wsprintf(szKey, _T("%s\\shell\\open\\command"),(const TCHAR *)lpszProgID);
-		SetRegKeySimple(szKey,path);
-
-		wsprintf(szKey, _T("%s\\DefaultIcon"),(const TCHAR *)lpszProgID);
-		SetRegKeySimple(szKey,val+",1");
-	}
-	}
-
-	// get IE-classpath  & remove  axWorldView && npcosmo 
-	if (registerVrml) {
-		CString val;
-		CString newVal;
-		CString oldVal;
-
-		DWORD lSize = _MAX_PATH*10;
-		DWORD dType= REG_SZ;
-
-		HKEY key=NULL;
-
-		if (::RegOpenKey(HKEY_LOCAL_MACHINE,_T("SOFTWARE\\Microsoft\\Java VM"),&key) == ERROR_SUCCESS)
-        {
-
-		long ret =::RegQueryValueEx(key,_T("Classpath"), 0, &dType,  (BYTE*) ( val.GetBuffer(lSize)),&lSize); 
-
-        val.ReleaseBuffer();
-
-        if (ret == ERROR_SUCCESS && val.GetLength()>0)
-		{   // axWorldView.zip  //npcosmop.zip // npcosmop21.zip
-			CString entry;
-			
-			oldVal = val;
-		
-			BOOL done=FALSE;
-			while (!done) { // for each ; separate classpath entry
-				int arg = val.Find(';');
-				if (arg>0) { entry=val.Left(arg); val=val.Mid(arg+1); }
-				else { done = TRUE; entry = val; }
-				
-				CString entryLow(entry);
-				entryLow.MakeLower();
-
-				if ((entryLow.Find("axworldview") >=0)  //axWorldView
-					|| (entryLow.Find("npcosmop") >=0)
-					|| (entryLow.Find("msvrml") >=0)
-					|| (entryLow.Find("corteai") >=0) //corteai.zip
-				)
-				{
-					// remove from classpath
-				}
-				else {
-					if (newVal.GetLength()>>0) newVal += ";";
-					newVal += entry;
-				}
-			}
-
-			if (oldVal != newVal) {
-				SetRegKey(HKEY_LOCAL_MACHINE,_T("SOFTWARE\\Microsoft\\Java VM"),_T("Classpath"),newVal); 
-				SetRegKey(HKEY_LOCAL_MACHINE,_T("SOFTWARE\\Microsoft\\Java VM"),_T("Classpath.CC3Dbackup"),oldVal); 
-			}
-		}
-		::RegCloseKey(key);
-
-		}
-	}
-
-	
-	
-	// create version independent entry 
-	{
-		CString pid;
-		pid =  lpszProgID;
-
-			int arg = pid.ReverseFind('.');
-			if (arg>0) pid=pid.Left(arg);
-
-			wsprintf(szKey, _T("%s"),(const TCHAR *) pid);
-			CString desc;
-			
-			desc.LoadString(IDS_GLVIEWCTRL);
-
-			SetRegKeySimple(szKey,desc);
-
-			wsprintf(szKey, _T("%s\\CLSID"),(const TCHAR *) pid);
-			SetRegKeySimple(szKey,lpszClassID);
-
-			wsprintf(szKey, _T("%s\\CurVer"),(const TCHAR *)pid);
-			SetRegKeySimple(szKey,lpszProgID);
-	}
-
-
-	// if wished :
-//	SetRegKeySimple(_T(".3dv"),lpszProgID);
-//	SetRegKeySimple(_T(".iv"),lpszProgID);
-
-/*
-	RegisterMediaType
-	RegisterClipboardFormat
-	RegisterMediaTypeClass
-	Registers media types strings.
-	HRESULT RegisterMediaTypes (
-    UINT  ctypes,	//Number of media type strings in rgszTypes 
-    LPTSTR *rgszTypes,	//Pointer to array of media types to be registered
-    CLIPFORMAT *rgcfTypes	//Pointer to array of 32-bit values corresponding to rgszType array values
-   );
-*/
-/*
-	{ 
-	LPCTSTR types[2] = { 	_T("model/vrml"), _T("x-world/x-vrml") };
-	CLIPFORMAT cfTypes[2];
-
-	RegisterMediaTypes(2,types,cfTypes);
-	}
-
-*/
-
-Error:
-
-	return bSuccess;
-
-}
-
-BOOL UnregisterMimeTypes(CLSID &clsid,LPCTSTR lpszProgID,BOOL registerVrml,BOOL registerExt) 
-{
-	USES_CONVERSION;
-
-	BOOL bSuccess = FALSE;
-
-	TCHAR szKey[_MAX_PATH*2];
-
-
-	// Format class ID as a string
-	OLECHAR szClassID[GUID_CCH];
-	int cchGuid = ::StringFromGUID2(clsid, szClassID, GUID_CCH);
-	LPCTSTR lpszClassID = OLE2CT(szClassID);
-
-	ASSERT(cchGuid == GUID_CCH);    // Did StringFromGUID2 work?
-	if (cchGuid != GUID_CCH)
-		return FALSE;
-
-
-	{ // add additional Control and Enable FullPage keys 
-	HKEY hkeyClassID = NULL;
-
-	wsprintf(szKey, _T("CLSID\\%s"), lpszClassID);
-	RecursiveRegDeleteKey(HKEY_CLASSES_ROOT, szKey);
-	}
-
-	//SOFTWARE\\Microsoft\\Internet Explorer\\EmbedExtnToClsidMappings	
-	if (registerVrml) {
-	HKEY hkey = NULL;
-	TCHAR szValue[_MAX_PATH];
-
-	wsprintf(szKey, _T("SOFTWARE\\Microsoft\\Internet Explorer\\EmbedExtnToClsidMappings"));
-	if (::RegOpenKey(HKEY_LOCAL_MACHINE, szKey, &hkey) == ERROR_SUCCESS) {
-		wsprintf(szValue,_T("clsid:%s"),&lpszClassID[1]);
-		szValue[lstrlen(szValue)-1]=0;
-
-		DelRegKeySimple(_T(".wrl"),		szValue ,hkey); 
-		DelRegKeySimple(_T(".vrml"),	szValue ,hkey); 
-		DelRegKeySimple(_T(".wrz"),		szValue ,hkey); 
-		DelRegKeySimple(_T(".bxwrl"),	szValue ,hkey); 
-		DelRegKeySimple(_T(".wrl.gz"),	szValue ,hkey ); // won't work 
-		DelRegKeySimple(_T(".wav.gz"),	szValue ,hkey ); // test
-
-		if (hkey != NULL) ::RegCloseKey(hkey);
-	}
-
-
-	}
-
-	if (!registerVrml) { // check if model/vrml exists, if not anyway register mime types
-		CString val;
-		if (GetRegKey(HKEY_CLASSES_ROOT,_T("MIME\\Database\\Content Type\\model/vrml"), _T("CLSID"),val)) {
-			//if already VRML ?
-		}
-		else {
-			registerVrml = TRUE;
-
-		}
-	}
-
-	// define MIME Types 
-	if (registerVrml) 
-	{
-	HKEY hkey = NULL;
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\x-world/x-vrml"));
-	if (::RegOpenKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		DelRegKey(hkey, _T("CLSID"),		lpszClassID ); 
-		//SetRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\model/vrml"));
-	if (::RegOpenKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		DelRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		//SetRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	}
-
-	// mime: application/x-blaxxuncc3d
-	{
-	HKEY hkey = NULL;
-	wsprintf(szKey, _T("MIME\\Database\\Content Type\\application/x-%s"),_PROGRAM);
-	if (::RegOpenKey(HKEY_CLASSES_ROOT, szKey, &hkey) == ERROR_SUCCESS) {
-		DelRegKey(hkey, _T("CLSID"),		lpszClassID); 
-		DelRegKey(hkey, _T("Extension"),	_T(".wrl")); 
-		if (hkey != NULL) ::RegCloseKey(hkey);
-		hkey = NULL;
-	}
-	RecursiveRegDeleteKey(HKEY_CLASSES_ROOT, szKey); // anyway delete whole key, because non standard
-	}
-
-
-	if (registerVrml) { // associate extension with control and set mime - type 
-		if (registerExt) DelRegKeySimple(_T(".wrl"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wrl"),_T("Content Type"),	_T("model/vrml")); 
-
-		DelRegKeySimple(_T(".bxwrl"),lpszProgID);
-		//DelRegKey(HKEY_CLASSES_ROOT, _T(".bxwrl"),_T("Content Type"),	_T("model/vrml")); 
-
-		if (registerExt) DelRegKeySimple(_T(".wrl.gz"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wrl.gz"), _T("Content Type"),	_T("model/vrml")); 
-
-		// test 
-		if (registerExt) DelRegKeySimple(_T(".wav.gz"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wav.gz"), _T("Content Type"),	_T("audio/wav")); 
-
-		if (registerExt) DelRegKeySimple(_T(".wrz"),lpszProgID);
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".wrz"), _T("Content Type"),	_T("model/vrml")); 
-	
-		if (registerExt) DelRegKeySimple(_T(".vrml"),lpszProgID);
-	
-		// SetRegKey(HKEY_CLASSES_ROOT, _T(".vrml"),_T("Content Type"),	_T("model/vrml")); 
-
-		// stupid, but we need to register for gz to get wrl.gz 
-		if (registerExt) 	DelRegKeySimple(_T(".gz"),lpszProgID);
-
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".gz"),_T("Content Type"),	_T("application/x-gzip")); 
-		//SetRegKey(HKEY_CLASSES_ROOT, _T(".gz"),_T("Content Type"),	_T("application/x-gzip-compressed"));  // hg 23.02.99
-		// IE 4.01 adds a PROTOCOLS/ entry
-
-	}
-	
-	
-	// create version independent entry 
-	{
-		CString pid;
-		pid =  lpszProgID;
-
-			int arg = pid.ReverseFind('.');
-			if (arg>0) pid=pid.Left(arg);
-
-			wsprintf(szKey, _T("%s"),(const TCHAR *) pid);
-			RecursiveRegDeleteKey(HKEY_CLASSES_ROOT, szKey);
-			RecursiveRegDeleteKey(HKEY_CLASSES_ROOT, lpszProgID);
-
-	}
-
-
-
-
-//Error:
-
-	return bSuccess;
-
-}
 
 
 #if 0
