@@ -9613,71 +9613,71 @@ STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::Exec(
 
 
 
+#pragma message("TODO: Figure out Emscripten-y equivalent")
+// BOOL CGLViewCtrlCtrl::setObserver(LPUNKNOWN observerUnk, long flags) 
+// {
 
-BOOL CGLViewCtrlCtrl::setObserver(LPUNKNOWN observerUnk, long flags) 
-{
+// 	if (!view) return FALSE;
 
-	if (!view) return FALSE;
+// 	CComQIPtr<BrowserObserver,&IID_BrowserObserver> tmp(observerUnk);
 
-	CComQIPtr<BrowserObserver,&IID_BrowserObserver> tmp(observerUnk);
+// 	if (tmp) {  // new observer
 
-	if (tmp) {  // new observer
+// 		if (view->observer != NULL && view->observer != tmp) 
+// 			return FALSE; // kristof want : only one observer
 
-		if (view->observer != NULL && view->observer != tmp) 
-			return FALSE; // kristof want : only one observer
+// 		view->observer = tmp;
+// 		view->observerFlags = flags |  (view->observerFlags & ~GOBSERVER_OBSERVE_MASK);
+// 		view->reportErrors = FALSE; // tmp
+// 		GFile *mainLoader = view->file;
 
-		view->observer = tmp;
-		view->observerFlags = flags |  (view->observerFlags & ~GOBSERVER_OBSERVE_MASK);
-		view->reportErrors = FALSE; // tmp
-		GFile *mainLoader = view->file;
+// 		if (mainLoader) {
+// 			// check if observer wants OnSceneChanged
+// 			if (view->observerFlags & GOBSERVE_URLLOADING) {
+// 				mainLoader->hObserver = view->observer;
+// 			}
+// 			if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
+// 				mainLoader->hNetscapeMsgWnd = view->observerWnd;
+// 			}
+// 		}
+// 		return TRUE;
+// 	}
+// 	else {
+// 		if (view->observerFlags & GOBSERVE_URLLOADING) {
+// 			// release all observer pointers around 
+// 			if (mainLoader)	mainLoader->hObserver.Release();
+// 			if (view->file) view->file->hObserver.Release();
+// 			if (mainLoader)	 // kill main URL loader
+// 			{
+//    				mainLoader->Kill();
+//    				mainLoader->unref();
+// 				mainLoader = NULL;
+// 			}
 
-		if (mainLoader) {
-			// check if observer wants OnSceneChanged
-			if (view->observerFlags & GOBSERVE_URLLOADING) {
-				mainLoader->hObserver = view->observer;
-			}
-			if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
-				mainLoader->hNetscapeMsgWnd = view->observerWnd;
-			}
-		}
-		return TRUE;
-	}
-	else {
-		if (view->observerFlags & GOBSERVE_URLLOADING) {
-			// release all observer pointers around 
-			if (mainLoader)	mainLoader->hObserver.Release();
-			if (view->file) view->file->hObserver.Release();
-			if (mainLoader)	 // kill main URL loader
-			{
-   				mainLoader->Kill();
-   				mainLoader->unref();
-				mainLoader = NULL;
-			}
+// 			// kill all download activities for this window 
+// 			if (GetSafeHwnd()) {
 
-			// kill all download activities for this window 
-			if (GetSafeHwnd()) {
+// 				KillDownloads();
 
-				KillDownloads();
-
-				GFile *i= GFile::filesInUse;
+// 				GFile *i= GFile::filesInUse;
     
-				while(i != NULL) 
-				{
-					GFile *n = i->next;
-					if (i->hPostMsgWnd == GetSafeHwnd()) {
-						i->hObserver.Release();
-					}
-					i= n;
-				}
-			}
+// 				while(i != NULL) 
+// 				{
+// 					GFile *n = i->next;
+// 					if (i->hPostMsgWnd == GetSafeHwnd()) {
+// 						i->hObserver.Release();
+// 					}
+// 					i= n;
+// 				}
+// 			}
 
-		}
-		view->observer.Release();
-		view->observerFlags = 0 | (view->observerFlags & ~GOBSERVER_OBSERVE_MASK);
-		view->reportErrors = TRUE; // tmp
-		return  (observerUnk == NULL);
-	}
-}
+// 		}
+// 		view->observer.Release();
+// 		view->observerFlags = 0 | (view->observerFlags & ~GOBSERVER_OBSERVE_MASK);
+// 		view->reportErrors = TRUE; // tmp
+// 		return  (observerUnk == NULL);
+// 	}
+// }
 
 BOOL CGLViewCtrlCtrl::setObserverWnd(long  hWnd) 
 {

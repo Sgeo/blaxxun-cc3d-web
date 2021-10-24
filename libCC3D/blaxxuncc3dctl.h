@@ -94,6 +94,8 @@ class CCtrlReporter;
 
 class GvMFString;
 class GvNode;
+class GvScene;
+class GvField;
 
 
 /*
@@ -1026,7 +1028,7 @@ protected:
 	afx_msg void saveViewpoint(LPCTSTR viewpointName);
 	afx_msg BOOL setFullscreen(BOOL mode);
 	afx_msg BOOL removeNode(GvNode *node);
-	afx_msg BOOL setObserver(LPUNKNOWN observer, long flags);
+	//afx_msg BOOL setObserver(LPUNKNOWN observer, long flags); // TODO: Figure out Emscripten equivalent.
 	afx_msg BOOL loadURLfromFile(LPCTSTR url, LPCTSTR mimeType, LPCTSTR fileName);
 	afx_msg void onUrlNotify(LPCTSTR url, LPCTSTR mimeType, LPCTSTR fileName, long reason);
 	afx_msg BOOL setObserverWnd(long hwndHandle);
@@ -1038,8 +1040,8 @@ protected:
 	afx_msg void onUrlNotify2(LPCTSTR url, LPCTSTR mimeType, long lastModified, long size, LPCTSTR fileName, long reason);
 	afx_msg void printMessage(LPCTSTR message);
 	afx_msg void setViewpointByValue(float positionX, float positionY, float positionZ, float orientationX, float orientationY, float orientationZ, float orientationAngle, long mode);
-	afx_msg void getViewpointByValue(float FAR* positionX, float FAR* positionY, float FAR* positionZ, float FAR* orientationX, float FAR* orientationY, float FAR* orientationZ, float FAR* orientationAngle, long mode);
-	afx_msg BOOL getNodeBoundingBox(LPUNKNOWN node, long mode, float FAR* xmin, float FAR* ymin, float FAR* zmin, float FAR* xmax, float FAR* ymax, float FAR* zmax);
+	afx_msg void getViewpointByValue(float * positionX, float * positionY, float * positionZ, float * orientationX, float * orientationY, float * orientationZ, float * orientationAngle, long mode);
+	afx_msg BOOL getNodeBoundingBox(LPUNKNOWN node, long mode, float * xmin, float * ymin, float * zmin, float * xmax, float * ymax, float * zmax);
 	afx_msg void setUrl2(LPCTSTR url, long lastModified, long mode);
 	afx_msg long getInterfaceVersion();
 	afx_msg void setThirdPersonView(BOOL mode);
