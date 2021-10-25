@@ -281,4 +281,5 @@ BOOL GetClientRect(CRect *rect) {
 		setValue($0, Module.canvas.clientHeight, 'i32');
 		setValue($1, Module.canvas.clientWidth, 'i32');
 	}, &rect->bottom, &rect->right);
+    return 1;
 }

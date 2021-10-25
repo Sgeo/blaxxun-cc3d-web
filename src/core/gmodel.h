@@ -462,11 +462,11 @@ public:
 
 	HWND hWnd;			//!< hwnd of view if needed (e.g. for file notification)
 
-#ifdef _MFC
+//#ifdef _MFC
 	CMyglView *pView;	//!< back pointer to view if needed
 	void SetView(CMyglView *view) { pView = view; }
 
-#endif
+//#endif
 
 	//! object for passing back messages from view to controlling context
 	GViewController *viewController;

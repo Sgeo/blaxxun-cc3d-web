@@ -1364,10 +1364,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 
 	GetClientRect(&m_clientRect);
 
-	HKEY hKeyRoot=NULL;
 	CString val;
-
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
 
 	// initialize cursors 
 	hCurrentCursor = "default";
@@ -1482,7 +1479,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 
 
 #ifdef _OGL
-	if (view->Initialize(GetSafeHwnd(),hDC)<0) {
+	if (view->Initialize(NULL, NULL)<0) {
 		TRACE("Error during initialization \n");
 
 		return FALSE;
@@ -1501,6 +1498,8 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
  	BOOL  bOnlyEmulation = FALSE;
 
 	CString mode;
+
+	#define GetRegKey(a,b,c) FALSE
 
 	if (hKeyRoot && GetRegKey(hKeyRoot,_T("Direct3D.askHardware"),v))
 		m_askHardware = v;
@@ -1621,10 +1620,10 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 		theCache.SetUmelDirectoryPath(umelPath); 
 	}
 
-
+	void *hKeyRoot = NULL;
 	// get other settings 
 	if (hKeyRoot != NULL) {
-
+		#define GetRegKey(a,b,c) FALSE
 		if (1) { // caching flags 
 			if (GetRegKey(hKeyRoot,_T("Cache.verifyMode"),v)) {
 				if (v >= GCACHE_ALWAYS && v <= CCACHE_NEVER)
@@ -1808,17 +1807,17 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 	}
 	else {
 			// no registry settings yet, store at lease cache directory
-			HKEY hKeyRoot;
+			//HKEY hKeyRoot;
 			// SAVE settings to registry 
 			
-			if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+			// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
 
-				CString val;
-				val = GFile::cacheDirectory;
-				SetRegKey(hKeyRoot,_T("cache.directory"), val );
-				::RegCloseKey(hKeyRoot);
+			// 	CString val;
+			// 	val = GFile::cacheDirectory;
+			// 	SetRegKey(hKeyRoot,_T("cache.directory"), val );
+			// 	::RegCloseKey(hKeyRoot);
 
-			}
+			// }
 	}		
 
 
