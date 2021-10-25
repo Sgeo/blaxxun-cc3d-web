@@ -3513,8 +3513,8 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 
 
 
-#pragma message("I turned #if 1 to #if 0 even though I have no idea what this is for. m_nFlags and WF_MODALLOOP are both MFC")
-#if 0
+
+#if 1
 	if (m_nFlags &  WF_MODALLOOP ) { // new 07.07.99 hg 
 		TRACE("In modal loop \n");
 	}

@@ -255,7 +255,7 @@ void CString::Format(const char *format, ...) {
     char buf[255];
     vsnprintf(buf, sizeof(buf), format, args);
     va_end(args);
-    this += buf;
+    *this += buf;
 }
 
 
