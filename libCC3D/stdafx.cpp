@@ -274,6 +274,18 @@ HCURSOR SetCursor(HCURSOR cursor) {
     }, cursor);
 }
 
+void BeginWaitCursor() {
+    EM_ASM({
+        Module.canvas.style.cursor = 'wait';
+    });
+}
+
+void EndWaitCursor() {
+    EM_ASM({
+        Module.canvas.style.cursor = Module.cursorPtr ? UTF8ToString(Module.cursorPtr) : 'default';
+    });
+}
+
 BOOL GetClientRect(CRect *rect) {
 	rect->left = 0;
 	rect->top = 0;

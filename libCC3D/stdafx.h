@@ -263,6 +263,8 @@ typedef const char * HCURSOR; // Cursor represented as a string containing a val
 							  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
 
 HCURSOR SetCursor(HCURSOR cursor);
+void BeginWaitCursor();
+void EndWaitCursor();
 
 
 // WIN32 Critical section
@@ -884,7 +886,7 @@ public:
 */
 };
 BOOL GetClientRect(CRect*);
-
+#define InternalSetReadyState(a)
 
 
 

@@ -1834,13 +1834,9 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 
     StartTimer();
 	InternalSetReadyState(READYSTATE_INTERACTIVE);
-	HWND fg=::GetForegroundWindow();
-	m_dConsole = new DConsole(this);
-	m_dConsole->Create(DConsole::IDD,this); // hg this new 11.0.5.98
+	// m_dConsole = new DConsole(this);
+	// m_dConsole->Create(DConsole::IDD,this); // hg this new 11.0.5.98
 	//m_dConsole->ShowWindow(SW_SHOWNA);
-	if (::GetForegroundWindow() != fg) { // Thilo : reset foreground 
-			::SetForegroundWindow(fg);
-	}
 
 #ifdef _D3D
 	BOOL startDriverWasOk = TRUE;
@@ -1903,11 +1899,11 @@ LRESULT CGLViewCtrlCtrl::OnHardwareCheck(WPARAM wParam, LPARAM lParam)
 {
 	if (!m_dAskHardware) return 0;
 
+#ifdef _D3D
 	m_askHardware = !m_dAskHardware->m_dontAskAgain;
 	BOOL useHardware = m_dAskHardware->m_useHardware;
 	m_dAskHardware->DestroyWindow(); delete m_dAskHardware; m_dAskHardware = NULL; 
 
-#ifdef _D3D
 
 	if (useHardware) {
 
@@ -1954,11 +1950,7 @@ LRESULT CGLViewCtrlCtrl::OnHardwareCheck(WPARAM wParam, LPARAM lParam)
 
 void CGLViewCtrlCtrl::CloseAllDialogs() 
 {
-	if (m_dAskHardware) { m_dAskHardware->DestroyWindow(); delete m_dAskHardware; m_dAskHardware = NULL; }
-	if (m_dConsole)	
-		if ( (m_dConsole->GetSafeHwnd() != NULL) && m_dConsole->IsWindowVisible( )) 
-			m_dConsole->ShowWindow(SW_HIDE);
-	
+
 
 
 }
@@ -1991,7 +1983,7 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 	}
 
 	// validate window for OnPaint()
-	ValidateRect(NULL);
+	//ValidateRect(NULL);
 
 	if (m_useRenderThread) {
 		m_mustRedraw = TRUE;
