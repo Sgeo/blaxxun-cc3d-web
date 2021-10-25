@@ -337,7 +337,7 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 
 
 // Trace refcounter for debugging 
-#define TRACEREF() TRACE("Ref %d %s %d \n",m_dwRef,__FILE__,__LINE__);
+#define TRACEREF() TRACE("Ref <this was m_dwRef> %s %d \n",__FILE__,__LINE__);
 
 
 
@@ -1027,13 +1027,9 @@ CGLViewCtrlCtrl::CGLViewCtrlCtrl()
 	m_enableInteraction = TRUE;
 
 
-	m_fullSpeed = FALSE; 
-	SYSTEM_INFO si;
-	GetSystemInfo(&si);
-	if (si.dwProcessorType >=PROCESSOR_INTEL_PENTIUM)
-//#ifdef _KATMAI
+		// Originally depended on Pentium ~Sgeo
+
 		m_fullSpeed = TRUE; // should depend on system & HW 
-//#endif
 
 	m_verbose = FALSE; 
 
@@ -1042,7 +1038,7 @@ CGLViewCtrlCtrl::CGLViewCtrlCtrl()
 
 	m_dAskHardware = NULL;
 	m_dConsole = NULL;
-	m_dPad = NULL;
+
 
 
 	m_reporter = NULL;
@@ -1073,9 +1069,7 @@ CGLViewCtrlCtrl::CGLViewCtrlCtrl()
     m_sensorTest=TRUE;
 	m_anchorSingleClick = TRUE;
 	
-	m_pt				= NULL;
-	m_pd				= NULL;
-	m_threadFinished	= TRUE;
+
 
 	ResetMove();
 }
@@ -1098,18 +1092,7 @@ CGLViewCtrlCtrl::~CGLViewCtrlCtrl()
 	TRACE("CGLViewCtrlCtrl::~CGLViewCtrlCtrl() %p\n",this);
 	TRACEREF();
 	
-	// TODO: Cleanup your control's instance data here.
-	if ( m_pt != NULL ) 
-	{
-		if ( m_pd != NULL )
-			 m_pd->EndDialog(IDCANCEL);
-		else
-  			 m_pt->PostThreadMessage(WM_QUIT, NULL, 0);
 
-		while ( !m_threadFinished ) Sleep(200);
-		m_pt = NULL;
-		m_pd = NULL;
-	}
 
 	if (mainLoader)	 // should already happened in OnDestroy  kill main URL loader
     {
@@ -1149,13 +1132,12 @@ LRESULT CGLViewCtrlCtrl::OnStatusMessage(WPARAM wParam, LPARAM lParam)
 LRESULT CGLViewCtrlCtrl::OnConsoleMessage(WPARAM wParam, LPARAM lParam)
 {	BOOL popup = !(BOOL) wParam;
 	if (m_dConsole && m_reporter) {
-		//HWND fg=::GetForegroundWindow();
-		CWnd * fg  = GetForegroundWindow();
-
-		if (popup && !m_dConsole->m_hide) 
-			m_dConsole->ShowWindow(SW_SHOWNOACTIVATE); // SW_SHOWNA);
-		if (m_reporter->m_print.GetLength()>0) 
-			m_dConsole->AddText(m_reporter->m_print); 
+		
+		if (m_reporter->m_print.GetLength()>0) {
+			EM_ASM({
+				console.log($0);
+			}, *(m_reporter->m_print));
+		}
 		m_reporter->m_print = "";
 /*
 		if (::GetForegroundWindow() != fg) { // Thilo : reset foreground 
@@ -1993,7 +1975,7 @@ void CGLViewCtrlCtrl::CloseAllDialogs()
 		if ( (m_dConsole->GetSafeHwnd() != NULL) && m_dConsole->IsWindowVisible( )) 
 			m_dConsole->ShowWindow(SW_HIDE);
 	
-	if (m_dPad) { m_dPad->DestroyWindow(); delete m_dPad; m_dPad = NULL; }
+
 
 }
 
@@ -8657,25 +8639,25 @@ void CGLViewCtrlCtrl::OnUpdateView3rdPerson(CCmdUI* pCmdUI)
 void CGLViewCtrlCtrl::OnViewPad() 
 {
 	// TODO: Add your command handler code here
-	if (m_dPad) { m_dPad->DestroyWindow(); delete m_dPad; m_dPad = NULL; }
-	else 
-	if (m_dPad == NULL) {
-		m_dPad = 	new CPropertySheet(_T("CC3D control pad"),this);
-		DPadViewpoints *pVp =new DPadViewpoints(); 
-		DPadAvatarView *pAv =new DPadAvatarView(); 
-		pVp->view =view;
-		m_dPad->AddPage(pVp);
-		m_dPad->AddPage(pAv);
-		pAv->view =view;
-		DWORD flags = WS_SYSMENU | WS_POPUP | WS_CAPTION | DS_MODALFRAME |  WS_VISIBLE;
+	// if (m_dPad) { m_dPad->DestroyWindow(); delete m_dPad; m_dPad = NULL; }
+	// else 
+	// if (m_dPad == NULL) {
+	// 	m_dPad = 	new CPropertySheet(_T("CC3D control pad"),this);
+	// 	DPadViewpoints *pVp =new DPadViewpoints(); 
+	// 	DPadAvatarView *pAv =new DPadAvatarView(); 
+	// 	pVp->view =view;
+	// 	m_dPad->AddPage(pVp);
+	// 	m_dPad->AddPage(pAv);
+	// 	pAv->view =view;
+	// 	DWORD flags = WS_SYSMENU | WS_POPUP | WS_CAPTION | DS_MODALFRAME |  WS_VISIBLE;
    
-		if (m_dPad->Create(this,flags, WS_EX_DLGMODALFRAME |  WS_EX_TOOLWINDOW)) {
-			m_dPad->ShowWindow(SW_SHOWNORMAL);	
-		}
+	// 	if (m_dPad->Create(this,flags, WS_EX_DLGMODALFRAME |  WS_EX_TOOLWINDOW)) {
+	// 		m_dPad->ShowWindow(SW_SHOWNORMAL);	
+	// 	}
 	
-	} else {
-		m_dPad->ShowWindow(SW_SHOWNORMAL);	
-	}
+	// } else {
+	// 	m_dPad->ShowWindow(SW_SHOWNORMAL);	
+	// }
 
 	
 }

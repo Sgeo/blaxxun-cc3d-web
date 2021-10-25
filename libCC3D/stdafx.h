@@ -148,6 +148,7 @@ typedef LONG HRESULT;
 typedef double SYSTEMTIME;
 
 #define afx_msg
+#define AFX_MANAGE_STATE(x)
 
 typedef LONG LRESULT;
 
@@ -273,6 +274,9 @@ inline void EnterCriticalSection( LPCRITICAL_SECTION lpCriticalSection)
 {}
 
 inline void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
+{}
+
+inline void DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
 {}
 
 inline long InterlockedDecrement(long * l) { l--; return *l; }
