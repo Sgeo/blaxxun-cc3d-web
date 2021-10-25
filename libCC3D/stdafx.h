@@ -591,6 +591,8 @@ public:
 
 	const CString& operator+=(TCHAR ch);
 
+	void Format(const char *format, ...);
+
 /*
 	friend CString AFXAPI operator+(const CString& string, TCHAR ch);
 	friend CString AFXAPI operator+(TCHAR ch, const CString& string);

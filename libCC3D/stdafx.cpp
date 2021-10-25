@@ -3,6 +3,7 @@
 #include "stdafx.h"
 
 #include <stdio.h>
+#include <cstdarg>
 
 #include <emscripten.h>
 
@@ -246,6 +247,15 @@ bool  operator==(const CString& string, LPCTSTR lpsz)
 bool  operator==(const CString& string1,const CString& string2)
 { 
     return string1.s== string2.s || (strcmp(string1.s,string2.s)==0); 
+}
+
+void CString::Format(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    char buf[255];
+    vsnprintf(buf, sizeof(buf), format, args);
+    va_end(args);
+    this += buf;
 }
 
 
