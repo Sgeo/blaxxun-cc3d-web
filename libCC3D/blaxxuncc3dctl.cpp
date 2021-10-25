@@ -1337,30 +1337,15 @@ void CGLViewCtrlCtrl::Redraw()
 	else 
 	{
 		// short cut 
-		InvalidateRect(NULL, FALSE);
+		//InvalidateRect(NULL, FALSE);
+		EM_ASM({
+			console.warn("Redraw() called but InvalidateRect doesn't exist. What to do?");
+		});
 		//InvalidateControl(); // does more 
 	}
 }
 
-// get the onlySystemMemory Direct 3D setting flag 
-BOOL GetSysMemFlag()
-{
-	HKEY hKeyRoot=NULL;
-	CString val;
-	
-	BOOL bOnlySystemMemory = TRUE; // change default to TRUE, HW uses video automatically
 
-
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
-
-	if (hKeyRoot && GetRegKey(hKeyRoot,_T("Direct3D.onlySystemMemory"), bOnlySystemMemory)) {
-	}
-
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
-
-	return bOnlySystemMemory;
-
-}
 
 
 
