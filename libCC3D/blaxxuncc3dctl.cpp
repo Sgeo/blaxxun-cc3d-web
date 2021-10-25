@@ -1655,7 +1655,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 
 			} else { // store initial value 
 				val = GFile::cacheDirectory;
-				SetRegKey(hKeyRoot,_T("cache.directory"), val );
+				//SetRegKey(hKeyRoot,_T("cache.directory"), val );
 			}			
 
 
@@ -1803,7 +1803,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 		if (GetRegKey(hKeyRoot,_T("Sound.doppler"),v))
 			view->soundDoppler = v != 0;
 
-		::RegCloseKey(hKeyRoot);
+		//::RegCloseKey(hKeyRoot);
 	}
 	else {
 			// no registry settings yet, store at lease cache directory
