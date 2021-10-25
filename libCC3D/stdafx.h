@@ -259,6 +259,11 @@ class CCmdUI {
 	void *m_pSubMenu;
 };
 
+typedef const char * HCURSOR; // Cursor represented as a string containing a valid value for the 'cursor' CSS property
+							  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
+
+HCURSOR SetCursor(HCURSOR cursor);
+
 
 // WIN32 Critical section
 // need if multiple plugins are sharing global data

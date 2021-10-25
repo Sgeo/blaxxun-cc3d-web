@@ -311,8 +311,7 @@ public:
 	// set state, if user currently is in collision during movement
 	void SetCollisionState(BOOL newState);
 
-	typedef const char * HCURSOR; // Cursor represented as a string containing a valid value for the 'cursor' CSS property
-								  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
+
 
 	
 	HCURSOR NavCursors[NAV_CURSOR_MAX]; //!> cursor handles 

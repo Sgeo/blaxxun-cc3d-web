@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+#include <emscripten.h>
+
  
 
 // emulation for MFC CString 
@@ -261,4 +263,13 @@ void CCmdUI::SetRadio(BOOL radio) {
 
 void CCmdUI::SetText(LPCTSTR text) {
     printf("CCmdUI::SetText not implemented yet!\n");   
+}
+
+HCURSOR SetCursor(HCURSOR cursor) {
+    return (HCURSOR)EM_ASM_INT({
+        let old = Module.cursorPtr ?? 0;
+        Module.cursorPtr = $0;
+        Module.canvas.style.cursor = UTF8ToString($0);
+        return old;
+    }, cursor);
 }

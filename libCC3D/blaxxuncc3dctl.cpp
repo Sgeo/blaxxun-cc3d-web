@@ -1175,26 +1175,26 @@ void CGLViewCtrlCtrl::Message(const char *message,int messageType)
 
 #endif
   
-	USES_CONVERSION;
+	//USES_CONVERSION;
 
-	// check if observer wants the message 
-	if (view->observerFlags & GOBSERVE_MESSAGE) {
-		view->observer->OnStatusMessage((BSTR) T2COLE(lastMessage),lastMessageType);
-		return;
-	}
-	if (view->observerFlags & GOBSERVE_WM_MESSAGE) {
-		// hg ::SendMessage(view->observerWnd, WM_USER + 500, (WPARAM) (const char*)lastMessage,lastMessageType);
-		// hg new 
-		::PostMessage(view->observerWnd, WM_USER + 500, (WPARAM) (const char*)lastMessage,lastMessageType);
-		return;
-	}
+	// // check if observer wants the message 
+	// if (view->observerFlags & GOBSERVE_MESSAGE) {
+	// 	view->observer->OnStatusMessage((BSTR) T2COLE(lastMessage),lastMessageType);
+	// 	return;
+	// }
+	// if (view->observerFlags & GOBSERVE_WM_MESSAGE) {
+	// 	// hg ::SendMessage(view->observerWnd, WM_USER + 500, (WPARAM) (const char*)lastMessage,lastMessageType);
+	// 	// hg new 
+	// 	::PostMessage(view->observerWnd, WM_USER + 500, (WPARAM) (const char*)lastMessage,lastMessageType);
+	// 	return;
+	// }
 
 
 
-	if (m_pInPlaceFrame == NULL) return; 
+	// if (m_pInPlaceFrame == NULL) return; 
 
-	// notify container of new status text
- 	m_pInPlaceFrame->SetStatusText(T2COLE(message));
+	// // notify container of new status text
+ 	// m_pInPlaceFrame->SetStatusText(T2COLE(message));
 
 }
 
