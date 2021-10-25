@@ -252,9 +252,9 @@ BOOL CModalThread::InitInstance()
 
 void CGLViewCtrlCtrl::DoThreadModalUpdateMenu(CMenu* menu) 
 {
-	// thilo 15.07.99: zusätzlicher code damit die checkmarks
-	// im popup-menü funktionieren. vor anzeige des menüs wird
-	// die menüstruktur durchlaufen und für jedes item der ent-
+	// thilo 15.07.99: zusÃ¤tzlicher code damit die checkmarks
+	// im popup-menÃ¼ funktionieren. vor anzeige des menÃ¼s wird
+	// die menÃ¼struktur durchlaufen und fÃ¼r jedes item der ent-
 	// sprechende command-update handler aufgeufen.
 
 	CCmdUI state;
@@ -4157,7 +4157,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
     case (UINT)'9' : view->followOrbit.setx(view->followOrbit.x() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)'0' : view->followOrbit.setx(view->followOrbit.x() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
-    case (UINT)'§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
+    case (UINT)'Â§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)')' : view->followOrbit.sety(view->followOrbit.y() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
 
     case (UINT)'A' : {
@@ -5184,7 +5184,7 @@ void CGLViewCtrlCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 
 
-	// we don´t need timers 
+	// we donÂ´t need timers 
 	if (m_timerRunning && updateLock >0) 
 		StopTimer();
 
@@ -5809,7 +5809,7 @@ BOOL CGLViewCtrlCtrl::OnEraseBkgnd(CDC* pDC)
 		return COleControl::OnEraseBkgnd(pDC);
 #endif
 
-	return TRUE; // don´t erase 
+	return TRUE; // donÂ´t erase 
 
 	//return COleControl::OnEraseBkgnd(pDC);
 }
@@ -7136,7 +7136,7 @@ void CGLViewCtrlCtrl::OnOptionsDriver(UINT id)
 		else SetProfile(_T("Direct3D.driverOk"),1);				
 
 	} else {
-		 // couldn´t handle, fallback to software 			
+		 // couldnÂ´t handle, fallback to software 			
 		if (view->device->CurrDriver != view->device->SoftwareDriver)		
         if (!view->device->ChangeDriver(view->device->SoftwareDriver,NULL)) {
 				view->ReportD3DError();
@@ -7393,7 +7393,7 @@ void CGLViewCtrlCtrl::replaceWorld(LPUNKNOWN node)
 }
 
 // load the url given, parameter could be "target=frameName"
-// EAI url and parameter are MF´s !!
+// EAI url and parameter are MFÂ´s !!
 void CGLViewCtrlCtrl::loadURL(LPCTSTR url, LPCTSTR parameter) 
 {
 	EAI_CALL("loadURL")
@@ -11412,7 +11412,7 @@ void CGLViewCtrlCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 		{
 			// HG test, try to set prev module state // see
 			
-			// thilo 15.07.99: folgende zeile führt zum crash in netscape
+			// thilo 15.07.99: folgende zeile fÃ¼hrt zum crash in netscape
 			// verstehe auch nicht, was die hier bewirken soll, deshalb auskommentiert.
 			// AFX_MANAGE_STATE(AfxGetThreadState()->m_pPrevModuleState);
 
