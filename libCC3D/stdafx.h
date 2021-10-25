@@ -883,6 +883,8 @@ public:
 	CRect MulDiv(int nMultiplier, int nDivisor) const;
 */
 };
+BOOL GetClientRect(CRect*);
+
 
 
 

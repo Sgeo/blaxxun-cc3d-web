@@ -273,3 +273,12 @@ HCURSOR SetCursor(HCURSOR cursor) {
         return old;
     }, cursor);
 }
+
+BOOL GetClientRect(CRect *rect) {
+	rect->left = 0;
+	rect->top = 0;
+	EM_ASM({
+		setValue($0, Module.canvas.clientHeight, 'i32');
+		setValue($1, Module.canvas.clientWidth, 'i32');
+	}, &rect->bottom, &rect->right);
+}

@@ -4234,13 +4234,8 @@ int CGLViewCtrlCtrl::OnCreate()
 	//TRACEREF();
 
 
-	// GetClientRect(&m_clientRect);
-	m_clientRect.left = 0;
-	m_clientRect.top = 0;
-	EM_ASM({
-		setValue($0, Module.canvas.clientHeight, 'i32');
-		setValue($1, Module.canvas.clientWidth, 'i32');
-	}, &m_clientRect.bottom, &m_clientRect.right);
+	GetClientRect(&m_clientRect);
+
 
 	return 0;
 }
