@@ -662,7 +662,6 @@ END_DISPATCH_MAP()
     val.ReleaseBuffer();
     RegCloseKey(hkey);
 	*/
-}
 
 
 
@@ -883,87 +882,6 @@ STDMETHODIMP CBindStatusCallback::OnProgress(ULONG ulProgress,
 // CGLViewCtrlCtrl::CGLViewCtrlCtrlFactory::UpdateRegistry -
 // Adds or removes system registry entries for CGLViewCtrlCtrl
 
-BOOL CGLViewCtrlCtrl::CGLViewCtrlCtrlFactory::UpdateRegistry(BOOL bRegister)
-{
-	// TODO: Verify that your control follows apartment-model threading rules.
-	// Refer to MFC TechNote 64 for more information.
-	// If your control does not conform to the apartment-model rules, then
-	// you must modify the code below, changing the 6th parameter from
-	// afxRegInsertable | afxRegApartmentThreading to afxRegInsertable.
-
-	if (bRegister) {
-		BOOL retval = AfxOleRegisterControlClass(
-			AfxGetInstanceHandle(),
-			m_clsid,
-			m_lpszProgID,
-			IDS_GLVIEWCTRL,
-			IDB_GLVIEWCTRL,
-			afxRegInsertable | afxRegApartmentThreading,
-			_dwGLViewCtrlOleMisc,
-			_tlid,
-			_wVerMajor,
-			_wVerMinor);
-
-#ifdef REG_MIME
-		int regMime=1;
-		int regExt=1; // testt 
-
-		// query option from install program, if we should register mimetypes 
-		HKEY key=NULL;
-
-		if (::RegOpenKey(HKEY_CLASSES_ROOT,m_lpszProgID,&key) ==
-			ERROR_SUCCESS) {
-			if (GetRegKey(key,_T("RegisterMimeTypes"),regMime)) {
-				SetRegKey(key,_T("RegisterMimeTypes"),1); // reset for next time
-			}
-			if (GetRegKey(key,_T("RegisterExtensions"),regExt)) {
-				SetRegKey(key,_T("RegisterExtensions"),1); // reset for next time put in back 23.02.98 HG
-			}
-			::RegCloseKey(key);
-		}
-		if (retval) {
-#ifdef _DEBUG_XXX
-				CString msg;
-				msg.Format("Registering mimetypes %s  RegisterMimeTypes = %d RegisterExtensions = %d",m_lpszProgID,regMime,regExt);
-				AfxMessageBox(msg);
-#endif
-			
-			RegisterMimeTypes(m_clsid,m_lpszProgID,regMime,regExt);
-
-		}
-#endif
-
-
-		// mark as safe for scripting--failure OK
-		HRESULT hr = CreateComponentCategory(CATID_SafeForScripting, 
-			L"Controls that are safely scriptable");
-
-		if (SUCCEEDED(hr))
-			// only register if category exists
-			RegisterCLSIDInCategory(m_clsid, CATID_SafeForScripting);
-			// don't care if this call fails
-
-		// mark as safe for data initialization
-		hr = CreateComponentCategory(CATID_SafeForInitializing, 
-			L"Controls safely initializable from persistent data");
-
-		if (SUCCEEDED(hr))
-			// only register if category exists
-			RegisterCLSIDInCategory(m_clsid, CATID_SafeForInitializing);
-			// don't care if this call fails
-
-		return retval;
-
-	}
-	else {
-		// delete preferences 
-		RecursiveRegDeleteKey(HKEY_CURRENT_USER, USER_KEY);
-		if (AfxOleUnregisterClass(m_clsid, m_lpszProgID)) {
-			UnregisterMimeTypes(m_clsid,m_lpszProgID,TRUE,TRUE);
-			return TRUE;
-		} else return FALSE; 
-	}
-}
 
 
 // #define  _HAS_OSVERSIONINFOEX
@@ -972,123 +890,8 @@ BOOL CGLViewCtrlCtrl::CGLViewCtrlCtrlFactory::UpdateRegistry(BOOL bRegister)
 // get system info 
 BOOL GetSystemVersionDisplay(CString &s,CString &version)
 {
-
-#ifdef _HAS_OSVERSIONINFOEX
-	// W2000 coded , supported in VC 6.0 
-
-   OSVERSIONINFOEX osvi;
-   BOOL bOsVersionInfoEx;
-
-   // Try calling GetVersionEx using the OSVERSIONINFOEX structure,
-   // which is supported on Windows 2000.
-   //
-   // If that fails, try using the OSVERSIONINFO structure.
-
-   ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-   if( !(bOsVersionInfoEx = GetVersionEx ((OSVERSIONINFO *) &osvi)) )
-   {
-      // If OSVERSIONINFOEX doesn't work, try OSVERSIONINFO.
-
-      osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-      if (! GetVersionEx ( (OSVERSIONINFO *) &osvi) ) 
-         return FALSE;
-   }
-
-#else
-	// VC 50. safe
-	OSVERSIONINFO osvi;
-    BOOL bOsVersionInfoEx=FALSE;
-
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-
-    osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-    if (! GetVersionEx ( (OSVERSIONINFO *) &osvi) ) 
-         return FALSE;
-
-#endif
-
-
-   switch (osvi.dwPlatformId)
-   {
-      case VER_PLATFORM_WIN32_NT:
-
-      // Test for the product.
-
-         if ( osvi.dwMajorVersion <= 4 )
-            s = ("Microsoft Windows NT ");
-
-         if ( osvi.dwMajorVersion == 5 )
-            s = ("Microsoft Windows 2000 ");
-
-      // Test for workstation versus server.
-#ifdef VER_NT_WORKSTATION
-         if( bOsVersionInfoEx )
-         {
-            if ( osvi.wProductType == VER_NT_WORKSTATION )
-               s+=  ( "Professional " );
-
-            if ( osvi.wProductType == VER_NT_SERVER )
-               s+= ( "Server " );
-         }
-         else
-#endif
-         {
-            HKEY hKey;
-            char szProductType[80];
-            DWORD dwBufLen;
-
-            RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-               "SYSTEM\\CurrentControlSet\\Control\\ProductOptions",
-               0, KEY_QUERY_VALUE, &hKey );
-            RegQueryValueEx( hKey, "ProductType", NULL, NULL,
-               (LPBYTE) szProductType, &dwBufLen);
-            RegCloseKey( hKey );
-            if ( lstrcmpi( "WINNT", szProductType) == 0 )
-               s+= ( "Workstation " );
-            if ( lstrcmpi( "SERVERNT", szProductType) == 0 )
-               s+= ( "Server " );
-         }
-
-      // Display version, service pack (if any), and build number.
-
-         version.Format ("version %d.%d %s (Build %d)\n",
-            osvi.dwMajorVersion,
-            osvi.dwMinorVersion,
-            osvi.szCSDVersion,
-            osvi.dwBuildNumber & 0xFFFF);
-
-
-         break;
-
-      case VER_PLATFORM_WIN32_WINDOWS:
-
-         if ((osvi.dwMajorVersion > 4) || 
-            ((osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0)))
-         {
-             s = ("Microsoft Windows 98 ");
-         } 
-         else s =("Microsoft Windows 95 ");
-         version.Format ("version %d.%d %s (Build %d)\n",
-            osvi.dwMajorVersion,
-            osvi.dwMinorVersion,
-            osvi.szCSDVersion,
-            osvi.dwBuildNumber & 0xFFFF);
-
-         break;
-
-      case VER_PLATFORM_WIN32s:
-
-         s = ("Microsoft Win32s ");
-         version.Format ("version %d.%d %s (Build %d)\n",
-            osvi.dwMajorVersion,
-            osvi.dwMinorVersion,
-            osvi.szCSDVersion,
-            osvi.dwBuildNumber & 0xFFFF);
-
-         break;
-   }
+   s = "Emscripten";
+   version = "1.0";
    return TRUE; 
 }
 
@@ -1098,7 +901,6 @@ BOOL GetSystemVersionDisplay(CString &s,CString &version)
 
 CGLViewCtrlCtrl::CGLViewCtrlCtrl() 
 {
-	InitializeIIDs(&IID_DGLViewCtrl, &IID_DGLViewCtrlEvents);
 
 	TRACE("CGLViewCtrlCtrl::CGLViewCtrlCtrl() %p\n",this);
 
@@ -1128,7 +930,6 @@ CGLViewCtrlCtrl::CGLViewCtrlCtrl()
 	m_fullscreenOnStartup = FALSE;
 	m_hideCursor = FALSE;
 
-	m_lReadyState = READYSTATE_LOADING;
 	// TODO: Call InternalSetReadyState when the readystate changes.
 
 	// Initialize your control's instance data here.
@@ -1225,7 +1026,6 @@ CGLViewCtrlCtrl::CGLViewCtrlCtrl()
 	m_initialized = FALSE;
 	m_enableInteraction = TRUE;
 
-	m_pDC = NULL;
 
 	m_fullSpeed = FALSE; 
 	SYSTEM_INFO si;
@@ -2207,10 +2007,8 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 
 	if (!m_initialized) // not initialized yet, do it now !
     {
-		HWND hwnd = GetSafeHwnd();
-		if (!m_pDC) m_pDC = GetDC(); 
 
-		if (!Initialize(m_pDC->m_hDC)) 
+		if (!Initialize(NULL)) 
 			return;
 		//ReleaseDC(m_pDC); at the end released
 		
@@ -8473,8 +8271,7 @@ BOOL CGLViewCtrlCtrl::setObserverWnd(long  hWnd)
     }
 	if (!m_initialized) {
 		HWND hwnd = GetSafeHwnd();
-		if (!m_pDC) m_pDC = GetDC(); 
-		if (!Initialize(m_pDC->m_hDC)) return FALSE;
+		if (!Initialize(NULL)) return FALSE;
 	}
 
 	view->observerWnd = (HWND) hWnd;
@@ -8519,8 +8316,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 
 	if (!m_initialized) {
 		HWND hwnd = GetSafeHwnd();
-		if (!m_pDC) m_pDC = GetDC(); 
-		if (!Initialize(m_pDC->m_hDC)) return FALSE;
+		if (!Initialize(NULL)) return FALSE;
 	}
 
    ViewLock viewLock(view); 
