@@ -2123,8 +2123,8 @@ void CGLViewCtrlCtrl::OnPaint(/* CDC* pDC */)
 
 }
 
-BOOL PX_String(const char *propName, CString& value, CString default) {
-	char *value_c = value();
+BOOL PX_String(const char *propName, CString& value, CString def) {
+	const char *value_c = &*value;
 	EM_ASM({
 		let propName = UTF8ToString($0);
 		let result = Module?.params[propName];
@@ -2135,7 +2135,22 @@ BOOL PX_String(const char *propName, CString& value, CString default) {
 		} else {
 			setValue($1, $2, '*');
 		}
-	}, propName, value_c, default());
+	}, propName, value_c, *def);
+	value = value_c;
+	return 1;
+}
+
+BOOL PX_String(const char *propName, CString& value) {
+	const char *value_c = &*value;
+	EM_ASM({
+		let propName = UTF8ToString($0);
+		let result = Module?.params[propName];
+		if(result !== undefined) {
+			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
+			stringToUTF8(result, resultHeap);
+			setValue($1, resultHeap, '*');
+		}
+	}, propName, value_c);
 	value = value_c;
 	return 1;
 }
