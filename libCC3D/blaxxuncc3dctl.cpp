@@ -2504,6 +2504,7 @@ void CGLViewCtrlCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
  
+#pragma message("Remember that special keys are passed in as shifted 8 bits to the left")
 void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
 
