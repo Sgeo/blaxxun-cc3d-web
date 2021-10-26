@@ -2204,19 +2204,19 @@ void CGLViewCtrlCtrl::DoPropExchange()
 		
 		PX_String("FULLSCREEN-MODE", fullscreenMode); // 4.3
 	
-		PX_ULong(pPX,  "TIMER-INTERVAL", timerInterval, 0); //4.3
+		PX_ULong( "TIMER-INTERVAL", timerInterval, 0); //4.3
 
 		PX_String("AVATAR-URL", avatarUrl);  //4.3
 		PX_String("AVATAR-DISPLAY", avatarMode);  //4.3
 
 		//
-		PX_Bool(pPX, "FORCE-HW", m_driverHints->m_useHW);  //4.3
-		PX_Bool(pPX, "FORCE-RGB", m_driverHints->m_useRgb);  //4.3
-		PX_Bool(pPX, "HW-PROBLEM-CHECK", m_forceHwProblemCheck);  //4.3
-		PX_Bool(pPX, "HIDE-CURSOR", m_hideCursor);  //4.3
+		PX_Bool("FORCE-HW", m_driverHints->m_useHW);  //4.3
+		PX_Bool("FORCE-RGB", m_driverHints->m_useRgb);  //4.3
+		PX_Bool("HW-PROBLEM-CHECK", m_forceHwProblemCheck);  //4.3
+		PX_Bool("HIDE-CURSOR", m_hideCursor);  //4.3
 
-		// PX_String(pPX, "BACKGROUND-COLOR", backgroundColor); // 4.3
-		// PX_String(pPX, "BACKGROUND-IMAGE", backgroundImage); // 4.3
+		// PX_String("BACKGROUND-COLOR", backgroundColor); // 4.3
+		// PX_String("BACKGROUND-IMAGE", backgroundImage); // 4.3
 
 	
 		if ( (dash.Compare("0")==0) || (dash.CompareNoCase("false")==0)) {
