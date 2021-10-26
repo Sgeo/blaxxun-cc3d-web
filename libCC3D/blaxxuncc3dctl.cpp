@@ -2155,6 +2155,32 @@ BOOL PX_String(const char *propName, CString& value) {
 	return 1;
 }
 
+BOOL PX_ULong(const char *propName, ULONG& value, long def) {
+	EM_ASM({
+		let propName = UTF8ToString($0);
+		let result = Module?.params[propName];
+		if(result !== undefined) {
+			setValue($1, result, 'u32');
+		} else {
+			setValue($1, $2, 'u32');
+		}
+	}, propName, &value, def);
+	return 1;
+}
+
+BOOL PX_Bool(const char *propName, BOOL& value) {
+	EM_ASM({
+		let propName = UTF8ToString($0);
+		let result = Module?.params[propName];
+		if(result !== undefined) {
+			setValue($1, result, 'u32');
+		} else {
+			setValue($1, 0 'u32');
+		}
+	}, propName, &value);
+	return 1;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl::DoPropExchange - Persistence support
 
