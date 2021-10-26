@@ -656,6 +656,14 @@ public:
            return CString();
     }
 
+    CString Mid( int i, int count )
+    {
+       if( i <= strlen( s ))
+           return CString( s + i, count );
+       else
+           return CString();
+
+    }
 /*
 	// searching (return starting index, or -1 if not found)
 	// look for a single character match
