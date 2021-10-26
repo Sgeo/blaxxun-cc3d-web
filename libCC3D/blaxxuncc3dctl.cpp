@@ -2141,7 +2141,7 @@ BOOL PX_String(const char *propName, CString& value, CString def) {
 }
 
 BOOL PX_String(const char *propName, CString& value) {
-	const char *value_c = &*value;
+	const char *value_c = (const char *)value;
 	EM_ASM({
 		let propName = UTF8ToString($0);
 		let result = Module?.params[propName];
