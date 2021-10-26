@@ -2446,7 +2446,7 @@ int CGLViewCtrlCtrl::SetCameraMode(const char *mode_)
 	
     if (newMode>=0) return SetCameraMode(newMode);
 	else { 
-		TRACE("Bad camera mode %s \n",mode); 
+		TRACE("Bad camera mode %s \n",(const char *)mode); 
 		return(0);
 	}
 }
