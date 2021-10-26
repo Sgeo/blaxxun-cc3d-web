@@ -2291,15 +2291,7 @@ void CGLViewCtrlCtrl::DoPropExchange()
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl::AboutBox - Display an "About" box to the user
 
-void CGLViewCtrlCtrl::AboutBox()
-{
-	CDialog dlgAbout(IDD_ABOUTBOX_GLVIEWCTRL);
-	AFX_MANAGE_STATE(_afxModuleAddrThis);
 
-	//dlgAbout.DoModal();
-	DoThreadModal(&dlgAbout);
-
-}
 
 
 /////////////////////////////////////////////////////////////////////////////

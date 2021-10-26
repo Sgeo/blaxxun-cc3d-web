@@ -607,6 +607,7 @@ public:
 
 	// string comparison
 	int Compare(LPCTSTR lpsz) const { return strcmp(s,lpsz);  } 	// straight character
+	int CompareNoCase(LPCTSTR lpsz) const { return strcasecmp(s,lpsz); }
 	friend bool operator==(const CString& string, LPCTSTR lpsz);
 	friend bool operator==(const CString& string1,const CString& string2);
 

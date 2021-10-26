@@ -1180,7 +1180,6 @@ protected:
 
 
 
-	afx_msg void AboutBox();
 
 // Event maps
 	//{{AFX_EVENT(CGLViewCtrlCtrl)
