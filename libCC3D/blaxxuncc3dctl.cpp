@@ -2807,67 +2807,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			//	Message(CString("Viewer mode is now ") + GetCameraModeString(GetCameraMode()));
                 break;
 //#ifdef _DEBUG
-			case (UINT)'M' :
-				{
-				MEMORYSTATUS stat;
-				GReporter *reporter = GetReporter();
 
-				GlobalMemoryStatus (&stat);
-
-				SYSTEM_INFO si;
-				GetSystemInfo(&si);
-
-				#define DIV 1024
-				// #define DIV 1
-
-				char *divisor = "K";
-
-				// char *divisor = "";
-
-				char buf[512];
-				// Handle the width of the field in which to print numbers this way to
-				// make changes easier. The asterisk in the print format specifier
-				// "%*ld" takes an int from the argument list, and uses it to pad and
-				// right-justify the number being formatted.
-				#define WIDTH 7
-
-				  TRACE ("The MemoryStatus structure is %ld bytes long.\n", stat.dwLength);
-				  TRACE ("It should be %d.\n", sizeof (stat));
-				  TRACE ("%ld percent of memory is in use.\n",
-						  stat.dwMemoryLoad);
-
-				  sprintf(buf,"Memory Status : %ld used",stat.dwMemoryLoad);	
-				  if (reporter) reporter->Trace(buf);
-
-				  TRACE ("There are %*ld total %sbytes of physical memory.\n",
-						  WIDTH, stat.dwTotalPhys/DIV, divisor);
-				  TRACE ("There are %*ld free %sbytes of physical memory.\n",
-						  WIDTH, stat.dwAvailPhys/DIV, divisor);
-
-				  sprintf(buf,"%*ld free %sB/%*ld total %sB physical memory",WIDTH, stat.dwAvailPhys/DIV, divisor, WIDTH, stat.dwTotalPhys/DIV, divisor);	
-				  if (reporter) reporter->Trace(buf);
-
-
-				  TRACE ("There are %*ld total %sbytes of paging file.\n",
-						  WIDTH, stat.dwTotalPageFile/DIV, divisor);
-				  TRACE ("There are %*ld free %sbytes of paging file.\n",
-						  WIDTH, stat.dwAvailPageFile/DIV, divisor);
-				  
-				  sprintf(buf,"%*ld free %sB  / %*ld total %sBs paging file ",WIDTH, stat.dwAvailPageFile/DIV, divisor,
-						WIDTH, stat.dwTotalPageFile/DIV, divisor);
-				  if (reporter) reporter->Trace(buf);
-
-				  TRACE ("There are %*ld total %sbytes of virtual memory.\n",
-						  WIDTH, stat.dwTotalVirtual/DIV, divisor);
-				  TRACE ("There are %*ld free %sbytes of virtual memory.\n",
-						  WIDTH, stat.dwAvailVirtual/DIV, divisor);
-
-				  sprintf(buf,"%*ld free %sB / %*ld total %sbytes of virtual memory", WIDTH, stat.dwAvailVirtual/DIV, divisor,WIDTH, stat.dwTotalVirtual/DIV, divisor);
-				  if (reporter) reporter->Trace(buf);
-
-
-				}				
-				break;
 
 //#endif
     case (UINT)'S' :
@@ -2990,7 +2930,6 @@ void CGLViewCtrlCtrl::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (!m_initialized) 
 	{
-		COleControl::OnKeyUp(nChar, nRepCnt, nFlags);
 		return;
 	}
 
@@ -3031,7 +2970,6 @@ void CGLViewCtrlCtrl::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 */
 
 
-	COleControl::OnKeyUp(nChar, nRepCnt, nFlags);
 }
 
 
@@ -3041,13 +2979,15 @@ LRESULT MySendMessage( HWND hWnd,
     WPARAM wParam,
     LPARAM lParam)
 {
-	DWORD dwResult; 
+	// DWORD dwResult; 
 
-	CWnd *observerCwnd=CWnd::FromHandlePermanent(hWnd);		
-	if (observerCwnd) 
-		return observerCwnd->SendMessage(Msg, wParam, lParam);
-	//else return ::SendMessage(hWnd, Msg, wParam, lParam);
-	else return ::SendMessageTimeout(hWnd, Msg, wParam, lParam,SMTO_ABORTIFHUNG,100,&dwResult); // not in win32s
+	// CWnd *observerCwnd=CWnd::FromHandlePermanent(hWnd);		
+	// if (observerCwnd) 
+	// 	return observerCwnd->SendMessage(Msg, wParam, lParam);
+	// //else return ::SendMessage(hWnd, Msg, wParam, lParam);
+	// else return ::SendMessageTimeout(hWnd, Msg, wParam, lParam,SMTO_ABORTIFHUNG,100,&dwResult); // not in win32s
+	#pragma message("TODO: MySendMessage?")
+	return 0;
 
 
 }
