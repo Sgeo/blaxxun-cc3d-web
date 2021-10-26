@@ -217,6 +217,7 @@ Changes:
 // #include <idispids.h> // READYSTATE 
 
 #include <emscripten.h>
+#include <GL/glut.h>
 
 
 #ifdef _DEBUG
@@ -2500,7 +2501,6 @@ void CGLViewCtrlCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	
-	COleControl::OnChar(nChar, nRepCnt, nFlags);
 }
 
  
@@ -2510,7 +2510,6 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (!m_initialized) 
 	{
-		COleControl::OnKeyDown(nChar, nRepCnt, nFlags);
 		return;
 	}
 	if (view) {
@@ -2532,7 +2531,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	switch (nChar) {
 	// **** ASCII Keys now moved to OnChar( ) 
 
-	case VK_ESCAPE : 
+	case 0x1B: // Esc 
 			if (view->GetFullScreen()) 
 				view->SetFullScreen(0);
 			else if (view->AnimatingCamera()) 
@@ -2549,10 +2548,10 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			return;
 			   
 			break;
-	case VK_BACK :
+	case 0x08 :
 				NavStart();
 			break;
-	case VK_SPACE : // ==> Follow in checkKeyState 
+	case ' ' : // ==> Follow in checkKeyState 
 			/* if (m_NavFollowObject)
 			{
 				NavResetFollowObject();
@@ -2560,18 +2559,16 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			*/
 			break;
  
-	case VK_ADD:
-	case VK_NEXT: 		// 	22	PAGE DOWN key 
+	case GLUT_KEY_PAGE_DOWN<<8: 		// 	22	PAGE DOWN key 
 				if (view->allowAnyNavigation) OnCameraViewpointNext();
 				break;
 
-	case VK_SUBTRACT:
-	case VK_PRIOR: 		// PAGE UP key 
+	case GLUT_KEY_PAGE_UP<<8: 		// PAGE UP key 
 				if (view->allowAnyNavigation) OnCameraViewpointPrev();
 				break;
 
 
-	case VK_END: 		// 	23	END key 
+	case GLUT_KEY_END<<8: 		// 	23	END key 
 
 			if (view->allowAnyNavigation) 
 				view->BindViewpoint(NULL); // unbind viewpoint, (camera is free from animation)
@@ -2588,7 +2585,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			break;
 
-	case VK_HOME: 		// 	24	HOME key 
+	case GLUT_KEY_HOME<<8: 		// 	24	HOME key 
 			// rebind current viewpoint
 			if (view->allowAnyNavigation) 
 		    if (view->viewpointIndex >=0 &&  view->viewpointIndex < view->sceneInfo->cameras.Length()) 
@@ -2597,10 +2594,10 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			break;
 	
 
-	case VK_LEFT: 		// 	25	LEFT ARROW key 
-	case VK_UP: 		// 	26	UP ARROW key 
-	case VK_RIGHT: 		// 	27	RIGHT ARROW key 
-	case VK_DOWN: 		// 	28	DOWN ARROW key 
+	case GLUT_KEY_LEFT<<8: 		// 	25	LEFT ARROW key 
+	case GLUT_KEY_UP<<8: 		// 	26	UP ARROW key 
+	case GLUT_KEY_RIGHT<<8: 		// 	27	RIGHT ARROW key 
+	case GLUT_KEY_DOWN<<8: 		// 	28	DOWN ARROW key 
 			// prevent key repeat
 			if (view->allowAnyNavigation) 
 			if (!(m_NavRunning & 0x2))
@@ -2611,27 +2608,27 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 //			view->GetCamera().PanY(0.01,!GetCameraRelativeMode()); 
 //			break;
 
-	case VK_NUMPAD2:	// Test !!! let camera look along y-axis
-			if (!view->allowAnyNavigation) break;
+	// case VK_NUMPAD2:	// Test !!! let camera look along y-axis
+	// 		if (!view->allowAnyNavigation) break;
 
-			view->GetCamera().target = view->GetCamera().position;
-			view->GetCamera().target.y += m_NavTargetDist;
+	// 		view->GetCamera().target = view->GetCamera().position;
+	// 		view->GetCamera().target.y += m_NavTargetDist;
 
-              //view->GetCamera().Dolly(0.0,0.0, -step*nRepCnt);
-			  break;
+    //           //view->GetCamera().Dolly(0.0,0.0, -step*nRepCnt);
+	// 		  break;
 
-	case VK_NUMPAD4:	// Test !!! let camera look along x-axis
-			if (!view->allowAnyNavigation) break;
-			view->GetCamera().target = view->GetCamera().position;
-			view->GetCamera().target.x += m_NavTargetDist;
-			 //   view->GetCamera().Pan(wstep*nRepCnt,0.0); 
-			  break;
+	// case VK_NUMPAD4:	// Test !!! let camera look along x-axis
+	// 		if (!view->allowAnyNavigation) break;
+	// 		view->GetCamera().target = view->GetCamera().position;
+	// 		view->GetCamera().target.x += m_NavTargetDist;
+	// 		 //   view->GetCamera().Pan(wstep*nRepCnt,0.0); 
+	// 		  break;
 
-	case VK_NUMPAD6:	// Test !!! let camera look along z-axis
-			if (!view->allowAnyNavigation) break;
-			view->GetCamera().target = view->GetCamera().position;
-			view->GetCamera().target.z += m_NavTargetDist;
-		//	    view->GetCamera().Pan(-wstep*nRepCnt,0.0); 
+	// case VK_NUMPAD6:	// Test !!! let camera look along z-axis
+	// 		if (!view->allowAnyNavigation) break;
+	// 		view->GetCamera().target = view->GetCamera().position;
+	// 		view->GetCamera().target.z += m_NavTargetDist;
+	// 	//	    view->GetCamera().Pan(-wstep*nRepCnt,0.0); 
 			  break;
 #if 0 // hg
 	case VK_NUMPAD7:
@@ -2660,17 +2657,17 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 #endif
 
-    case VK_F9 :
+    case GLUT_KEY_F9<<8 :
 				OnSettingsPreferences();
                 break;
-    case VK_F5 :
+    case GLUT_KEY_F5<<8 :
 				if (m_uiMode <=	UI_SIMPLE) break;
 				view->ToggleFullScreen();
 				m_hideCursor = FALSE;
 				Redraw();
                 break;
     
-	case VK_F6 :
+	case GLUT_KEY_F6<<8 :
 				if (m_uiMode <=	UI_SIMPLE) break;
 
 #ifdef _D3D
@@ -2685,13 +2682,13 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 #endif
 				break;
-    case VK_F7 :
+    case GLUT_KEY_F7<<8 :
 				m_displayFrameRate = !m_displayFrameRate;
 				m_displayFrameStats = FALSE;
 				Message(CString("Frame Rate display  is now ") + ((m_displayFrameRate) ? "On" : "Off") );
 				if (!m_displayFrameRate ) m_frames = 0;
 				break;
-    case VK_F8 :
+    case GLUT_KEY_F8<<8 :
 			{
 				m_displayFrameStats = !m_displayFrameStats;
 				m_displayFrameRate =  m_displayFrameStats;
@@ -2699,7 +2696,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (!m_displayFrameRate ) m_frames = 0;
 			}
 				break;
-	case VK_F12 :
+	case GLUT_KEY_F12<<8 :
 				if (m_uiMode <=	UI_SIMPLE) break;
 				view->ToggleFullScreen();
 				m_hideCursor = FALSE;
@@ -2744,7 +2741,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
     case (UINT)'9' : view->followOrbit.setx(view->followOrbit.x() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)'0' : view->followOrbit.setx(view->followOrbit.x() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
-    case (UINT)'§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
+    //case (UINT)'§' : view->followOrbit.sety(view->followOrbit.y() - 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
     case (UINT)')' : view->followOrbit.sety(view->followOrbit.y() + 0.2); view->UpdatePhysicalCamera(gtrue); Redraw(); break;
 
     case (UINT)'A' : {
@@ -2980,7 +2977,6 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
                 break;
 
 	default :
-		COleControl::OnKeyDown(nChar, nRepCnt, nFlags);
 		return;
 		break;
 	}
