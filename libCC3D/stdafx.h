@@ -268,6 +268,8 @@ HCURSOR SetCursor(HCURSOR cursor);
 void BeginWaitCursor();
 void EndWaitCursor();
 
+void SetCapture() {}
+void ReleaseCapture() {}
 
 // WIN32 Critical section
 // need if multiple plugins are sharing global data

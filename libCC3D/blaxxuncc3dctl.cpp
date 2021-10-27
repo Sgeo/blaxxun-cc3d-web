@@ -3177,7 +3177,6 @@ HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, co
 
 BOOL CGLViewCtrlCtrl::loadURLfromFields(const char *description,GvMFString *urls, GvMFString *parameter,const char *homeUrl)
 {
-    USES_CONVERSION;   
 
     TRACE("loadURLfromFields  %s\n",description );
 	CString absoluteUrl;
@@ -3207,51 +3206,51 @@ BOOL CGLViewCtrlCtrl::loadURLfromFields(const char *description,GvMFString *urls
     	return NavigateToUrl(absoluteUrl,location,target) == S_OK;
     }
 
-	if (view->observerFlags & GOBSERVE_ANCHOR) 
-    {
+	// if (view->observerFlags & GOBSERVE_ANCHOR) 
+    // {
 
-		int numUrls=0;
-		int numParams=0;
+	// 	int numUrls=0;
+	// 	int numParams=0;
 
-		BSTR *urlsB  = NULL;
-		BSTR *paramsB  = NULL;
-		BSTR descriptionB = (description == NULL) ? NULL : (BSTR) T2COLE(description);
+	// 	BSTR *urlsB  = NULL;
+	// 	BSTR *paramsB  = NULL;
+	// 	BSTR descriptionB = (description == NULL) ? NULL : (BSTR) T2COLE(description);
 		
-		urlsB = new BSTR[urls->Length()];
+	// 	urlsB = new BSTR[urls->Length()];
 
-		for (i=0; i<urls->Length(); i++) {
-			CString url(urls->get1(i));	// url to execute
+	// 	for (i=0; i<urls->Length(); i++) {
+	// 		CString url(urls->get1(i));	// url to execute
 			
-			if (url[0]  == '#') { 
-				if (view->SetCamera(& ((const char *) url)[1])) return TRUE;
-			}
+	// 		if (url[0]  == '#') { 
+	// 			if (view->SetCamera(& ((const char *) url)[1])) return TRUE;
+	// 		}
 
-			CreateAbsolutePath(homeUrl,url,absoluteUrl);
+	// 		CreateAbsolutePath(homeUrl,url,absoluteUrl);
 			
-			urlsB[i] = absoluteUrl.AllocSysString();				
-			numUrls ++;
-		}		
+	// 		urlsB[i] = absoluteUrl.AllocSysString();				
+	// 		numUrls ++;
+	// 	}		
 
-		if (parameter) {
-			paramsB = new BSTR[parameter->Length()];
+	// 	if (parameter) {
+	// 		paramsB = new BSTR[parameter->Length()];
 
-			for (i=0; i<parameter->Length(); i++) {
-				CString p(parameter->get1(i));	// url to execute
-				paramsB[i] = p.AllocSysString();				
-				numParams++;
-			}		
-		}
+	// 		for (i=0; i<parameter->Length(); i++) {
+	// 			CString p(parameter->get1(i));	// url to execute
+	// 			paramsB[i] = p.AllocSysString();				
+	// 			numParams++;
+	// 		}		
+	// 	}
 
-		HRESULT res=view->observer->OnLoadAnchor(descriptionB,numUrls,urlsB,numParams,paramsB);
+	// 	HRESULT res=view->observer->OnLoadAnchor(descriptionB,numUrls,urlsB,numParams,paramsB);
 		
-		for (i=0; i<numUrls; i++) ::SysFreeString(urlsB[i]);
-		delete urlsB;
-		for (i=0; i<numParams; i++) ::SysFreeString(paramsB[i]);
-		delete paramsB;
+	// 	for (i=0; i<numUrls; i++) ::SysFreeString(urlsB[i]);
+	// 	delete urlsB;
+	// 	for (i=0; i<numParams; i++) ::SysFreeString(paramsB[i]);
+	// 	delete paramsB;
 
 
-		if (res == S_OK) return TRUE;
-	}            
+	// 	if (res == S_OK) return TRUE;
+	// }            
 	
 	// standard case 
 
@@ -3535,7 +3534,7 @@ void CGLViewCtrlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		m_currentTDragSensor = FALSE;
 
 		// set the keyboard focus
-		SetFocus();  // we now have also the OnMouseActivate method ? doesn't work with passport 
+		//SetFocus();  // we now have also the OnMouseActivate method ? doesn't work with passport 
 
 		
 		if (view->triggerMouseEvent(GEV_mousedown,"mousedown",point.x,point.y,nFlags)) // new 29.05.999
@@ -3592,7 +3591,7 @@ void CGLViewCtrlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// ?? lastMessage = ""; // clear last message to detect messages sent by scripts etc.
 
-				if (ret = view->Select(point.x,point.y,nFlags, GView::DRAG_SENSORS)) 
+				if ((ret = view->Select(point.x,point.y,nFlags, GView::DRAG_SENSORS))) 
 					{
 					if (m_anchorSingleClick && view->executeNode) 
 						{
@@ -3994,7 +3993,8 @@ void CGLViewCtrlCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			}
 */	
 	// hg 6.4.99 to many mouse moves are locking updates
-#if 1
+#pragma message("I'm assuming the below is only to speed up the timer?")
+#if 0
 	/* if fast rendering, post a WM_TIMER message, under WINDOWS 95 timer resolution is limited  */
 	if  (m_fullSpeed && !m_menuActive && (updateLock == 0)  
 		&& (view->lastFrameTime < 70) && (mainLoader == NULL) 
