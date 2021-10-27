@@ -317,6 +317,12 @@ uint32_t SetTimer(uint32_t *id, uint32_t elapse, void (*timerfunc)(void *userDat
     return *id;
 }
 
+BOOL KillTimer(uint32_t id) {
+    emscripten_clear_interval(TIMERS[id]);
+    TIMERS[id] = 0;
+    return 1;
+}
+
 BOOL GetClientRect(RECT *rect) {
 	rect->left = 0;
 	rect->top = 0;

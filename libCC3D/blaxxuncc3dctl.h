@@ -965,7 +965,7 @@ protected:
 
 // Dispatch maps
 	//{{AFX_DISPATCH(CGLViewCtrlCtrl)
-	afx_msg BSTR GetUrl();
+	afx_msg const char * GetUrl();
 	afx_msg void SetUrl(LPCTSTR lpszNewValue);
 	afx_msg BSTR GetRenderMode();
 	afx_msg void SetRenderMode(LPCTSTR lpszNewValue);

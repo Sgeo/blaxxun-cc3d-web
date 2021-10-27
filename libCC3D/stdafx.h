@@ -273,7 +273,10 @@ void ReleaseCapture() {}
 
 BOOL GetFocus();
 
+
+
 uint32_t SetTimer(uint32_t *id, uint32_t elapse, void (*timerfunc)(void *userData), void *userData);
+BOOL KillTimer(uint32_t id);
 
 // WIN32 Critical section
 // need if multiple plugins are sharing global data
@@ -689,6 +692,10 @@ public:
 
 
 };
+
+void Translate(const char * text, CString& cstr) {
+	cstr = text;
+}
 
 
 #include "arraynew.h"  

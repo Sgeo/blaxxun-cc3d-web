@@ -4647,12 +4647,12 @@ void CGLViewCtrlCtrl::StopTimer()
 
 
 // get the current URL (DISPATCH property)
-BSTR CGLViewCtrlCtrl::GetUrl() 
+const char * CGLViewCtrlCtrl::GetUrl() 
 {
 	CString strResult;
 	if (view) strResult = view->GetUrl();
 	else strResult = m_initialUrl;
-	return strResult.AllocSysString();
+	return (const char *)strResult;
 }
 
 // set the new URL (DISPATCH property)
@@ -4668,11 +4668,11 @@ void CGLViewCtrlCtrl::SetUrl(LPCTSTR lpszNewValue)
 
 	
 	//set the *crash in url* flag
-	HKEY hKeyRoot=NULL;
+	// HKEY hKeyRoot=NULL;
 
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
-	SetProfile(_T("Direct3D.crashInUrl"), lpszNewValue);
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+	// ::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+	// SetProfile(_T("Direct3D.crashInUrl"), lpszNewValue);
+	// if (hKeyRoot) ::RegCloseKey(hKeyRoot);
 
 
 
@@ -4682,24 +4682,25 @@ void CGLViewCtrlCtrl::SetUrl(LPCTSTR lpszNewValue)
 	// LPOLECLIENTSITE = GetClientSite();
 
 
-	// get the container url for resolving if url is relative 
-	IMoniker *pMoniker=NULL;
-	HRESULT result;
-	LPOLESTR container=NULL;
-	LPOLESTR object=NULL;
-	LPOLESTR objectRel=NULL;
+	#pragma message("Moniker stuff possibly important for resolving relative URLs, not sure how to fix")
+	// // get the container url for resolving if url is relative 
+	// IMoniker *pMoniker=NULL;
+	// HRESULT result;
+	// LPOLESTR container=NULL;
+	// LPOLESTR object=NULL;
+	// LPOLESTR objectRel=NULL;
 	CString home;
 
 
-	if (m_pClientSite) {
+	// if (m_pClientSite) {
 	
-	if (m_pClientSite->GetMoniker(OLEGETMONIKER_TEMPFORUSER,OLEWHICHMK_CONTAINER,&pMoniker) == S_OK)
-	{
-		if (result = pMoniker->GetDisplayName(NULL,	NULL,&container) == S_OK) {
-			home = container;
-		}
-		pMoniker->Release();
-    }
+	// if (m_pClientSite->GetMoniker(OLEGETMONIKER_TEMPFORUSER,OLEWHICHMK_CONTAINER,&pMoniker) == S_OK)
+	// {
+	// 	if (result = pMoniker->GetDisplayName(NULL,	NULL,&container) == S_OK) {
+	// 		home = container;
+	// 	}
+	// 	pMoniker->Release();
+    // }
 
 
 /*
@@ -4726,9 +4727,8 @@ void CGLViewCtrlCtrl::SetUrl(LPCTSTR lpszNewValue)
 	if (objectRel) ::SysFreeString(objectRel);
 */
 
-	}
+	// }
 
-	if (container) CoTaskMemFree(container);
 
 	// go and read it now 
 	ReadUrl(newUrl,home);
@@ -4779,18 +4779,18 @@ void CGLViewCtrlCtrl::AddUrlToHistory(const char *url,const char *description, B
 #ifdef _DEBUG
 	traceUrl= TRUE;
 #endif
-	HKEY hKeyRoot=NULL;
+	//HKEY hKeyRoot=NULL;
 	CString val;
 	
 
 
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+	// ::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
 
-	if (hKeyRoot && GetRegKey(hKeyRoot,_T("General.traceUrl"), traceUrl)) {
+	// if (hKeyRoot && GetRegKey(hKeyRoot,_T("General.traceUrl"), traceUrl)) {
 
-	}
+	// }
 
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+	// if (hKeyRoot) ::RegCloseKey(hKeyRoot);
 
 	if (traceUrl) {
 	// trace all URL's in HTML ready format
@@ -4841,10 +4841,10 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
 
    CString msg;
 
-   USES_CONVERSION;
+
 
    
-   Translate(_T("Loading"),msg);
+   msg = "Loading";
 
    msg += "\"";
    msg += url;
@@ -4870,7 +4870,8 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
    mainLoader->ref();
    mainLoader->ClearSessionError();  // reset error flags 
 
-   gbool errors= !(view && view->observerFlags & GOBSERVE_URLERRORS);
+   //gbool errors= !(view && view->observerFlags & GOBSERVE_URLERRORS);
+   gbool errors= !(view && 0);
 
    mainLoader->SetFlags( (errors ? WWW_REPORT_ERRORS:0)  /*|WWW_EXECUTE_UNKNOWN_FMTS*/ 
 				| (reload ? WWW_RELOAD : 0));
@@ -4884,15 +4885,15 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
    mainLoader->SetReporter(GetReporter()); // set the error/progress reporting object
  
    // window to notify on completition
-   mainLoader->hPostMsgWnd = GetSafeHwnd();
+   //mainLoader->hPostMsgWnd = GetSafeHwnd();
 
-   // check if observer wants OnSceneChanged
-   if (view->observerFlags & GOBSERVE_URLLOADING) {
-		mainLoader->hObserver = view->observer;
-   }
-   if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
-	   mainLoader->hNetscapeMsgWnd = view->observerWnd;
-   }
+//    // check if observer wants OnSceneChanged
+//    if (view->observerFlags & GOBSERVE_URLLOADING) {
+// 		mainLoader->hObserver = view->observer;
+//    }
+//    if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
+// 	   mainLoader->hNetscapeMsgWnd = view->observerWnd;
+//    }
   // should work, but get exception somewhere in HTMLvw
    // mainLoader->client =  (LPUNKNOWN)GetInterface(&IID_IUnknown); // GetClientSite(); //GetControllingUnknown();
    // to be removed if (!m_scb) m_scb = new CBindStatusCallback(this);
@@ -4933,11 +4934,11 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
 				SetAnimateOff();
 				Redraw();
 				Message("Url "+path);
-				FireOnSceneChanged(path);
+				//FireOnSceneChanged(path);
 				// check if observer wants OnSceneChanged
-				if (view->observerFlags & GOBSERVE_MESSAGE) {
-					view->observer->OnSceneChanged((BSTR) T2COLE((const char*)path));
-				}
+				// if (view->observerFlags & GOBSERVE_MESSAGE) {
+				// 	view->observer->OnSceneChanged((BSTR) T2COLE((const char*)path));
+				// }
 			}
 
 		} else ret=0;
@@ -4945,9 +4946,9 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
 
 	if (ret <0) {
 		// check if observer wants OnUrlError
-		if (view && view->observerFlags & GOBSERVE_URLERRORS) {
-			HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) mainLoader->GetUrl()), NULL,ret);
-		}
+		// if (view && view->observerFlags & GOBSERVE_URLERRORS) {
+		// 	HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) mainLoader->GetUrl()), NULL,ret);
+		// }
 
 	}
  	mainLoader->unref();
