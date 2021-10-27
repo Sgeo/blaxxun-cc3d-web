@@ -259,6 +259,8 @@ class CCmdUI {
 	void *m_pSubMenu;
 };
 
+#define S_OK 0
+
 typedef const char * HCURSOR; // Cursor represented as a string containing a valid value for the 'cursor' CSS property
 							  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
 

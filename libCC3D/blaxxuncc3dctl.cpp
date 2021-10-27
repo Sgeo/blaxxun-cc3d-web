@@ -3063,8 +3063,7 @@ HRESULT NavigateToUrl(const char *url, const char *location=NULL, const char *ta
 HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, const char *targetFrame,DWORD flags)
 {
 
-//    CWaitCursor wait;
-    USES_CONVERSION;   
+//    CWaitCursor wait;   
 
     CString msg;
 
@@ -3107,22 +3106,22 @@ HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, co
 	    
         double t = view->getTime();
 
-        if (view->observerFlags & GOBSERVE_WM_ANCHOR) // netscape
-        {
-            m_messageUrl.Format("javascript:OnEvent('%s','%s',%.16g)", par1, par2, t);		
-            m_messageTargetFrame = targetFrame;        
-	        MySendMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
-	        //::PostMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
-        }
-        else // IE
-        {
-            FireOnEvent(par1, par2, t);
-        }
+        // if (view->observerFlags & GOBSERVE_WM_ANCHOR) // netscape
+        // {
+        //     m_messageUrl.Format("javascript:OnEvent('%s','%s',%.16g)", par1, par2, t);		
+        //     m_messageTargetFrame = targetFrame;        
+	    //     MySendMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
+	    //     //::PostMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
+        // }
+        // else // IE
+        // {
+        //     FireOnEvent(par1, par2, t);
+        // }
 		return S_OK;
     }
 
 	if (targetFrame == NULL) {
-		Translate(_T("Jumping to"),msg);
+		msg = "Jumping to";
 		msg += " ";
 		msg += url;
 		Message(msg,PROGRESS_MESSAGE);
@@ -3130,7 +3129,7 @@ HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, co
 
 
 	// directly load VRML url, if same frame and no observer  
-	if (m_handleWrlIntern && targetFrame == NULL && !(view->observerFlags & GOBSERVE_ANCHOR)) {
+	if (m_handleWrlIntern && targetFrame == NULL) {
 		// set up file for url parsing 
 		GFile *f= new GFile();
 		f->ref();
@@ -3148,26 +3147,25 @@ HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, co
 		f->unref();
 	}
 
-   // check if observer wants OnLoadUrl
-	if (view->observerFlags & GOBSERVE_ANCHOR) 
-    {
-		HRESULT res=view->observer->OnLoadUrl((url == NULL) ? NULL : (BSTR) T2COLE(url),
-			(targetFrame == NULL) ? NULL : (BSTR) T2COLE(targetFrame));
-		if (res == S_OK) return res;
-	}
-	if (view->observerFlags & GOBSERVE_WM_ANCHOR) 
-    {
-        m_messageUrl = url;		
-        m_messageTargetFrame = targetFrame;    
+//    // check if observer wants OnLoadUrl
+// 	if (view->observerFlags & GOBSERVE_ANCHOR) 
+//     {
+// 		HRESULT res=view->observer->OnLoadUrl((url == NULL) ? NULL : (BSTR) T2COLE(url),
+// 			(targetFrame == NULL) ? NULL : (BSTR) T2COLE(targetFrame));
+// 		if (res == S_OK) return res;
+// 	}
+// 	if (view->observerFlags & GOBSERVE_WM_ANCHOR) 
+//     {
+//         m_messageUrl = url;		
+//         m_messageTargetFrame = targetFrame;    
 
-		MySendMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
+// 		MySendMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
 
-		//::PostMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
-		return S_OK;
-	}
+// 		//::PostMessage(view->observerWnd, WM_USER + 501, (WPARAM) (const char*)m_messageUrl, (LPARAM) (const char*)m_messageTargetFrame);
+// 		return S_OK;
+// 	}
 
 	// default use HLINK DLL 
-   LPUNKNOWN pUnk = GetControllingUnknown();
 
    return ::NavigateToUrl(url,location,targetFrame,flags);
 }
