@@ -3029,36 +3029,33 @@ HRESULT HlinkSimpleNavigateToString(
 */
 // SetMoniker
 // GetMoniker 
-HRESULT NavigateToUrl(LPUNKNOWN pUnk,const char *url, const char *location=NULL, const char *targetFrame=NULL,	DWORD flags = 0)
+HRESULT NavigateToUrl(const char *url, const char *location=NULL, const char *targetFrame=NULL,	DWORD flags = 0)
 {
-		HRESULT result;
-		USES_CONVERSION;
-
-#ifdef G_URLMON
-		if (HlinkSimpleNavigateToStringH == NULL) {
-			return S_FALSE;
-		}
-		result = HlinkSimpleNavigateToStringH(
-			(url == NULL) ? NULL : T2COLE(url),
-			(location == NULL) ? NULL :T2COLE(location) ,
-			(targetFrame == NULL) ? NULL :T2COLE(targetFrame) ,
-			pUnk, // if  NULL new Explorer window will be started 
-			NULL,
-			NULL,
-			flags,
-			0);
-#else
-		result = HlinkSimpleNavigateToString(
-			(url == NULL) ? NULL : T2COLE(url),
-			(location == NULL) ? NULL :T2COLE(location) ,
-			(targetFrame == NULL) ? NULL :T2COLE(targetFrame) ,
-			pUnk, // if  NULL new Explorer window will be started 
-			NULL,
-			NULL,
-			flags,
-			0);
-#endif
-		return(result);
+		EM_ASM({
+			let url = UTF8ToString($0);
+			let location = $1 ? UTF8ToString($1) : '';
+			let targetFrame = $2 ? UTF8ToString($2) : null;
+			if(Module.navigate) {
+				let navResult = Module.navigate(url, location, targetFrame);
+				if(!navResult) {
+					return;
+				}
+				url = navResult[0];
+				location = navResult[1];
+				targetFrame = navResult[2];
+			}
+			let a = document.createElement('a');
+			if(location) {
+				a.href = `${url}#${location}`;
+			} else {
+				a.href = url;
+			}
+			if(targetFrame) {
+				a.target = targetFrame;
+			}
+			a.click();
+		}, url, location, targetFrame);
+		return(0);
 }
 
 
@@ -3172,7 +3169,7 @@ HRESULT CGLViewCtrlCtrl::NavigateToUrl(const char *url, const char *location, co
 	// default use HLINK DLL 
    LPUNKNOWN pUnk = GetControllingUnknown();
 
-   return ::NavigateToUrl(pUnk,url,location,targetFrame,flags);
+   return ::NavigateToUrl(url,location,targetFrame,flags);
 }
 
 /*
