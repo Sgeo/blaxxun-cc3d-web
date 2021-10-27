@@ -292,11 +292,11 @@ public:
 
 
 	// registry helpers
-    BOOL GetProfile(LPCTSTR lpszKey, CString &value);
-	BOOL GetProfile(LPCTSTR lpszKey, int &value);
+    // BOOL GetProfile(LPCTSTR lpszKey, CString &value);
+	// BOOL GetProfile(LPCTSTR lpszKey, int &value);
 
-	BOOL SetProfile(LPCTSTR lpszKey, LPCTSTR value);
-	BOOL SetProfile(LPCTSTR lpszKey, int value);
+	// BOOL SetProfile(LPCTSTR lpszKey, LPCTSTR value);
+	// BOOL SetProfile(LPCTSTR lpszKey, int value);
 
 
 	int lastCursorMode; //!> the current cursor mode 
@@ -884,7 +884,7 @@ protected:
 	afx_msg void OnKillFocus(BOOL);
 	afx_msg void OnPopupHelpManual();
 	afx_msg void OnPopupHelpVisit();
-	afx_msg void OnPopupHelpAbout();
+	// afx_msg void OnPopupHelpAbout();
 	afx_msg void OnCameraJump();
 	afx_msg void OnUpdateCameraJump(CCmdUI* pCmdUI);
 	afx_msg void OnSettingsStopLoading();
@@ -894,14 +894,16 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnSettingsSound();
 	afx_msg void OnUpdateSettingsSound(CCmdUI* pCmdUI);
-	afx_msg void OnPopupHelpWorldinfo();
+	// afx_msg void OnPopupHelpWorldinfo();
 	afx_msg void OnSettingsStayOnGround();
 	afx_msg void OnUpdateSettingsStayOnGround(CCmdUI* pCmdUI);
 	afx_msg void OnRenderDither();
 	afx_msg void OnUpdateRenderDither(CCmdUI* pCmdUI);
 	afx_msg void OnRenderTextureSmooth();
 	afx_msg void OnUpdateRenderTextureSmooth(CCmdUI* pCmdUI);
+	#ifdef ON_SETTINGS_PREFERENCES
 	afx_msg void OnSettingsPreferences();
+	#endif
 	afx_msg void OnPopupHelpCheckversion();
 	afx_msg void OnCameraRotate();
 	afx_msg void OnUpdateCameraRotate(CCmdUI* pCmdUI);
@@ -1019,8 +1021,10 @@ protected:
 	afx_msg BSTR getNodeName(GvNode *node);
 	afx_msg GvField* getEventOut(LPCTSTR eventOutName);
 	afx_msg GvField* getEventIn(LPCTSTR eventInName);
-	afx_msg BSTR getControlPathname();
+	// afx_msg BSTR getControlPathname();
+	#ifdef SAVE_WORLD
 	afx_msg BOOL saveWorld(LPCTSTR fileName);
+	#endif
 	afx_msg void saveViewpoint(LPCTSTR viewpointName);
 	afx_msg BOOL setFullscreen(BOOL mode);
 	afx_msg BOOL removeNode(GvNode *node);

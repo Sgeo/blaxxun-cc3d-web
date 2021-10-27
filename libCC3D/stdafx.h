@@ -567,6 +567,7 @@ public:
 	inline void SetAt(int nIndex, TCHAR ch) { s[nIndex]=ch; }
 
 	operator LPCTSTR() const { return s; }           // as a C string
+	operator char *() { return s; }
 
     char * GetBuffer( int l ){
        	Empty();
@@ -950,6 +951,8 @@ public:
 };
 
 #endif
+
+#define STDMETHOD(method)     virtual HRESULT method
 
 // tools
 

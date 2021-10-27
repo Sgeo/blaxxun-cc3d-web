@@ -152,6 +152,9 @@ class GvField :
 {
 
 public:	
+    /* Field methods */
+    STDMETHOD(getType)(int * type);
+	STDMETHOD(setValueFromString)( /* [in] */ BSTR value);
 
 
 #ifdef _COM
@@ -188,9 +191,7 @@ public:
 	static HRESULT WINAPI _Chain(void* pv, REFIID iid, void** ppvObject, DWORD dw);
 
 
-    /* Field methods */
-    STDMETHOD(getType)(int * type);
-	STDMETHOD(setValueFromString)( /* [in] */ BSTR value);
+
 
 	/* EventOut methods */ 
     STDMETHOD(advise)(EventOutObserver *observer, IDispatch* userData);

@@ -2659,7 +2659,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 #endif
 
     case GLUT_KEY_F9<<8 :
-				OnSettingsPreferences();
+				//OnSettingsPreferences();
                 break;
     case GLUT_KEY_F5<<8 :
 				if (m_uiMode <=	UI_SIMPLE) break;
@@ -2706,7 +2706,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	// problem in IE 3.0 OnChar is *not* called 
     case (UINT)'?' : 
-				OnSettingsPreferences();
+				// OnSettingsPreferences();
                 break;
 
     case (UINT)'=' :
@@ -2912,7 +2912,7 @@ void CGLViewCtrlCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					path += _PROGRAM;
 					path += ".wrl";
 					Message(CString("Saving world to ")+path,PROGRESS_MESSAGE);
-					saveWorld(path);
+					//saveWorld(path);
 					Message(CString("World saved to ")+path,PROGRESS_MESSAGE);
 				}
                 break;
@@ -3227,7 +3227,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFields(const char *description,GvMFString *urls
 
 	// 		CreateAbsolutePath(homeUrl,url,absoluteUrl);
 			
-	// 		urlsB[i] = absoluteUrl.AllocSysString();				
+	// 		urlsB[i] = absoluteUrl;				
 	// 		numUrls ++;
 	// 	}		
 
@@ -3236,7 +3236,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFields(const char *description,GvMFString *urls
 
 	// 		for (i=0; i<parameter->Length(); i++) {
 	// 			CString p(parameter->get1(i));	// url to execute
-	// 			paramsB[i] = p.AllocSysString();				
+	// 			paramsB[i] = p;				
 	// 			numParams++;
 	// 		}		
 	// 	}
@@ -4972,7 +4972,7 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 {  int ret=-1;
    CString msg;
 
-   USES_CONVERSION;
+
    
    GFile *f= (GFile *) lParam;
    
@@ -5052,11 +5052,11 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 					SetAnimateOff();
 					Redraw();
 					Message("Url "+path);
-					FireOnSceneChanged(path);
+					//FireOnSceneChanged(path);
 					// check if observer wants OnSceneChanged
-					if (view->observerFlags & GOBSERVE_MESSAGE) {
-						view->observer->OnSceneChanged((BSTR) T2COLE((const char *) path));
-					}
+					// if (view->observerFlags & GOBSERVE_MESSAGE) {
+					// 	view->observer->OnSceneChanged((BSTR) T2COLE((const char *) path));
+					// }
 				} else { // url error
 				}
 
@@ -5077,9 +5077,9 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 
    if (ret <0) {	
 		// check if observer wants OnUrlError
-		if (view && view->observerFlags & GOBSERVE_URLERRORS) {
-			HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) f->GetUrl()), NULL,ret);
-		}	
+		// if (view && view->observerFlags & GOBSERVE_URLERRORS) {
+		// 	HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) f->GetUrl()), NULL,ret);
+		// }	
 	}
 
    // do the unref from PostMessage 
@@ -5183,19 +5183,17 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 
    if (ret<0) {
 		// check if observer wants OnUrlError
-		if (view && view->observerFlags & GOBSERVE_URLERRORS) {
-			HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) f->GetUrl()),
-				NULL,ret);
-		}
+		// if (view && view->observerFlags & GOBSERVE_URLERRORS) {
+		// 	HRESULT res=view->observer->OnUrlError((BSTR) T2COLE((const char*) f->GetUrl()),
+		// 		NULL,ret);
+		// }
    } // error	
 
    // do the unref from PostMessage 
    f->unref();
 
    // load a bit more if no any other pending download , only in IE enviroment
-   if ( (GFile::threadsInUse == 0) && 
-	   !((view->observerFlags & GOBSERVE_URLLOADING) || 
-	   (view->observerFlags & GOBSERVE_WM_URLLOADING))) 
+   if ( (GFile::threadsInUse == 0)) 
    {
 	   view->triggerUrlLoading = TRUE;
 
@@ -5639,17 +5637,10 @@ void CGLViewCtrlCtrl::OnUpdateOptionsDriver(CCmdUI* pCmdUI)
 
 
 
-GvNode * GetNode(LPUNKNOWN node)
+GvNode * GetNode(GvNode *node)
 {
 
-   Node *result=NULL;
-   node->QueryInterface(IID_Node, (void **)&result);
-   if (!result) return NULL;
-
-   result->Release();
-
-   // is this ok ? 
-   return (GvNode *) result;
+   return node;
 }
 
 void CGLViewCtrlCtrl::OnRenderTextured() 
@@ -5745,7 +5736,7 @@ BSTR CGLViewCtrlCtrl::GetRenderMode()
 	
 	strResult = GRenderModeLookup(view->GetRenderMode());
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 void CGLViewCtrlCtrl::SetRenderMode(LPCTSTR lpszNewValue) 
@@ -5770,7 +5761,7 @@ BSTR CGLViewCtrlCtrl::getName()
 
 	strResult = _PROGRAM;
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 // return browser version: 3.03
@@ -5793,7 +5784,7 @@ BSTR CGLViewCtrlCtrl::getVersion()
 	strResult += " DEBUG";
 #endif
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 float CGLViewCtrlCtrl::getCurrentSpeed() 
@@ -5818,7 +5809,7 @@ BSTR CGLViewCtrlCtrl::getWorldURL()
 	if (view) strResult = view->GetUrl();
 	else strResult = m_initialUrl;
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 
@@ -5838,9 +5829,9 @@ void CGLViewCtrlCtrl::replaceWorld(GvNode *node)
 	if (n) {
 		view->SetNode(n);
 		// check if observer wants OnSceneChanged
-		if (view->observerFlags & GOBSERVE_MESSAGE) {
-				view->observer->OnSceneChanged((BSTR) NULL);
-		}
+		// if (view->observerFlags & GOBSERVE_MESSAGE) {
+		// 		view->observer->OnSceneChanged((BSTR) NULL);
+		// }
 
 		// to do: bind initial nodes ??? 
 		if (updateLock == 0) Redraw();
@@ -6128,7 +6119,6 @@ BOOL CGLViewCtrlCtrl::removeNode(GvNode* node)
 		}
 
 	}
-	result->Release();
 	return ret;
 }
 
@@ -6139,7 +6129,6 @@ void CGLViewCtrlCtrl::OnEnable(BOOL bEnable)
 {
 	TRACE("CGLViewCtrlCtrl::OnEnable(%d) \n",bEnable);
 
-	COleControl::OnEnable(bEnable);
 	
 	// TODO: Add your message handler code here
 }
@@ -6147,9 +6136,8 @@ void CGLViewCtrlCtrl::OnEnable(BOOL bEnable)
 
 void CGLViewCtrlCtrl::OnSetFocus() 
 {
-	COleControl::OnSetFocus(pOldWnd);
 	
-	TRACE("CGLViewCtrlCtrl::OnSetFocus(%p) \n",pOldWnd);
+	TRACE("CGLViewCtrlCtrl::OnSetFocus() \n");
 	// TODO: Add your message handler code here
 
 	m_NavFocus = TRUE;
@@ -6159,7 +6147,7 @@ void CGLViewCtrlCtrl::OnSetFocus()
 
 void CGLViewCtrlCtrl::OnKillFocus(BOOL newWndIsThis) 
 {
-	TRACE("CGLViewCtrlCtrl::OnKillFocus(%p) \n",pNewWnd);
+	TRACE("CGLViewCtrlCtrl::OnKillFocus() \n");
 
 	// got focus 
 	if (!newWndIsThis)
@@ -6175,7 +6163,6 @@ void CGLViewCtrlCtrl::OnKillFocus(BOOL newWndIsThis)
 	}
 
 
-	COleControl::OnKillFocus(pNewWnd); 
 	
 	// TODO: Add your message handler code here
 	
@@ -6230,7 +6217,7 @@ HRESULT pMoniker->GetDisplayName(
 
 */
 
-#if 1
+#if 0
 
 // IPersistMoniker
 
@@ -6381,7 +6368,7 @@ BSTR CGLViewCtrlCtrl::GetNavigationMode()
 	CString strResult;
 	strResult = GetCameraModeString(GetCameraMode());
     strResult.MakeUpper();
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 
@@ -6480,6 +6467,7 @@ void CGLViewCtrlCtrl::UnlockScene()
 
 }
 
+#ifdef RENDER_WORKER_HOPEFULLY_UNUSED
 UINT CGLViewCtrlCtrl::RenderWorker()
 {
 
@@ -6601,13 +6589,9 @@ UINT CGLViewCtrlCtrl::RenderWorker()
 
 }
 
-// AFX_THREADPROC
+#endif
 
-UINT __cdecl CGLViewCtrlCtrlRenderWorker (LPVOID pParam )
-{
-  CGLViewCtrlCtrl *me = (CGLViewCtrlCtrl *)  pParam;
-  return me->RenderWorker();
-}
+
 
 
 
@@ -6641,7 +6625,7 @@ BSTR CGLViewCtrlCtrl::GetViewpoint()
 	if (view) 
 		strResult = view->GetViewpointName();
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 // set current viewpoint to viewpoint named lpszNewValue
@@ -6657,7 +6641,7 @@ BSTR CGLViewCtrlCtrl::GetDescription()
 	CString strResult;
 	// TODO: Add your property handler here
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 
@@ -6689,7 +6673,7 @@ BSTR CGLViewCtrlCtrl::GetWorld()
 
 //	 strResult = m_world.GetPath();
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 void CGLViewCtrlCtrl::SetWorld(LPCTSTR lpszNewValue) 
@@ -6701,7 +6685,7 @@ void CGLViewCtrlCtrl::SetWorld(LPCTSTR lpszNewValue)
 
 //	Load(lpszNewValue, m_world);
 
-	SetModifiedFlag();
+	//SetModifiedFlag();
 }
 
 
@@ -6817,7 +6801,7 @@ BSTR CGLViewCtrlCtrl::getNodeName(GvNode *fromNode)
 		strResult = fromNode->getName().getString();
 
 	
-	return strResult();
+	return strResult;
 }
 
 // get collision detection flag 
@@ -6844,7 +6828,7 @@ GvField* CGLViewCtrlCtrl::getEventOut(LPCTSTR eventOutName)
 		return NULL;
 	}
 
-	return view->getEventOut(name);
+	return view->getEventOut(eventOutName);
 }
 
 // search for eventIn on browser 
@@ -6856,19 +6840,19 @@ GvField* CGLViewCtrlCtrl::getEventIn(LPCTSTR eventInName)
 		return NULL;
 	}
 
-	return view->getEventIn(name,&result);
+	return view->getEventIn(eventInName);
 
 }
 
-// return the full path to the control
-// can be used to find support files 
-BSTR CGLViewCtrlCtrl::getControlPathname() 
-{
-	CString strResult;
-	GetModuleFileName(AfxGetInstanceHandle(), strResult.GetBuffer(_MAX_PATH),_MAX_PATH);
-	strResult.ReleaseBuffer();
-	return strResult.AllocSysString();
-}
+// // return the full path to the control
+// // can be used to find support files 
+// BSTR CGLViewCtrlCtrl::getControlPathname() 
+// {
+// 	CString strResult;
+// 	GetModuleFileName(AfxGetInstanceHandle(), strResult.GetBuffer(_MAX_PATH),_MAX_PATH);
+// 	strResult.ReleaseBuffer();
+// 	return strResult;
+// }
 
 // show manual 
 void CGLViewCtrlCtrl::OnPopupHelpManual() 
@@ -6892,6 +6876,7 @@ void CGLViewCtrlCtrl::OnPopupHelpManual()
 	Message("Displaying "+url);
 
 //	::NavigateToUrl(NULL,url);
+	#define HLNF_OPENINNEWWINDOW 0
 	NavigateToUrl(url,NULL,"_blank",HLNF_OPENINNEWWINDOW);
 	
 }
@@ -6958,62 +6943,61 @@ void CGLViewCtrlCtrl::OnPopupHelpCheckversion()
 	
 }
 
-void CGLViewCtrlCtrl::OnPopupHelpAbout() 
-{
+// void CGLViewCtrlCtrl::OnPopupHelpAbout() 
+// {
 	
-	//DAbout dlgAbout(this);
-	DAbout dlgAbout(NULL);
+// 	//DAbout dlgAbout(this);
 
-	CString strResult;
+// 	CString strResult;
 	
-	strResult = "Version ";
+// 	strResult = "Version ";
 	
-	strResult += _VERSION;
+// 	strResult += _VERSION;
 
 
-#ifdef _D3D
-	strResult +=" Direct3D";
-#endif
-#ifdef _OGL
-	strResult +=" OpenGL";
-#endif
+// #ifdef _D3D
+// 	strResult +=" Direct3D";
+// #endif
+// #ifdef _OGL
+// 	strResult +=" OpenGL";
+// #endif
 
-	strResult +=" ";
-	strResult += __DATE__ ;
+// 	strResult +=" ";
+// 	strResult += __DATE__ ;
 
 
-#ifdef _DEBUG
-	strResult += " DEBUG";
-#endif
+// #ifdef _DEBUG
+// 	strResult += " DEBUG";
+// #endif
 
-#ifdef _KATMAI		
-	if (useKatmai) {
-		strResult += " Intel Katmai";
-	}
+// #ifdef _KATMAI		
+// 	if (useKatmai) {
+// 		strResult += " Intel Katmai";
+// 	}
 
-#endif
-	CString osName,osVersion;
+// #endif
+// 	CString osName,osVersion;
 
-	GetSystemVersionDisplay(osName,osVersion);
+// 	GetSystemVersionDisplay(osName,osVersion);
 
-	dlgAbout.m_version = strResult;
-	dlgAbout.m_version2 = osName + " " + osVersion;
-	dlgAbout.m_version3 = "Installed in : " + view->GetInstallDirectory();
-	BOOL checkVersion;
+// 	dlgAbout.m_version = strResult;
+// 	dlgAbout.m_version2 = osName + " " + osVersion;
+// 	dlgAbout.m_version3 = "Installed in : " + view->GetInstallDirectory();
+// 	BOOL checkVersion;
 
-	//StopTimer();
-	m_menuActive = TRUE;
-	AFX_MANAGE_STATE(_afxModuleAddrThis);
-		//checkVersion = dlgAbout.DoModal() == IDC_UPDATE_CHECK;
-		checkVersion = DoThreadModal((CDialog*)&dlgAbout) == IDC_UPDATE_CHECK;
-	m_menuActive = FALSE;
+// 	//StopTimer();
+// 	m_menuActive = TRUE;
+// 	AFX_MANAGE_STATE(_afxModuleAddrThis);
+// 		//checkVersion = dlgAbout.DoModal() == IDC_UPDATE_CHECK;
+// 		checkVersion = DoThreadModal((CDialog*)&dlgAbout) == IDC_UPDATE_CHECK;
+// 	m_menuActive = FALSE;
 
-	//RestartTimer();
+// 	//RestartTimer();
 
-	if (checkVersion) 
-		OnPopupHelpCheckversion();
+// 	if (checkVersion) 
+// 		OnPopupHelpCheckversion();
 
-}
+// }
 
 
 // WM_MOVING
@@ -7066,7 +7050,7 @@ void CGLViewCtrlCtrl::OnKeyDownEvent(USHORT nChar, USHORT nShiftState)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	
-	COleControl::OnKeyDownEvent(nChar, nShiftState);
+	// COleControl::OnKeyDownEvent(nChar, nShiftState);
 }
 
 // Non-in-place activation overrides 
@@ -7083,32 +7067,32 @@ HRESULT CGLViewCtrlCtrl::OnHide()
 	TRACE("CGLViewCtrlCtrl::OnHide() %p\n",this);
 
 	// send termination message  // 13.12.99 HG
-	if (view && view->observerFlags & GOBSERVE_ANCHOR)
-		res=view->observer->OnLoadUrl(NULL, NULL);
+	// if (view && view->observerFlags & GOBSERVE_ANCHOR)
+	// 	res=view->observer->OnLoadUrl(NULL, NULL);
 
 
-    ::RemoveProp(GetSafeHwnd(), "CC3D_LPUNK");
+    // ::RemoveProp(GetSafeHwnd(), "CC3D_LPUNK");
 
 	if (m_useRenderThread) 
-		ASSERT(FALSE)
+		ASSERT(FALSE);
 
 	if (m_saveDriverSettings)   // save driver settings
 		SaveDriverSettings();
 	
-	if (m_checkFrames < 10) { // normal exit, but not many redraw's set driveOk flag anyway
-		SetProfile(_T("Direct3D.driverOk"),1);				
-	}
+	// if (m_checkFrames < 10) { // normal exit, but not many redraw's set driveOk flag anyway
+	// 	SetProfile(_T("Direct3D.driverOk"),1);				
+	// }
 
 	
 	CloseAllDialogs();
 
 	// destroy console
-	if (m_dConsole) { // 13.12.99 hg
-		m_dConsole->DestroyWindow(); delete m_dConsole; m_dConsole = NULL; 
-	}
+	// if (m_dConsole) { // 13.12.99 hg
+	// 	m_dConsole->DestroyWindow(); delete m_dConsole; m_dConsole = NULL; 
+	// }
 
 
-	res = COleControl::OnHide();
+	res = 0;
 	EAI_TRACE("CGLViewCtrlCtrl::OnHide() %p\n",this);
 	EAI_FLUSH();
 
@@ -7203,7 +7187,7 @@ void CGLViewCtrlCtrl::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	TRACE("CGLViewCtrlCtrl::OnShowWindow(%d %d) %p\n",bShow,nStatus,this);
 
-	COleControl::OnShowWindow(bShow, nStatus);
+	// COleControl::OnShowWindow(bShow, nStatus);
 
 	// TODO: Add your message handler code here
 
@@ -7231,7 +7215,7 @@ LRESULT CGLViewCtrlCtrl::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		LockScene();
 		    TRACE("Window Proc after lock %d \n",message);
 
-			ret=  COleControl::WindowProc(message, wParam, lParam);
+			ret=  0;
 			
 			if (view->getRedraw()) { // get thread local redraw flag
 				m_mustRedraw = TRUE;
@@ -7274,40 +7258,42 @@ LRESULT CGLViewCtrlCtrl::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		return COleControl::WindowProc(message, wParam, lParam);
 	}
 #endif
-	return COleControl::WindowProc(message, wParam, lParam);
+	//return COleControl::WindowProc(message, wParam, lParam);
+	return 0;
 
 }
 
-void CGLViewCtrlCtrl::OnPopupHelpWorldinfo() 
-{
-	if (!view) return;
+// void CGLViewCtrlCtrl::OnPopupHelpWorldinfo() 
+// {
+// 	if (!view) return;
 
-	DWorldInfo d;
+// 	DWorldInfo d;
 
-	d.m_url= view->GetUrl();
+// 	d.m_url= view->GetUrl();
 
-	if (view->GetScene()) {
-		d.m_vrml2 = view->GetScene()->vrml2.get();
+// 	if (view->GetScene()) {
+// 		d.m_vrml2 = view->GetScene()->vrml2.get();
 	
-		GvSceneInfo *s = view->GetSceneInfo();
-		GvWorldInfo	*w= s->firstWorldInfo;
-		if (w) {
-			d.m_title = w->title.get();
-			for (int i=0; i< w->_info.getNum();i++) {
-				d.m_info += w->_info.get1(i).getString();
-				d.m_info += "\r\n";
-			}
-		}
-	}
+// 		GvSceneInfo *s = view->GetSceneInfo();
+// 		GvWorldInfo	*w= s->firstWorldInfo;
+// 		if (w) {
+// 			d.m_title = w->title.get();
+// 			for (int i=0; i< w->_info.getNum();i++) {
+// 				d.m_info += w->_info.get1(i).getString();
+// 				d.m_info += "\r\n";
+// 			}
+// 		}
+// 	}
 
 
-	StopTimer();
-	AFX_MANAGE_STATE(_afxModuleAddrThis);
-		//d.DoModal();
-		DoThreadModal((CDialog*)&d);
-	RestartTimer();
-}
+// 	StopTimer();
+// 	AFX_MANAGE_STATE(_afxModuleAddrThis);
+// 		//d.DoModal();
+// 		DoThreadModal((CDialog*)&d);
+// 	RestartTimer();
+// }
 
+#ifdef SAVE_WORLD
 BOOL CGLViewCtrlCtrl::saveWorld(LPCTSTR fileNameRel) 
 {
 	// dispatch handler code 
@@ -7376,6 +7362,7 @@ BOOL CGLViewCtrlCtrl::saveWorld(LPCTSTR fileNameRel)
 		return TRUE;
 	}
 }
+#endif
 
 void CGLViewCtrlCtrl::saveViewpoint(LPCTSTR viewpointName) 
 {
@@ -7420,82 +7407,82 @@ void CGLViewCtrlCtrl::OnUpdateRenderTextureSmooth(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(view->GetTextureFiltering() !=0);
 }
 
-// registry helpers
-// get value
-BOOL CGLViewCtrlCtrl::GetProfile(LPCTSTR lpszKey, CString &value)
-{
-	HKEY hKeyRoot=NULL;
-	BOOL bRet = FALSE;
+// // registry helpers
+// // get value
+// BOOL CGLViewCtrlCtrl::GetProfile(LPCTSTR lpszKey, CString &value)
+// {
+// 	HKEY hKeyRoot=NULL;
+// 	BOOL bRet = FALSE;
 
 
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+// 	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
 
-	if (hKeyRoot && GetRegKey(hKeyRoot,lpszKey, value)) {
-		bRet = TRUE;
-	}
+// 	if (hKeyRoot && GetRegKey(hKeyRoot,lpszKey, value)) {
+// 		bRet = TRUE;
+// 	}
 
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
-	return bRet;
+// 	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+// 	return bRet;
 
-}
+// }
 
-BOOL CGLViewCtrlCtrl::GetProfile(LPCTSTR lpszKey, int &value)
-{
-	HKEY hKeyRoot=NULL;
-	BOOL bRet = FALSE;
-
-
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
-
-	if (hKeyRoot && GetRegKey(hKeyRoot,lpszKey, value)) {
-		bRet = TRUE;
-	}
-
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
-	return bRet;
-
-}
-
-// set value
-
-BOOL CGLViewCtrlCtrl::SetProfile(LPCTSTR lpszKey, LPCTSTR value)
-{
-	HKEY hKeyRoot=NULL;
-	BOOL bRet = FALSE;
+// BOOL CGLViewCtrlCtrl::GetProfile(LPCTSTR lpszKey, int &value)
+// {
+// 	HKEY hKeyRoot=NULL;
+// 	BOOL bRet = FALSE;
 
 
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+// 	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
 
-	if (hKeyRoot && SetRegKey(hKeyRoot,lpszKey, value)) {
-		bRet = TRUE;
-	}
+// 	if (hKeyRoot && GetRegKey(hKeyRoot,lpszKey, value)) {
+// 		bRet = TRUE;
+// 	}
 
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
-	return bRet;
+// 	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+// 	return bRet;
 
-}
+// }
 
-BOOL CGLViewCtrlCtrl::SetProfile(LPCTSTR lpszKey, int value)
-{
-	HKEY hKeyRoot=NULL;
-	BOOL bRet = FALSE;
+// // set value
 
-
-	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
-
-	if (hKeyRoot && SetRegKey(hKeyRoot,lpszKey, value)) {
-		bRet = TRUE;
-	}
-
-	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
-	return bRet;
-
-}
+// BOOL CGLViewCtrlCtrl::SetProfile(LPCTSTR lpszKey, LPCTSTR value)
+// {
+// 	HKEY hKeyRoot=NULL;
+// 	BOOL bRet = FALSE;
 
 
+// 	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+
+// 	if (hKeyRoot && SetRegKey(hKeyRoot,lpszKey, value)) {
+// 		bRet = TRUE;
+// 	}
+
+// 	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+// 	return bRet;
+
+// }
+
+// BOOL CGLViewCtrlCtrl::SetProfile(LPCTSTR lpszKey, int value)
+// {
+// 	HKEY hKeyRoot=NULL;
+// 	BOOL bRet = FALSE;
+
+
+// 	::RegOpenKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot);
+
+// 	if (hKeyRoot && SetRegKey(hKeyRoot,lpszKey, value)) {
+// 		bRet = TRUE;
+// 	}
+
+// 	if (hKeyRoot) ::RegCloseKey(hKeyRoot);
+// 	return bRet;
+
+// }
 
 
 
+
+#ifdef ON_SETTINGS_PREFERENCES
 void CGLViewCtrlCtrl::OnSettingsPreferences() 
 { 
 	//DPropSheet dialog(Translate(_T("Preferences")),this);
@@ -7949,6 +7936,7 @@ void CGLViewCtrlCtrl::OnSettingsPreferences()
 
 	}
 }
+#endif
 
 float CGLViewCtrlCtrl::GetAvatarHeight() 
 {
@@ -8022,97 +8010,97 @@ void CGLViewCtrlCtrl::SetGravity(BOOL bNewValue)
 // http://www.microsoft.com/kb/articles/q167/9/56.htm
 
 
-ULONG FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::AddRef()
-{
-   METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
-   return pThis->ExternalAddRef();
-}
+// ULONG FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::AddRef()
+// {
+//    METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
+//    return pThis->ExternalAddRef();
+// }
 
-ULONG FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::Release()
-{
-   METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
-   return pThis->ExternalRelease();
-}
+// ULONG FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::Release()
+// {
+//    METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
+//    return pThis->ExternalRelease();
+// }
 
-HRESULT FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::QueryInterface(
-   REFIID iid, void FAR* FAR* ppvObj)
-{
-   METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
-   return (HRESULT)pThis->ExternalQueryInterface(&iid, ppvObj);
-}
+// HRESULT FAR EXPORT CGLViewCtrlCtrl::XCmdTargetObj::QueryInterface(
+//    REFIID iid, void FAR* FAR* ppvObj)
+// {
+//    METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
+//    return (HRESULT)pThis->ExternalQueryInterface(&iid, ppvObj);
+// }
 
-//IOleCommandTarget::QueryStatus
+// //IOleCommandTarget::QueryStatus
 
-STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::QueryStatus(
-   const GUID* pguidCmdGroup, ULONG cCmds, OLECMD rgCmds[],
-   OLECMDTEXT* pcmdtext)
-{
-   METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
-   //... add YOUR own code here.
-   TRACE("OLECMDID  QueryStatus%d \n",rgCmds[0]);
+// STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::QueryStatus(
+//    const GUID* pguidCmdGroup, ULONG cCmds, OLECMD rgCmds[],
+//    OLECMDTEXT* pcmdtext)
+// {
+//    METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
+//    //... add YOUR own code here.
+//    TRACE("OLECMDID  QueryStatus%d \n",rgCmds[0]);
 
-   return S_OK;
-}
+//    return S_OK;
+// }
 
-//IOleCommandTarget::Exec
-STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::Exec(
-   const GUID* pguidCmdGroup, DWORD nCmdID, DWORD nCmdExecOpt,
-   VARIANTARG* pvarargIn, VARIANTARG* pvarargOut)
-{
-   METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
+// //IOleCommandTarget::Exec
+// STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::Exec(
+//    const GUID* pguidCmdGroup, DWORD nCmdID, DWORD nCmdExecOpt,
+//    VARIANTARG* pvarargIn, VARIANTARG* pvarargOut)
+// {
+//    METHOD_PROLOGUE(CGLViewCtrlCtrl, CmdTargetObj)
 
-   TRACE("OLECMDID %d \n",nCmdID);
+//    TRACE("OLECMDID %d \n",nCmdID);
    
-   switch (nCmdID) {
-   case OLECMDID_STOP:
-      {
-      // ... STOP button is clicked, add YOUR own code here.
-	   if (pThis->m_initialized) {
+//    switch (nCmdID) {
+//    case OLECMDID_STOP:
+//       {
+//       // ... STOP button is clicked, add YOUR own code here.
+// 	   if (pThis->m_initialized) {
 
-			pThis->OnSettingsStopLoading(); // KILL download
-			pThis->view->ReleaseSound();
-			pThis->StopTimer();
-			//view->time.Disable();
-       }
-	   break;
+// 			pThis->OnSettingsStopLoading(); // KILL download
+// 			pThis->view->ReleaseSound();
+// 			pThis->StopTimer();
+// 			//view->time.Disable();
+//        }
+// 	   break;
 
 
-      }
-	case OLECMDID_REFRESH : 
-	{
-      // ::MessageBox(NULL, "Refresh","CGLViewCtrlCtrl", MB_OK);
-		break;
-	}	
-	case 36 : //OLECMDID_ENABLE_INTERACTION 
-		//Sent by the container to tell the object to either pause or resume any multimedia (audio or animation) in the document. Takes a VT_BOOL parameter, which is TRUE if the multimedia should be resumed or FALSE if it should be paused. The Internet Explorer 4.0 browser uses this command to inform the object of when it is minimized or completely covered by another window so that the object can pause playing of multimedia information. 
-		TRACE("Enabled interaction %d \n",pvarargIn->boolVal);
+//       }
+// 	case OLECMDID_REFRESH : 
+// 	{
+//       // ::MessageBox(NULL, "Refresh","CGLViewCtrlCtrl", MB_OK);
+// 		break;
+// 	}	
+// 	case 36 : //OLECMDID_ENABLE_INTERACTION 
+// 		//Sent by the container to tell the object to either pause or resume any multimedia (audio or animation) in the document. Takes a VT_BOOL parameter, which is TRUE if the multimedia should be resumed or FALSE if it should be paused. The Internet Explorer 4.0 browser uses this command to inform the object of when it is minimized or completely covered by another window so that the object can pause playing of multimedia information. 
+// 		TRACE("Enabled interaction %d \n",pvarargIn->boolVal);
 
-		if (pThis->m_initialized && pvarargIn != NULL) {
-			pThis->m_enableInteraction=pvarargIn->boolVal;
-			if (!pThis->m_enableInteraction) pThis->StopTimer();
-			else pThis->StartTimer();
-		}
+// 		if (pThis->m_initialized && pvarargIn != NULL) {
+// 			pThis->m_enableInteraction=pvarargIn->boolVal;
+// 			if (!pThis->m_enableInteraction) pThis->StopTimer();
+// 			else pThis->StartTimer();
+// 		}
 
-		break;
+// 		break;
 
-	case 37 : //OLECMDID_ONUNLOAD 
-		// Sent by the browser before a new navigation is initiated or the browser is being closed. This provides the opportunity for a document to query the user if any unsaved data should be saved. Returning S_OK allows the navigation to close. Returning S_FALSE prevents the operation. This command is sent only once. Because navigation is asynchronous, it is important to remember that the user can make changes in a page or document after this command is received but before the new page is displayed. 
-	   if (pThis->m_initialized) {
+// 	case 37 : //OLECMDID_ONUNLOAD 
+// 		// Sent by the browser before a new navigation is initiated or the browser is being closed. This provides the opportunity for a document to query the user if any unsaved data should be saved. Returning S_OK allows the navigation to close. Returning S_FALSE prevents the operation. This command is sent only once. Because navigation is asynchronous, it is important to remember that the user can make changes in a page or document after this command is received but before the new page is displayed. 
+// 	   if (pThis->m_initialized) {
 
-			pThis->OnSettingsStopLoading(); // KILL download
-			pThis->view->ReleaseSound();
-			pThis->StopTimer();
-			//view->time.Disable();
-       }
+// 			pThis->OnSettingsStopLoading(); // KILL download
+// 			pThis->view->ReleaseSound();
+// 			pThis->StopTimer();
+// 			//view->time.Disable();
+//        }
 
-		break;
+// 		break;
 
-	default :
-	   break;
-   }
+// 	default :
+// 	   break;
+//    }
 
-   return S_OK;
-}
+//    return S_OK;
+// }
 
 
 
@@ -8183,37 +8171,37 @@ STDMETHODIMP CGLViewCtrlCtrl::XCmdTargetObj::Exec(
 // 	}
 // }
 
-BOOL CGLViewCtrlCtrl::setObserverWnd(long  hWnd) 
-{
-    if (hWnd == 0)
-    {
-	    if (view && view->observerFlags & GOBSERVE_ANCHOR)
-		    view->observer->OnLoadUrl(NULL, NULL);
-    }
-	if (!m_initialized) {
-		HWND hwnd = GetSafeHwnd();
-		if (!Initialize(NULL)) return FALSE;
-	}
+// BOOL CGLViewCtrlCtrl::setObserverWnd(long  hWnd) 
+// {
+//     if (hWnd == 0)
+//     {
+// 	    if (view && view->observerFlags & GOBSERVE_ANCHOR)
+// 		    view->observer->OnLoadUrl(NULL, NULL);
+//     }
+// 	if (!m_initialized) {
+// 		HWND hwnd = GetSafeHwnd();
+// 		if (!Initialize(NULL)) return FALSE;
+// 	}
 
-	view->observerWnd = (HWND) hWnd;
-	if (hWnd != NULL)
-		view->observerFlags = (GOBSERVE_WM_MESSAGE | GOBSERVE_WM_ANCHOR | GOBSERVE_WM_URLLOADING) | (view->observerFlags & ~GOBSERVER_WM_MASK);
-	else view->observerFlags=  0 | (view->observerFlags & ~GOBSERVER_WM_MASK);
+// 	view->observerWnd = (HWND) hWnd;
+// 	if (hWnd != NULL)
+// 		view->observerFlags = (GOBSERVE_WM_MESSAGE | GOBSERVE_WM_ANCHOR | GOBSERVE_WM_URLLOADING) | (view->observerFlags & ~GOBSERVER_WM_MASK);
+// 	else view->observerFlags=  0 | (view->observerFlags & ~GOBSERVER_WM_MASK);
 
-	GFile *mainLoader = view->file;
+// 	GFile *mainLoader = view->file;
 
-	if (mainLoader) {
-		// check if observer wants OnSceneChanged
-		if (view->observerFlags & GOBSERVE_URLLOADING) {
-			mainLoader->hObserver = view->observer;
-		}
-		if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
-			mainLoader->hNetscapeMsgWnd = view->observerWnd;
-		}
-	}
+// 	if (mainLoader) {
+// 		// check if observer wants OnSceneChanged
+// 		if (view->observerFlags & GOBSERVE_URLLOADING) {
+// 			mainLoader->hObserver = view->observer;
+// 		}
+// 		if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
+// 			mainLoader->hNetscapeMsgWnd = view->observerWnd;
+// 		}
+// 	}
 
-	return TRUE;
-}
+// 	return TRUE;
+// }
 
 
 
@@ -8225,7 +8213,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 
    BOOL ret = FALSE;
 
-   USES_CONVERSION;
+
 
 	   
    CString msg;
@@ -8236,7 +8224,6 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
    if (!fileName) return FALSE;
 
 	if (!m_initialized) {
-		HWND hwnd = GetSafeHwnd();
 		if (!Initialize(NULL)) return FALSE;
 	}
 
@@ -8269,15 +8256,15 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
    mainLoader->size = size;
  
    // window to notify on completition
-   mainLoader->hPostMsgWnd = GetSafeHwnd();
+   mainLoader->hPostMsgWnd = NULL;
    
-  // check if observer wants OnSceneChanged
-   if (view->observerFlags & GOBSERVE_URLLOADING) {
-		mainLoader->hObserver = view->observer;
-   }
-   if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
-	   mainLoader->hNetscapeMsgWnd = view->observerWnd;
-   }
+//   // check if observer wants OnSceneChanged
+//    if (view->observerFlags & GOBSERVE_URLLOADING) {
+// 		mainLoader->hObserver = view->observer;
+//    }
+//    if (view->observerFlags & GOBSERVE_WM_URLLOADING) {
+// 	   mainLoader->hNetscapeMsgWnd = view->observerWnd;
+//    }
  
   if (url) 
 	   mainLoader->Set(url,0,0);
@@ -8333,11 +8320,11 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 				SetAnimateOff();
 				Redraw();
 				Message("Url "+path);
-				FireOnSceneChanged(path);
+				//FireOnSceneChanged(path);
 				// check if observer wants OnSceneChanged
-				if (view->observerFlags & GOBSERVE_MESSAGE) {
-					view->observer->OnSceneChanged((BSTR) T2COLE((const char*)path));
-				}
+				// if (view->observerFlags & GOBSERVE_MESSAGE) {
+				// 	view->observer->OnSceneChanged((BSTR) T2COLE((const char*)path));
+				// }
 
 				ret = TRUE;
 			}
@@ -8372,7 +8359,7 @@ void CGLViewCtrlCtrl::onUrlNotify(LPCTSTR url, LPCTSTR mimeType, LPCTSTR fileNam
 
 	// scan through all waiting files
 	// and pass the notify request 
-	GFile::OnUrlNotify(GetSafeHwnd(), url, mimeType, 0, fileName, fileClass, reason); 
+	GFile::OnUrlNotify(NULL, url, mimeType, 0, fileName, fileClass, reason); 
 
 }
 
@@ -8389,7 +8376,7 @@ void CGLViewCtrlCtrl::onUrlNotify2(LPCTSTR url, LPCTSTR mimeType, long lastModif
 
 	// scan through all waiting files
 	// and pass the notify request 
-	GFile::OnUrlNotify(GetSafeHwnd(), url, mimeType, lastModified, fileName,fileClass, reason); 
+	GFile::OnUrlNotify(NULL, url, mimeType, lastModified, fileName,fileClass, reason); 
 
 }
 
@@ -8409,8 +8396,8 @@ void CGLViewCtrlCtrl::setUiMode(long newMode)
 
 void CGLViewCtrlCtrl::openPreferences(long flags) 
 {
-   if (view)
-		OnSettingsPreferences();
+//    if (view)
+// 		OnSettingsPreferences();
 }
 
 void CGLViewCtrlCtrl::playSound(LPCTSTR soundFilename) 
@@ -8430,13 +8417,13 @@ void CGLViewCtrlCtrl::OnPopupSpeedVeryslow()
 	m_cameraSpeed = view->viewStepSpeed / 5.0;	
 	m_cameraSpeedFac = 2;
 	
-	HKEY hKeyRoot;
-	// SAVE settings to registry 
+	// HKEY hKeyRoot;
+	// // SAVE settings to registry 
 				
-	if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
-		SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
-		::RegCloseKey(hKeyRoot);
-	}
+	// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+	// 	SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
+	// 	::RegCloseKey(hKeyRoot);
+	// }
 
 }
 
@@ -8451,13 +8438,13 @@ void CGLViewCtrlCtrl::OnPopupSpeedSlow()
 	m_cameraSpeed = view->viewStepSpeed / 2.0;	
 	m_cameraSpeedFac = 5;	
 
-	HKEY hKeyRoot;
-	// SAVE settings to registry 
+	// HKEY hKeyRoot;
+	// // SAVE settings to registry 
 				
-	if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
-		SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
-		::RegCloseKey(hKeyRoot);
-	}
+	// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+	// 	SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
+	// 	::RegCloseKey(hKeyRoot);
+	// }
 
 }
 
@@ -8472,13 +8459,13 @@ void CGLViewCtrlCtrl::OnPopupSpeedMedium()
 	m_cameraSpeed = view->viewStepSpeed ;	
 	m_cameraSpeedFac = 10;
 	
-	HKEY hKeyRoot;
-	// SAVE settings to registry 
+	// HKEY hKeyRoot;
+	// // SAVE settings to registry 
 				
-	if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
-		SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
-		::RegCloseKey(hKeyRoot);
-	}
+	// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+	// 	SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
+	// 	::RegCloseKey(hKeyRoot);
+	// }
 
 }
 
@@ -8493,13 +8480,13 @@ void CGLViewCtrlCtrl::OnPopupSpeedFast()
 	m_cameraSpeed = view->viewStepSpeed * 2.0;	
 	m_cameraSpeedFac = 20;	
 
-	HKEY hKeyRoot;
+	// HKEY hKeyRoot;
 	// SAVE settings to registry 
 				
-	if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
-		SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
-		::RegCloseKey(hKeyRoot);
-	}
+	// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+	// 	SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
+	// 	::RegCloseKey(hKeyRoot);
+	// }
 }
 
 void CGLViewCtrlCtrl::OnUpdatePopupSpeedFast(CCmdUI* pCmdUI) 
@@ -8513,13 +8500,13 @@ void CGLViewCtrlCtrl::OnPopupSpeedVeryfast()
 	m_cameraSpeed = view->viewStepSpeed * 5;	
 	m_cameraSpeedFac = 60;	
 	
-	HKEY hKeyRoot;
-	// SAVE settings to registry 
+	// HKEY hKeyRoot;
+	// // SAVE settings to registry 
 				
-	if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
-		SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
-		::RegCloseKey(hKeyRoot);
-	}
+	// if (::RegCreateKey(HKEY_CURRENT_USER, USER_KEY, &hKeyRoot) == ERROR_SUCCESS) {
+	// 	SetRegKey(hKeyRoot,_T("General.speedFac"),  m_cameraSpeedFac);
+	// 	::RegCloseKey(hKeyRoot);
+	// }
 
 }
 
@@ -8548,10 +8535,10 @@ void CGLViewCtrlCtrl::OnUpdateGoBack(CCmdUI* pCmdUI)
 
 void CGLViewCtrlCtrl::OnSettingsConsole() 
 {
-	if (m_dConsole) {
-		m_dConsole->m_hide = FALSE;
-		m_dConsole->ShowWindow(SW_SHOWNOACTIVATE); // SW_SHOWNA
-	}
+	// if (m_dConsole) {
+	// 	m_dConsole->m_hide = FALSE;
+	// 	m_dConsole->ShowWindow(SW_SHOWNOACTIVATE); // SW_SHOWNA
+	// }
 }
 
 
@@ -8604,7 +8591,7 @@ void CGLViewCtrlCtrl::OnViewPad()
 void CGLViewCtrlCtrl::OnUpdateViewPad(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(m_dPad != NULL);
+	//pCmdUI->SetCheck(m_dPad != NULL);
 	
 }
 
@@ -8821,7 +8808,7 @@ void CGLViewCtrlCtrl::setUrl2(LPCTSTR url, long lastModified, long mode)
 long CGLViewCtrlCtrl::getInterfaceVersion() 
 {
 
-	return CURRENT_VERSION;
+	return 0x104;
 }
 
 /*
@@ -8945,7 +8932,7 @@ BSTR CGLViewCtrlCtrl::getMyAvatarURL()
 	else 
 		strResult = view->myAvatarURL.get();
 
-	return strResult.AllocSysString();
+	return strResult;
 }
 
 /*
@@ -8984,19 +8971,16 @@ BOOL CGLViewCtrlCtrl::setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, LPCT
 	// find the node
 	GvNode *node = scene->getNode(nodeName);
 	if (!node) return FALSE;
-	EventIn *event=NULL;
 	BOOL ret = FALSE;
-	CComBSTR name(eventInName);
 
 	// find eventOut
-	if (node->getEventIn(name,&event) == S_OK && (event != NULL)) {
+	if (node->getEventIn(eventInName)) {
 		if (updateLock == 0)
 			view->SetTheTime(); // set global VRML eventTime
 
 		// set as string 
-		CComBSTR val(value);
-		ret = (event->setValueFromString(val) == S_OK);
-		event->Release();
+		char *val = value;
+		ret = (node->getEventIn(eventInName)->setValueFromString(val) == 0);
 		if (updateLock == 0)
 			if ((view->needUpdate >0) || view->getRedraw()) Redraw();
 
