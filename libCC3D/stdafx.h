@@ -271,6 +271,10 @@ void EndWaitCursor();
 void SetCapture() {}
 void ReleaseCapture() {}
 
+BOOL GetFocus();
+
+uint32_t SetTimer(uint32_t *id, uint32_t elapse, void (*timerfunc)(void *userData), void *userData);
+
 // WIN32 Critical section
 // need if multiple plugins are sharing global data
 typedef int CRITICAL_SECTION;
@@ -900,7 +904,7 @@ public:
 	CRect MulDiv(int nMultiplier, int nDivisor) const;
 */
 };
-BOOL GetClientRect(CRect*);
+BOOL GetClientRect(RECT*);
 #define InternalSetReadyState(a)
 
 

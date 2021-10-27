@@ -6,6 +6,7 @@
 #include <cstdarg>
 
 #include <emscripten.h>
+#include <emscripten/html5.h>
 
  
 
@@ -296,7 +297,27 @@ void EndWaitCursor() {
     });
 }
 
-BOOL GetClientRect(CRect *rect) {
+BOOL GetFocus() {
+    return EM_ASM_INT({
+        return document.activeElement === Module.canvas ? 1 : 0;
+    });
+}
+
+static int TIMERS[] = {0, 0, 0, 0, 0};
+
+uint32_t SetTimer(uint32_t *id, uint32_t elapse, void (*timerfunc)(void *userData), void *userData) {
+    if(*id >= sizeof(TIMERS)) {
+        printf("Timer ID exceeded maximum!\n");
+        return 0;
+    }
+    if(TIMERS[*id]) {
+        emscripten_clear_interval(TIMERS[*id]);
+    }
+    TIMERS[*id] = emscripten_set_interval(timerfunc, elapse, userData);
+    return *id;
+}
+
+BOOL GetClientRect(RECT *rect) {
 	rect->left = 0;
 	rect->top = 0;
 	EM_ASM({

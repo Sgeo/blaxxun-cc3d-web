@@ -4059,10 +4059,8 @@ void CGLViewCtrlCtrl::OnSize(UINT nType, int cx, int cy)
 //  checks
 	TRACE("CGLViewCtrlCtrl::OnSize %i %i\n", cx, cy); 
 	RECT r;
-	GetUpdateRect(&r);
-	TRACE("OnSize %d update rect %d t %d r %d b %d \n",nType, r.left,r.top,r.right,r.bottom);
-	GetWindowRect(&r);
-	TRACE("OnSize %d window rect %d t %d r %d b %d \n",nType, r.left,r.top,r.right,r.bottom);
+	GetClientRect(&r);
+
 /*	
 	if (view->GetFullScreen())
 	{
@@ -4079,7 +4077,6 @@ void CGLViewCtrlCtrl::OnSize(UINT nType, int cx, int cy)
 	//	return;
 	}
 */
-	CWnd::OnSize(nType, cx, cy);
 	//COleControl::OnSize(nType, cx, cy);	
 
     if ( !m_initialized ) return;
@@ -4129,7 +4126,6 @@ void CGLViewCtrlCtrl::OnSize(UINT nType, int cx, int cy)
 
 void CGLViewCtrlCtrl::OnMove(int x, int y) 
 {
-    COleControl::OnMove(x, y);
 	GetClientRect(&m_clientRect);
 	TRACE("CGLViewCtrlCtrl::OnMove Rect l %d t %d r %d b %d \n",m_clientRect.left,m_clientRect.top,m_clientRect.right,m_clientRect.bottom);
 
@@ -4148,7 +4144,7 @@ int CGLViewCtrlCtrl::OnCreate()
 	EAI_TRACE("CGLViewCtrlCtrl::OnCreate() %p\n",this);
 	EAI_FLUSH();
 
-	TRACE("CGLViewCtrlCtrl::OnCreate() %p THread Id is %X \n",this,GetCurrentThreadId());
+	TRACE("CGLViewCtrlCtrl::OnCreate() %p THread Id is not a thing that exists\n");
 	TRACEREF();
 
 	// lpCreateStruct->cy-=20;
@@ -4156,7 +4152,7 @@ int CGLViewCtrlCtrl::OnCreate()
 
 	if (!m_initialized) 
     {
-		if (!Initialize((HDC)NULL) return -1;
+		if (!Initialize((HDC)NULL)) return -1;
 
 		// start loading 
 		if (m_initialUrl.GetLength()>0)
@@ -4201,26 +4197,25 @@ int CGLViewCtrlCtrl::OnCreate()
 void CGLViewCtrlCtrl::OnClose(DWORD dwSaveOption) 
 {
 	// send termination message 
-	if (view && view->observerFlags & GOBSERVE_ANCHOR)
-		HRESULT res=view->observer->OnLoadUrl(NULL, NULL);
+	// if (view && view->observerFlags & GOBSERVE_ANCHOR)
+	// 	HRESULT res=view->observer->OnLoadUrl(NULL, NULL);
 
 	// called if IE-Explorer File->Closed called 
 	TRACE("CGLViewCtrlCtrl::OnClose() %p\n",this);
 	TRACEREF();
-	COleControl::OnClose(dwSaveOption);
 }
 
 // kill all download activities for this window 
 void CGLViewCtrlCtrl::KillDownloads() 
 {
 	// kill all download activities for this window 
-	if (GetSafeHwnd()) 
+	if (1) 
     {
-		GFile::KillFilesInUse(GetSafeHwnd());
+		GFile::KillFilesInUse(NULL);
 		// pass request to netscape message window 
-		if (view && view->observerFlags & GOBSERVE_WM_URLLOADING) {
-			MySendMessage(view->observerWnd, WM_USER + 503, (WPARAM) NULL,(LPARAM) NULL);
-		}
+		// if (view && view->observerFlags & GOBSERVE_WM_URLLOADING) {
+		// 	MySendMessage(view->observerWnd, WM_USER + 503, (WPARAM) NULL,(LPARAM) NULL);
+		// }
 	}
 }
 
@@ -4243,9 +4238,9 @@ void CGLViewCtrlCtrl::OnDestroy()
 	CloseAllDialogs();
 	
 	// destroy console
-	if (m_dConsole) { 
-		m_dConsole->DestroyWindow(); delete m_dConsole; m_dConsole = NULL; 
-	}
+	// if (m_dConsole) { 
+	// 	m_dConsole->DestroyWindow(); delete m_dConsole; m_dConsole = NULL; 
+	// }
 
 	// called very late if internet explorer is beeing released, not when the HTML page changes 
 	// also after close 
@@ -4268,8 +4263,8 @@ void CGLViewCtrlCtrl::OnDestroy()
 
 
 
-	COleControl::OnDestroy();
-	
+
+
 	// TODO: Add your message handler code here
 
 	if (view) 
@@ -4379,9 +4374,9 @@ BOOL CGLViewCtrlCtrl::OnIdle(LONG lcount)
 
 	// check if we need to run the cache cleanup thread 
 	if (theCache.writeCacheEnabled && !theCache.cleanerBusy && theCache.NeedCacheCleaning(m_startTime)) {
-		Message(Translate(_T("Cleaning cache ...")),PROGRESS_MESSAGE);
+		Message("Cleaning cache ...",PROGRESS_MESSAGE);
 		theCache.cleanerBusy = TRUE;
-		CWinThread * t = AfxBeginThread(CUrlCacheCleanerThread, &theCache,THREAD_PRIORITY_NORMAL,64*1024);	 	 	
+		//CWinThread * t = AfxBeginThread(CUrlCacheCleanerThread, &theCache,THREAD_PRIORITY_NORMAL,64*1024);	 	 	
 	}
 
 	view->Unlock();
@@ -4393,8 +4388,8 @@ BOOL CGLViewCtrlCtrl::OnIdle(LONG lcount)
 
 }
 
-const short ID_TIMER = 1;
-const short NAV_TIMER = 2;
+uint32_t ID_TIMER = 1;
+uint32_t NAV_TIMER = 2;
 
 void CGLViewCtrlCtrl::OnTimer(UINT nIDEvent) 
 {
@@ -4441,7 +4436,7 @@ void CGLViewCtrlCtrl::OnDoTimer(UINT nIDEvent)
 
 	//isFast = FALSE; // old path 
 
-	if (GetFocus() != this)
+	if (!GetFocus())
 	{ 
 		if (m_NavFocus)
 		{		
@@ -4547,17 +4542,18 @@ void CGLViewCtrlCtrl::OnDoTimer(UINT nIDEvent)
 #endif
 
     /* check foreground window */
-    bool isForeground = false;
-    {
-        CWnd * top = GetTopLevelParent();
-        CWnd * fg  = GetForegroundWindow();
-        if (fg)
-            fg = fg->GetTopLevelParent();
-	    if (fg && top && fg->GetSafeHwnd() == fg->GetSafeHwnd())
-        {
-            isForeground = true;
-        }
-    }
+    // bool isForeground = false;
+    // {
+    //     CWnd * top = GetTopLevelParent();
+    //     CWnd * fg  = GetForegroundWindow();
+    //     if (fg)
+    //         fg = fg->GetTopLevelParent();
+	//     if (fg && top && fg->GetSafeHwnd() == fg->GetSafeHwnd())
+    //     {
+    //         isForeground = true;
+    //     }
+    // }
+	bool isForeground = true; // Let's just assume we're always foreground
 
 	if ( /* m_NavNotActive || hg */ (!m_NavFocus || isFast) && isForeground ) // new isFast
 	{
@@ -4582,10 +4578,10 @@ void CGLViewCtrlCtrl::OnDoTimer(UINT nIDEvent)
 				m_idleCounter = 0;
             }
         
-			Sleep(0);
+			//Sleep(0);
 
         }
-        else if (!m_useRenderThread &&  view && view->observer )
+        else if (!m_useRenderThread &&  view && 0)
         {
 			m_idleCounter +=2;
 			if ( isFast ||(m_idleCounter < 10))
@@ -4593,7 +4589,7 @@ void CGLViewCtrlCtrl::OnDoTimer(UINT nIDEvent)
 			else
 				m_idleCounter = 0;
         
-			Sleep(0);
+			//Sleep(0);
 
         }
         else { // hg fullspeed 
@@ -4611,12 +4607,17 @@ void CGLViewCtrlCtrl::OnDoTimer(UINT nIDEvent)
 /////////////////////////////////////////////////////////////////////////////
 // CGLViewCtrlCtrl::StartTimer - Start the timer used for animation
 
+
+void CGLViewCtrlCtrl::EmscriptenOnTimer(void *ctrl) {
+	static_cast<CGLViewCtrlCtrl*>(ctrl)->OnTimer(1); // ONly timer 1 appears to be used at the moment.
+}
+
 void CGLViewCtrlCtrl::StartTimer()
 {
 	if (m_useRenderThread) return;
 	if (!m_initialized) return;
 
-	if ( SetTimer(ID_TIMER, m_timerInterval, NULL))
+	if ( SetTimer(&ID_TIMER, m_timerInterval, &CGLViewCtrlCtrl::EmscriptenOnTimer, this))
 	    m_timerRunning = TRUE;
 }
 

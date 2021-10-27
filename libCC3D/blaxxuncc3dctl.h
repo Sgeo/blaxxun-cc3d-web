@@ -1200,6 +1200,8 @@ private:
 	//BOOL m_PanelEnabled;
 	BOOL m_navPanelOn_Embed;
 
+	static void EmscriptenOnTimer(void *ctrl)
+
 };
 
 //{{AFX_INSERT_LOCATION}}
