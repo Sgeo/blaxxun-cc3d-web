@@ -8962,7 +8962,7 @@ BOOL CGLViewCtrlCtrl::setViewpointFollow(GvNode *fromNode, float refX, float ref
 	TRUE on success
 */
 
-BOOL CGLViewCtrlCtrl::setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, LPCTSTR value) 
+BOOL CGLViewCtrlCtrl::setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, char *value) 
 {
 	if (!view) return FALSE;
 
@@ -8979,8 +8979,8 @@ BOOL CGLViewCtrlCtrl::setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, LPCT
 			view->SetTheTime(); // set global VRML eventTime
 
 		// set as string 
-		char *val = value;
-		ret = (node->getEventIn(eventInName)->setValueFromString(val) == 0);
+		//char *val = value;
+		ret = (node->getEventIn(eventInName)->setValueFromString(value) == 0);
 		if (updateLock == 0)
 			if ((view->needUpdate >0) || view->getRedraw()) Redraw();
 
@@ -9022,20 +9022,18 @@ BSTR CGLViewCtrlCtrl::getNodeEventOut(LPCTSTR nodeName, LPCTSTR eventOutName)//,
 	// find the node
 	GvNode *node = scene->getNode(nodeName);
 	if (!node) return NULL;
-	EventOut *event=NULL;
+	GvField *event=NULL;
 	BSTR value = NULL;
 	BSTR ret = NULL;
-	CComBSTR name(eventOutName);
 
 	// find eventOut
-	if (node->getEventOut(name,&event) == S_OK && (event != NULL)) {
+	event = node->getEventOut(eventOutName);
+	if (event != NULL) {
 		// get as string 
 		if (event->toString(&value) == S_OK)
 			ret = value;
 		else 
 			ret = NULL;
-
-		event->Release();
 	}
 	return ret;
 }
@@ -9207,6 +9205,7 @@ void CGLViewCtrlCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 	if (m_uiMode == UI_NONE) return;
 
 
+	#ifdef SGEO_MENU
 	CMenu menu;
 		if (menu.LoadMenu(IDR_MAINFRAME_POPUP))
 		{
@@ -9379,6 +9378,8 @@ void CGLViewCtrlCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 		}
 
 		else COleControl::OnRButtonUp(nFlags, point);
+
+		#endif
 }
 
 void CGLViewCtrlCtrl::OnRButtonDblClk(UINT nFlags, CPoint point) 
@@ -9390,7 +9391,6 @@ void CGLViewCtrlCtrl::OnRButtonDblClk(UINT nFlags, CPoint point)
 			return;
 	}
 	
-	COleControl::OnRButtonDblClk(nFlags, point);
 }
 
 void CGLViewCtrlCtrl::OnSettingChange(UINT uFlags, LPCTSTR lpszSection) 
@@ -9416,7 +9416,6 @@ void CGLViewCtrlCtrl::OnMButtonDown(UINT nFlags, CPoint point)
 			return;
 	}
 	
-	COleControl::OnMButtonDown(nFlags, point);
 }
 
 void CGLViewCtrlCtrl::OnMButtonUp(UINT nFlags, CPoint point) 
@@ -9428,7 +9427,6 @@ void CGLViewCtrlCtrl::OnMButtonUp(UINT nFlags, CPoint point)
 			return;
 	}
 	
-	COleControl::OnMButtonUp(nFlags, point);
 }
 
 void CGLViewCtrlCtrl::OnMButtonDblClk(UINT nFlags, CPoint point) 
@@ -9440,5 +9438,4 @@ void CGLViewCtrlCtrl::OnMButtonDblClk(UINT nFlags, CPoint point)
 			return;
 	}
 
-	COleControl::OnMButtonDblClk(nFlags, point);
 }

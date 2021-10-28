@@ -259,6 +259,10 @@ void CString::Format(const char *format, ...) {
     *this += buf;
 }
 
+void Translate(const char * text, CString& cstr) {
+	cstr = text;
+}
+
 
 void CCmdUI::Enable(BOOL enable) {
     printf("CCmdUI::Enable not implemented yet!\n");
@@ -296,6 +300,9 @@ void EndWaitCursor() {
         Module.canvas.style.cursor = Module.cursorPtr ? UTF8ToString(Module.cursorPtr) : 'default';
     });
 }
+
+void SetCapture() {}
+void ReleaseCapture() {}
 
 BOOL GetFocus() {
     return EM_ASM_INT({

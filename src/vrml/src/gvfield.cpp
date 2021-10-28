@@ -373,6 +373,42 @@ GvBool GvProtoFieldIsConnection::copyValue(GvProtoInstance *protoInstance,GvNode
 
 RTIMP_ABSTRACT(GvField,0,RTRoot);
 
+/* EventIn methods */
+STDMETHODIMP GvField::getType(int *type)
+{
+	*type = getFieldType();
+	return S_OK;
+}
+
+
+STDMETHODIMP GvField::setValueFromString( /* [in] */ BSTR value)
+{
+	const char *vs;
+
+	vs = value;
+	int ret=set(vs);
+	return ((ret>0) ?  S_OK : S_FALSE);
+}
+
+STDMETHODIMP GvField::toString(/* [retval][out] */ BSTR  *value)
+{
+
+
+
+	GvString v;
+	
+	int ret= get(v); // convert value to string 
+
+	if (ret > 0) {
+		const char *vs = v.getString();
+		*value = vs);
+		return S_OK;
+	}  else {
+		*value = NULL;
+		return S_FALSE;
+	}
+}
+
 
 #ifdef _COM
 #include "gtrace.h"
@@ -431,23 +467,7 @@ HRESULT WINAPI GvField::_Chain(void* pv, REFIID iid, void** ppvObject, DWORD dw)
 
 
 
-/* EventIn methods */
-STDMETHODIMP GvField::getType(int *type)
-{
-	*type = getFieldType();
-	return S_OK;
-}
 
-
-STDMETHODIMP GvField::setValueFromString( /* [in] */ BSTR value)
-{
-	const char *vs;
-	USES_CONVERSION;
-	vs = OLE2CT(value);
-	int ret=set(vs);
-	COM_EXTERN_TOUCH();
-	return ((ret>0) ?  S_OK : S_FALSE);
-}
 
 
 
@@ -585,24 +605,7 @@ STDMETHODIMP GvField::unAdvise(EventOutObserver *observer)
 
 //long __stdcall GvSFFloat::callback(struct EventOut *,double,struct IDispatch *)' 
 
-STDMETHODIMP GvField::toString(/* [retval][out] */ BSTR  *value)
-{
 
-	USES_CONVERSION;
-
-	GvString v;
-	
-	int ret= get(v); // convert value to string 
-
-	if (ret > 0) {
-		const char *vs = v.getString();
-		*value = SysAllocString(T2COLE(vs));
-		return S_OK;
-	}  else {
-		*value = NULL;
-		return S_FALSE;
-	}
-}
 
 
 #endif

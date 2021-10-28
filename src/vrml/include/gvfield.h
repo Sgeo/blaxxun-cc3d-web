@@ -155,6 +155,7 @@ public:
     /* Field methods */
     STDMETHOD(getType)(int * type);
 	STDMETHOD(setValueFromString)( /* [in] */ BSTR value);
+    STDMETHOD(toString) (/* [retval][out] */ BSTR  *value);
 
 
 #ifdef _COM
@@ -196,7 +197,7 @@ public:
 	/* EventOut methods */ 
     STDMETHOD(advise)(EventOutObserver *observer, IDispatch* userData);
     STDMETHOD(unAdvise)(EventOutObserver *observer);
-	STDMETHOD(toString) (/* [retval][out] */ BSTR  *value);
+	
 
 
 #endif 

@@ -268,8 +268,8 @@ HCURSOR SetCursor(HCURSOR cursor);
 void BeginWaitCursor();
 void EndWaitCursor();
 
-void SetCapture() {}
-void ReleaseCapture() {}
+void SetCapture();
+void ReleaseCapture();
 
 BOOL GetFocus();
 
@@ -421,7 +421,8 @@ typedef struct tagPOINT
 
 #endif
 
-
+// ClientToScreen presumably meaningless I hope
+#define ClientToScreen(r)
 
 #if (defined(_MSC_VER_XXX) && defined(_DEBUG))
 
@@ -694,9 +695,7 @@ public:
 
 };
 
-void Translate(const char * text, CString& cstr) {
-	cstr = text;
-}
+void Translate(const char * text, CString& cstr);
 
 
 #include "arraynew.h"  
@@ -953,6 +952,7 @@ public:
 #endif
 
 #define STDMETHOD(method)     virtual HRESULT method
+#define STDMETHODIMP virtual HRESULT
 
 // tools
 

@@ -1052,7 +1052,7 @@ protected:
 	afx_msg void setMyAvatarURL(LPCTSTR url);
 	afx_msg BSTR getMyAvatarURL();
 	afx_msg BOOL setViewpointFollow(GvNode* node, float refX, float refY, float refZ, long mode);
-	afx_msg BOOL setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, LPCTSTR value);
+	afx_msg BOOL setNodeEventIn(LPCTSTR nodeName, LPCTSTR eventInName, char *value);
 	afx_msg BSTR getNodeEventOut(LPCTSTR nodeName, LPCTSTR eventOutName);
 	// afx_msg LPUNKNOWN getObject(long objectId);
 	afx_msg void setNavigationPanel(BOOL mode);
@@ -1204,7 +1204,7 @@ private:
 	//BOOL m_PanelEnabled;
 	BOOL m_navPanelOn_Embed;
 
-	static void EmscriptenOnTimer(void *ctrl)
+	static void EmscriptenOnTimer(void *ctrl);
 
 };
 
