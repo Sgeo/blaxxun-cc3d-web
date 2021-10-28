@@ -401,7 +401,7 @@ STDMETHODIMP GvField::toString(/* [retval][out] */ BSTR  *value)
 
 	if (ret > 0) {
 		const char *vs = v.getString();
-		*value = vs);
+		*value = vs;
 		return S_OK;
 	}  else {
 		*value = NULL;

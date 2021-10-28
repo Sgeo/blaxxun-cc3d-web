@@ -144,6 +144,8 @@ typedef int32_t INT32;
 
 
 typedef LONG HRESULT;
+#define S_OK 0
+#define S_FALSE 1
 
 typedef double SYSTEMTIME;
 
@@ -172,7 +174,7 @@ typedef unsigned int    _TINT;
 
 #define __TCHAR_DEFINED
 
-typedef char * BSTR;
+typedef const char * BSTR;
 
 /* String functions */
 #define _tcscat     strcat
@@ -952,7 +954,7 @@ public:
 #endif
 
 #define STDMETHOD(method)     virtual HRESULT method
-#define STDMETHODIMP virtual HRESULT
+#define STDMETHODIMP HRESULT
 
 // tools
 
