@@ -111,9 +111,9 @@ public:
 	//virtual void setViewpointByValue_(float positionX, float positionY, float positionZ, float orientationX, float orientationY, float orientationZ, float orientationAngle, long mode) = 0; 
 
 	//!get value from profile as string
-	virtual BOOL GetProfile(LPCTSTR lpszKey, CString &value) = 0;
+	//virtual BOOL GetProfile(LPCTSTR lpszKey, CString &value) = 0;
 	//!get value from profile as int
-	virtual BOOL GetProfile(LPCTSTR lpszKey, int &value) = 0;
+	//virtual BOOL GetProfile(LPCTSTR lpszKey, int &value) = 0;
 
 };
 

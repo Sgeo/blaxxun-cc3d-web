@@ -819,7 +819,7 @@ public:
 //	LPCTSTR GetProgID() {
 //		return factory.m_lpszProgID;
 //	}
-protected:	
+//protected:	
 
 // Message maps
 

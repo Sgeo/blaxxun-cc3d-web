@@ -9907,17 +9907,17 @@ void GView::GetProfileSettings()
    		if (x>0) renderState.materialRampSize = x;
 */
 
-	if (viewController->GetProfile(_T("Performance.useTextures"),x)) 
-   		SetUseTextures(x>0); //useTextures = (x>0);
+	// if (viewController->GetProfile(_T("Performance.useTextures"),x)) 
+   	// 	SetUseTextures(x>0); //useTextures = (x>0);
 
-	if (viewController->GetProfile(_T("Performance.useMovies"),x)) 
-   		SetUseMovies(x>0); //   		useMovies = (x>0);
+	// if (viewController->GetProfile(_T("Performance.useMovies"),x)) 
+   	// 	SetUseMovies(x>0); //   		useMovies = (x>0);
 
-	if (viewController->GetProfile(_T("Performance.useBackground"),x)) 
-   		useBackground = (x>0);
+	// if (viewController->GetProfile(_T("Performance.useBackground"),x)) 
+   	// 	useBackground = (x>0);
 
-	if (viewController->GetProfile(_T("Performance.maxTextureSize"),x)) 
-   		maxUserTextureSize = x;
+	// if (viewController->GetProfile(_T("Performance.maxTextureSize"),x)) 
+   	// 	maxUserTextureSize = x;
 	}
 }
 
