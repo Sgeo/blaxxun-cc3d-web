@@ -2,7 +2,9 @@
 #include "stdafx.h"
 #include "blaxxunCC3dCtl.h"
 
+#ifdef G_PANEL
 #include "GPanel.h"
+#endif
 #include "GModel.h"
 #include "grayselect.h"
 
@@ -103,7 +105,7 @@ void CGLViewCtrlCtrl::NavStart()
 		m_firstPoint = mousepos;
 
 
-		
+		#ifdef G_PANEL
 		if (view->panel && m_navPanelDrag)
 			//fake m_firstPoint
 		{
@@ -111,6 +113,7 @@ void CGLViewCtrlCtrl::NavStart()
 			view->panel->GetCenterPos(&newFirstPoint);
 			m_firstPoint = newFirstPoint;
 		}
+		#endif
 
 		// if called from device MOUSE (left mouse button down)
 		if (m_NavLBUTState)
@@ -491,6 +494,7 @@ void CGLViewCtrlCtrl::NavMain()
   	tile.y += key_tile.y;
 
 	//feedback (navigation)
+	#ifdef G_PANEL
 	if (view->PanelOk() && !view->panel->Active())
 	{
 		if (m_navPanelDrag) view->panel->setNavigationMode(1);
@@ -498,6 +502,7 @@ void CGLViewCtrlCtrl::NavMain()
 		//in some cases the value is overridden by navstoptimer
 		view->panel->setNavigationDirection(tile.x, tile.y);
 	}
+	#endif
 			
 
 	if (m_NavSpeedState) {
@@ -508,10 +513,12 @@ void CGLViewCtrlCtrl::NavMain()
 		m_NavSpeedRot_step = m_NavSpeedRot;
 	}
 	// move smaller in panel drag 
+	#ifdef G_PANEL
 	if (view->panel &&  m_navPanelDrag) {
 		m_NavSpeed_step = m_NavSpeed_step *.5f; 
 		m_NavSpeedRot_step = m_NavSpeedRot_step *.5f;
 	}
+	#endif
 
 	// calculate movement vectors
 #ifdef _DEBUG_NAVIGATION
@@ -523,7 +530,11 @@ void CGLViewCtrlCtrl::NavMain()
 	
 	vec3.z = (tile.x !=0)  ||  (tile.y!=0);
 
+	#ifdef G_PANEL
 	if ((view->panel && view->panel->Active()) || m_navPanelDrag) {
+	#else
+	if(0) {
+	#endif
 #ifdef _DEBUG_NAVIGATION
 		TRACE("CGLViewCtrlCtrl::NavMain:  vec3: %3f %3f \n", vec3.x, vec3.y);
 #endif _DEBUG_NAVIGATION
@@ -1996,11 +2007,13 @@ void CGLViewCtrlCtrl::NavCheckCursor(BOOL checkAnchor)
 			}
 */
 //		if (mode != m_NavCursorModeOld)
+		#ifdef G_PANEL
 		if (view->PanelOk() && view->panel->Inside(point))
 		{
 			mode = NAV_PANEL_CURSOR;
 			m_NavCursorShow = TRUE;
 		}
+		#endif
 
 
 
@@ -2017,11 +2030,12 @@ void CGLViewCtrlCtrl::NavCheckCursor(BOOL checkAnchor)
 		m_NavCursorModeOld = -2;
 		}
 
-
+	#ifdef G_PANEL
 	if (view->PanelOk())
 		if (!view->panel->Active() && !view->panel->Inside(point) && !m_navPanelDrag)
 			//panel gives feedback
 			view->panel->setNavigationMode(mode);
+	#endif
 }
 
 void CGLViewCtrlCtrl::NavResetFollowObject()
@@ -2663,7 +2677,9 @@ void CGLViewCtrlCtrl::NavStartTimer()
 
 void CGLViewCtrlCtrl::NavStopTimer()
 {
+	#ifdef G_PANEL
 	if (view->PanelOk()) view->panel->setNavigationMode(-1);
+	#endif
 	m_NavTimerRunning = FALSE;
 }
 

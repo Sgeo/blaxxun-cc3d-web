@@ -171,7 +171,9 @@ Changes:
 
 #include "GTrace.h"
 
+#ifdef G_CACHE
 #include "GUrlCache.h"
+#endif
 
 #include "GRender.h"
 
@@ -189,7 +191,9 @@ Changes:
 #include <gvproto.h>
 #include <gvsensors.h>
 
+#ifdef G_PANEL
 #include "gpanel.h"
+#endif
 #include "gmodel.h"
 #include "grayselect.h"
 
@@ -591,8 +595,10 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setNodeEventIn", setNodeEventIn, VT_BOOL, VTS_BSTR VTS_BSTR VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNodeEventOut", getNodeEventOut, VT_BSTR, VTS_BSTR VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getObject", getObject, VT_UNKNOWN, VTS_I4)
+	#ifdef G_PANEL
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setNavigationPanel", setNavigationPanel, VT_EMPTY, VTS_BOOL)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNavigationPanel", getNavigationPanel, VT_BOOL, VTS_NONE)
+	#endif
 	DISP_STOCKPROP_READYSTATE()
 	//}}AFX_DISPATCH_MAP
 //	DISP_PROPERTY_EX_ID(CGLViewCtrlCtrl, "url", DISPID_URL,GetUrl, SetUrl, VT_BSTR)
@@ -1340,7 +1346,7 @@ void CGLViewCtrlCtrl::Redraw()
 		// short cut 
 		//InvalidateRect(NULL, FALSE);
 		EM_ASM({
-			console.warn("Redraw() called but InvalidateRect doesn't exist. What to do?");
+			console.warn('Redraw() called but InvalidateRect doesnt exist. What to do?');
 		});
 		//InvalidateControl(); // does more 
 	}
@@ -1605,7 +1611,7 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 		}
 
 #endif
-
+	#ifdef G_CACHE
 	theCache.writeCacheEnabled = TRUE;
 	theCache.writeMediaCacheEnabled = TRUE; // Laurent - Jan.2000
 	theCache.SetWriteCacheDirectory(GFile::cacheDirectory); 
@@ -1620,12 +1626,14 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 	if (GetUmelPath(umelPath)) {
 		theCache.SetUmelDirectoryPath(umelPath); 
 	}
+	#endif
 
 	void *hKeyRoot = NULL;
 	// get other settings 
 	if (hKeyRoot != NULL) {
 		#define GetRegKey(a,b,c) FALSE
 		if (1) { // caching flags 
+			#ifdef G_CACHE
 			if (GetRegKey(hKeyRoot,_T("Cache.verifyMode"),v)) {
 				if (v >= GCACHE_ALWAYS && v <= CCACHE_NEVER)
 					theCache.cacheMode = (GCacheMode) v;
@@ -1699,7 +1707,9 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 			if (GetRegKey(hKeyRoot,_T("Cache.maxDiskSpaceUsedKB"), v) && (v>=1024)) {
 					theCache.maxSpaceUsed = v*1024;
 			}
+			#endif
 		}
+		
 
 		if (initOk) {
 #ifdef _D3D		
@@ -1830,8 +1840,10 @@ BOOL CGLViewCtrlCtrl::Initialize(HDC hDC)
 
 //------------------------------------------------
 
+	#ifdef G_PANEL
 	if (view->m_navPanelOn)
 		view->NavigationPanelCreate(0);
+	#endif
 
     StartTimer();
 	InternalSetReadyState(READYSTATE_INTERACTIVE);
@@ -2128,7 +2140,7 @@ BOOL PX_String(const char *propName, CString& value, CString def) {
 	const char *value_c = (const char *)value;
 	EM_ASM({
 		let propName = UTF8ToString($0);
-		let result = Module?.params[propName];
+		let result = Module.params[propName];
 		if(result !== undefined) {
 			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
 			stringToUTF8(result, resultHeap);
@@ -2145,7 +2157,7 @@ BOOL PX_String(const char *propName, CString& value) {
 	const char *value_c = (const char *)value;
 	EM_ASM({
 		let propName = UTF8ToString($0);
-		let result = Module?.params[propName];
+		let result = Module.params[propName];
 		if(result !== undefined) {
 			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
 			stringToUTF8(result, resultHeap);
@@ -2159,7 +2171,7 @@ BOOL PX_String(const char *propName, CString& value) {
 BOOL PX_ULong(const char *propName, ULONG& value, long def) {
 	EM_ASM({
 		let propName = UTF8ToString($0);
-		let result = Module?.params[propName];
+		let result = Module.params[propName];
 		if(result !== undefined) {
 			setValue($1, result, 'u32');
 		} else {
@@ -2172,11 +2184,11 @@ BOOL PX_ULong(const char *propName, ULONG& value, long def) {
 BOOL PX_Bool(const char *propName, BOOL& value) {
 	EM_ASM({
 		let propName = UTF8ToString($0);
-		let result = Module?.params[propName];
+		let result = Module.params[propName];
 		if(result !== undefined) {
 			setValue($1, result, 'u32');
 		} else {
-			setValue($1, 0 'u32');
+			setValue($1, 0, 'u32');
 		}
 	}, propName, &value);
 	return 1;
@@ -3435,6 +3447,7 @@ void CGLViewCtrlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 	int result = -1;
 	CPoint tmpPoint(point);
 	//ScreenToClient(&tmpPoint);
+	#ifdef G_PANEL
 
 	if (view->panel)
 	if (view->panel->Inside(point))
@@ -3509,12 +3522,16 @@ void CGLViewCtrlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		view->BeginDegrade();
 		m_NavLBUTState = TRUE;
 	}
+	#endif
 
 //<-tv
 	
 
-
+	#ifdef G_PANEL
 	if (!view->panel || (view->panel && !view->panel->Inside(point)))
+	#else
+	if(1)
+	#endif
 	{//do the normal work
 	int			ret;
 
@@ -3524,7 +3541,9 @@ void CGLViewCtrlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		    StartTimer();
 
 	m_NavNotActive = FALSE;
+	#ifdef G_PANEL
 	if (view->panel) view->panel->disable();
+	#endif
 		m_firstPoint = point;
 		m_firstFlags = nFlags;
 		m_firstTime = GetTime();
@@ -3642,7 +3661,7 @@ void CGLViewCtrlCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 	ViewLock viewLock(view); 
 	view->SetTheTime(); // set global VRML eventTime
 
-	
+	#ifdef G_PANEL
 	if (view->panel)
 	{
 		if (view->panel->Inside(point))
@@ -3653,6 +3672,7 @@ void CGLViewCtrlCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 			= m_NavRIGHTStatePanel = m_NavSlideStatePanel = FALSE;
 
 	}
+	#endif
 
 	// check status of all navigation keys
 	NavCheckKeyState();
@@ -3734,6 +3754,7 @@ void CGLViewCtrlCtrl::OnMouseMove(UINT nFlags, CPoint point)
 	int panelActionFlag;
 	CPoint tmpPoint(point);
 
+	#ifdef G_PANEL
 	if (view->PanelOk())
 	if (view->panel->Inside(point))
 	{
@@ -3796,7 +3817,9 @@ void CGLViewCtrlCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			}//switch
 		NavCheckKeyState(FALSE);
 	}
+	#endif
 
+	#ifdef G_PANEL
 	if (result>= PANEL_SPHERE0 && result<=PANEL_SPHERE7) {
 		InsideSphere = TRUE;
 		if (!(m_NavRunning & 0x2))
@@ -3819,6 +3842,9 @@ void CGLViewCtrlCtrl::OnMouseMove(UINT nFlags, CPoint point)
 		//if no panel
 		//if not over panel
 		//if navpaneldrag and sphere not hit
+	#else
+	if(1)
+	#endif
 
 	{//do normal work
 	int		ret=0;
@@ -4372,12 +4398,14 @@ BOOL CGLViewCtrlCtrl::OnIdle(LONG lcount)
 	}
     ret = FALSE;
 
+	#ifdef G_CACHE
 	// check if we need to run the cache cleanup thread 
 	if (theCache.writeCacheEnabled && !theCache.cleanerBusy && theCache.NeedCacheCleaning(m_startTime)) {
 		Message("Cleaning cache ...",PROGRESS_MESSAGE);
 		theCache.cleanerBusy = TRUE;
 		//CWinThread * t = AfxBeginThread(CUrlCacheCleanerThread, &theCache,THREAD_PRIORITY_NORMAL,64*1024);	 	 	
 	}
+	#endif
 
 	view->Unlock();
 
@@ -4877,7 +4905,11 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
 				| (reload ? WWW_RELOAD : 0));
 
    // caching mode verify top-level refresh
+   #if G_CACHE
    mainLoader->ifModifiedSince = theCache.getRefreshTime();
+   #else
+   mainLoader->ifModifiedSince = 0;
+   #endif
    
    if (lastModified >0) mainLoader->ifModifiedSince = lastModified;
 
@@ -8285,7 +8317,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 
    TRACE("File Formt Is %d \n", mainLoader->localFileFmt);
    
-
+	#ifdef G_CACHE
    if (mainLoader->url.GetLength()>0) {
 		GFileInfo info;
 		info.creationTime = 0;
@@ -8301,6 +8333,7 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 			theCache.SaveUrl(mainLoader->url,mainLoader->localFile,lastModified,mainLoader->localCacheFile);
 		}
    }
+   #endif
 
 
    if (mainLoader->localFileFmt == GZIP_FMT || mainLoader->localFileFmt == UNKNOWN_FMT) {
@@ -9151,6 +9184,7 @@ void CGLViewCtrlCtrl::OnPopupPanel()
 
 void CGLViewCtrlCtrl::OnUpdatePopupPanel(CCmdUI* pCmdUI) 
 {
+	#ifdef G_PANEL
 	if (view) {
 		if (view->PanelOk()) {
 			pCmdUI->SetCheck(TRUE);
@@ -9160,6 +9194,7 @@ void CGLViewCtrlCtrl::OnUpdatePopupPanel(CCmdUI* pCmdUI)
 			pCmdUI->Enable(view->allowAnyNavigation); // & registry ??
 		}
 	}
+	#endif
 }
 
 
