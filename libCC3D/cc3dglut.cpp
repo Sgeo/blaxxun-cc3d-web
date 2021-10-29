@@ -298,6 +298,8 @@ int main( int argc, char *argv[] )
    InitModifierListeners();
 
    // glut init stuff
+
+   ctl->DoPropExchange();
    
    glutInit( &argc, argv );
    glutInitWindowPosition( 0, 0 );

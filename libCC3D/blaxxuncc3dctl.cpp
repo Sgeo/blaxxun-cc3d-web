@@ -2140,7 +2140,9 @@ BOOL PX_String(const char *propName, CString& value, CString def) {
 	const char *value_c = (const char *)value;
 	EM_ASM({
 		let propName = UTF8ToString($0);
+		console.log('propName', propName);
 		let result = Module.params[propName];
+		console.log('result', result);
 		if(result !== undefined) {
 			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
 			stringToUTF8(result, resultHeap);
@@ -2173,9 +2175,9 @@ BOOL PX_ULong(const char *propName, ULONG& value, long def) {
 		let propName = UTF8ToString($0);
 		let result = Module.params[propName];
 		if(result !== undefined) {
-			setValue($1, result, 'u32');
+			setValue($1, result, 'i32');
 		} else {
-			setValue($1, $2, 'u32');
+			setValue($1, $2, 'i32');
 		}
 	}, propName, &value, def);
 	return 1;
@@ -2186,9 +2188,9 @@ BOOL PX_Bool(const char *propName, BOOL& value) {
 		let propName = UTF8ToString($0);
 		let result = Module.params[propName];
 		if(result !== undefined) {
-			setValue($1, result, 'u32');
+			setValue($1, result, 'i32');
 		} else {
-			setValue($1, 0, 'u32');
+			setValue($1, 0, 'i32');
 		}
 	}, propName, &value);
 	return 1;

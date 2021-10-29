@@ -623,8 +623,18 @@ public:
 	friend CString operator+(LPCTSTR lpsz, const CString& string);
 
 	// string comparison
-	int Compare(LPCTSTR lpsz) const { return strcmp(s,lpsz);  } 	// straight character
-	int CompareNoCase(LPCTSTR lpsz) const { return strcasecmp(s,lpsz); }
+	int Compare(LPCTSTR lpsz) const {
+		if(s == NULL && lpsz == NULL) return strcmp("", "");
+		else if(s == NULL) return strcmp("", lpsz);
+		else if(lpsz == NULL) return strcmp(s, "");
+		else return strcmp(s, lpsz);
+	} 	// straight character
+	int CompareNoCase(LPCTSTR lpsz) const {
+		if(s == NULL && lpsz == NULL) return strcasecmp("", "");
+		else if(s == NULL) return strcasecmp("", lpsz);
+		else if(lpsz == NULL) return strcasecmp(s, "");
+		else return strcasecmp(s, lpsz);
+	} 	// straight character
 	friend bool operator==(const CString& string, LPCTSTR lpsz);
 	friend bool operator==(const CString& string1,const CString& string2);
 
