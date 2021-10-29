@@ -323,7 +323,7 @@ int main( int argc, char *argv[] )
    // joystick etc
    
    // init view	
-   ctl->Initialize(NULL);
+   //ctl->Initialize(NULL); //OnPaint will auto initialize, including initial URL
 
    ret=0;
    

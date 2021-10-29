@@ -2145,12 +2145,12 @@ BOOL PX_String(const char *propName, CString& value, CString def) {
 		console.log('result', result);
 		if(result !== undefined) {
 			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
-			stringToUTF8(result, resultHeap);
+			stringToUTF8(result, resultHeap, lengthBytesUTF8(result) + 1);
 			setValue($1, resultHeap, '*');
 		} else {
 			setValue($1, $2, '*');
 		}
-	}, propName, value_c, *def);
+	}, propName, &value_c, *def);
 	value = value_c;
 	return 1;
 }
@@ -2162,10 +2162,10 @@ BOOL PX_String(const char *propName, CString& value) {
 		let result = Module.params[propName];
 		if(result !== undefined) {
 			let resultHeap = _malloc(lengthBytesUTF8(result) + 1);
-			stringToUTF8(result, resultHeap);
+			stringToUTF8(result, resultHeap, lengthBytesUTF8(result) + 1);
 			setValue($1, resultHeap, '*');
 		}
-	}, propName, value_c);
+	}, propName, &value_c);
 	value = value_c;
 	return 1;
 }
