@@ -10403,6 +10403,7 @@ int GView::parseEventMask(const char *filter)
 
 gbool GView::isKeyPressed(int key)
 {
+	#pragma message("Key handling here needs to be fixed to do SOMETHING")
 #ifdef WIN32
 	// win32
 	return ((::GetKeyState(key) & 0x8000) !=0); 
@@ -10441,11 +10442,11 @@ gbool GView::triggerMouseEvent(GBrowserInputEventFlags mask, const char *type,fl
 
   e->setMouseStatus(x,y,flags);
 
-#ifdef WIN32
-  e->altKey.set((GetKeyState(VK_MENU) & 0x8000) !=0); 
-  e->ctrlKey.set((GetKeyState(VK_CONTROL) & 0x8000) !=0); 
-  e->shiftKey.set((GetKeyState(VK_SHIFT) & 0x8000) !=0); 
-#endif
+//#ifdef WIN32
+  e->altKey.set((GetAltState() & 0x8000) !=0); 
+  e->ctrlKey.set((GetCtrlState() & 0x8000) !=0); 
+  e->shiftKey.set((GetShiftState() & 0x8000) !=0); 
+//#endif
 
 
 

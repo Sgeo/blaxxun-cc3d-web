@@ -6,6 +6,8 @@
 #include "GModel.h"
 #include "grayselect.h"
 
+#include <GL/glut.h>
+
 //speed of navigation is affected by the rendering time of the last frame
 // this variables are limiting the effect
 #define NAV_MIN_TIME 0.001 // was 0.005
@@ -71,7 +73,7 @@ void CGLViewCtrlCtrl::NavStart()
 		}		
 
 
-	if (GetKeyState(VK_BACK) &  0x8000)
+	if (GetKeyState((UINT)'\b') &  0x8000)
 		{
 		m_NavMotionIP.StopWhere = 0;	// go to the end
 
@@ -194,8 +196,8 @@ void CGLViewCtrlCtrl::NavStart()
 
 		// CONTROL key is unpressed
 		//m_NavSlideState  = FALSE;
-//		m_NavSlideState  = ::GetKeyState(VK_MENU) &  0x8000;				
-//		m_NavSlideState  = ::GetKeyState(VK_MENU) &  0x8000;				
+//		m_NavSlideState  = GetKeyState(VK_MENU) &  0x8000;				
+//		m_NavSlideState  = GetKeyState(VK_MENU) &  0x8000;				
 
 		// set navigation cursor
 		//SetCursorMode(NAVIGATION_CURSOR);
@@ -1748,46 +1750,46 @@ int CGLViewCtrlCtrl::NavCheckKeyState(BOOL checkAnchor)
 	m_NavOldSlideState  = m_NavSlideState;				
 
 	// force navigation	
-	m_NavCNTLState  = ::GetKeyState(VK_CONTROL) &  0x8000;
+	m_NavCNTLState  = GetCtrlState() &  0x8000;
 
 	//if 	(m_NavCNTLState)
 		//TRACE("............................................m_NavCNTLState\n");
 	// slide (pan)
 	//alt
 		
-	//m_NavSlideState	= ::GetKeyState(VK_MENU) &  0x8000;		
+	//m_NavSlideState	= GetKeyState(VK_MENU) &  0x8000;		
 	if (view->allowAnyNavigation) 
-	m_NavSlideState	= ::GetKeyState((UINT)'S') &  0x8000 |
-		::GetKeyState(VK_MENU) &  0x8000 | m_NavSlideStatePanel;				
+	m_NavSlideState	= GetKeyState((UINT)'S') &  0x8000 |
+		GetAltState() &  0x8000 | m_NavSlideStatePanel;				
 	else m_NavSlideState = FALSE;
 
 	// speed up
-	m_NavSpeedState = ::GetKeyState(VK_SHIFT) & 0x8000;
+	m_NavSpeedState = GetShiftState() & 0x8000;
 
 	// get fixpoint for rotation
-	//	m_NavRotState	= ::GetKeyState(VK_TAB) & 0x8000;	
+	//	m_NavRotState	= GetKeyState(VK_TAB) & 0x8000;	
 
 	if (view->allowAnyNavigation) {
-		m_NavFollowState = ::GetKeyState(VK_SPACE) & 0x8000;	
-		m_NavRotState	= ::GetKeyState((UINT)'R') & 0x8000;	
-		m_NavPointState = ::GetKeyState((UINT)'J') & 0x8000;
+		m_NavFollowState = GetKeyState((UINT)' ') & 0x8000;	
+		m_NavRotState	= GetKeyState((UINT)'R') & 0x8000;	
+		m_NavPointState = GetKeyState((UINT)'J') & 0x8000;
 	} else {
 		m_NavFollowState = FALSE;
 		m_NavRotState = FALSE;
 		m_NavPointState = FALSE;
 	}
 	
-	m_NavUPState	= ::GetKeyState(VK_UP) & 0x8000 | m_NavUPStatePanel;
-	m_NavDOWNState	= ::GetKeyState(VK_DOWN) & 0x8000 | m_NavDOWNStatePanel;
-	m_NavLEFTState  = ::GetKeyState(VK_LEFT) & 0x8000 | m_NavLEFTStatePanel;
-	m_NavRIGHTState = ::GetKeyState(VK_RIGHT) & 0x8000 | m_NavRIGHTStatePanel;
+	m_NavUPState	= GetKeyState(GLUT_KEY_UP<<8) & 0x8000 | m_NavUPStatePanel;
+	m_NavDOWNState	= GetKeyState(GLUT_KEY_DOWN<<8) & 0x8000 | m_NavDOWNStatePanel;
+	m_NavLEFTState  = GetKeyState(GLUT_KEY_LEFT<<8) & 0x8000 | m_NavLEFTStatePanel;
+	m_NavRIGHTState = GetKeyState(GLUT_KEY_RIGHT<<8) & 0x8000 | m_NavRIGHTStatePanel;
 
 	if (m_NavCNTLState && (m_NavUPState || m_NavDOWNState) ) {
 		m_cameraModeOld = GetCameraMode();
 		SetCameraMode(PAN_MODE);
 	}
 
-	//	m_NavLBUTState  = ::GetKeyState(VK_LBUTTON) & 0x8000;	
+	//	m_NavLBUTState  = GetKeyState(VK_LBUTTON) & 0x8000;	
 
 	NavCheckCursor(checkAnchor);
 
@@ -2075,7 +2077,7 @@ void CGLViewCtrlCtrl::NavCalculateTile(Point *ptile)
  	
 
 	// check wether <CONTROL> is pressed 
-	//cntl_state =  (::GetKeyState(VK_MENU) &  0x8000); 
+	//cntl_state =  (GetKeyState(VK_MENU) &  0x8000); 
 	//shift_state = (GetKeyState(VK_SHIFT) &  0x8000); 
 	
 	

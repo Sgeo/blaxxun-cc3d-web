@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <cstdarg>
 
+#include <map>
+
 #include <emscripten.h>
 #include <emscripten/html5.h>
 
@@ -289,6 +291,12 @@ HCURSOR SetCursor(HCURSOR cursor) {
     }, cursor);
 }
 
+HCURSOR GetCursor() {
+    return (HCURSOR)EM_ASM_INT({
+        return Module.cursorPtr ?? 0;
+    });
+}
+
 void BeginWaitCursor() {
     EM_ASM({
         Module.canvas.style.cursor = 'wait';
@@ -338,4 +346,52 @@ BOOL GetClientRect(RECT *rect) {
 		setValue($1, Module.canvas.clientWidth, 'i32');
 	}, &rect->bottom, &rect->right);
     return 1;
+}
+
+
+static POINT cursor_pos_internal;
+void SetCursorPosInternal(LONG x, LONG y) {
+    cursor_pos_internal.x = x;
+    cursor_pos_internal.y = y;
+}
+
+BOOL GetCursorPos(POINT *point) {
+    point->x = cursor_pos_internal.x;
+    point->y = cursor_pos_internal.y;
+    return 1;
+}
+
+static std::map<int, SHORT> key_states_internal;
+void SetKeyStateInternal(int key, SHORT state) {
+    key_states_internal[key] = state;
+}
+
+SHORT GetKeyState(int key) {
+    return key_states_internal[key];
+}
+
+static SHORT ctrl_state_internal;
+static SHORT shift_state_internal;
+static SHORT alt_state_internal;
+
+EM_BOOL keyboard_callback(int eventType, const EmscriptenKeyboardEvent *keyEvent, void *userData) {
+    ctrl_state_internal = keyEvent->ctrlKey ? 0x8000 : 0;
+    shift_state_internal = keyEvent->shiftKey ? 0x8000 : 0;
+    alt_state_internal = keyEvent->altKey ? 0x8000 : 0;
+    return false;
+}
+
+void InitModifierListeners() {
+    emscripten_set_keydown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, NULL, false, keyboard_callback);
+    emscripten_set_keyup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, NULL, false, keyboard_callback);
+}
+
+SHORT GetCtrlState() {
+    return ctrl_state_internal;
+}
+SHORT GetShiftState() {
+    return shift_state_internal;
+}
+SHORT GetAltState() {
+    return alt_state_internal;
 }

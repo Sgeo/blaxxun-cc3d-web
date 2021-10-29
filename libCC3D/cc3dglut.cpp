@@ -121,13 +121,14 @@ static float walkStep = 0.2;
 
 static void OnKey( unsigned char key, int x, int y )
 {
-  
+   SetKeyStateInternal(key, 0x8000);
    if (!ctl) return;
    ctl->OnKeyDown(key, 0, 0);
    //glutPostRedisplay();
 }
 
 static void OnKeyUp(unsigned char key, int x, int y) {
+   SetKeyStateInternal(key, 0);
    if(!ctl) return;
    ctl->OnKeyUp(key, 0, 0);
 }
@@ -135,7 +136,7 @@ static void OnKeyUp(unsigned char key, int x, int y) {
 
 static void OnSpecialKey( int key, int x, int y )
 {
- 
+   SetKeyStateInternal(key<<8, 0x8000);
    if (!ctl) return;
    
    int modifiers =  glutGetModifiers();
@@ -147,7 +148,7 @@ static void OnSpecialKey( int key, int x, int y )
 
 static void OnSpecialKeyUp( int key, int x, int y )
 {
- 
+   SetKeyStateInternal(key<<8, 0);
    if (!ctl) return;
    
    int modifiers =  glutGetModifiers();
@@ -159,6 +160,7 @@ static void OnSpecialKeyUp( int key, int x, int y )
 
 static void OnMouse(int button, int state, int x, int y )
 {
+   SetCursorPosInternal(x, y);
  
    if (!ctl) return;
    
@@ -197,6 +199,7 @@ static void OnMouse(int button, int state, int x, int y )
 
 static void OnMotion(int x, int y )
 {
+   SetCursorPosInternal(x, y);
    if(!ctl) return;
    UINT flags = 0;
    CPoint point;
@@ -291,6 +294,8 @@ int main( int argc, char *argv[] )
    ctl = new CGLViewCtrlCtrl();
    if (!ctl) return(-1);	
    //view->SetReporter(reporter);
+
+   InitModifierListeners();
 
    // glut init stuff
    

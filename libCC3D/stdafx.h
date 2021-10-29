@@ -267,6 +267,7 @@ typedef const char * HCURSOR; // Cursor represented as a string containing a val
 							  // .cur files that come with Blaxxun Contact re-encoded as url() to data:image/vnd.microsoft.icon;base64,
 
 HCURSOR SetCursor(HCURSOR cursor);
+HCURSOR GetCursor();
 void BeginWaitCursor();
 void EndWaitCursor();
 
@@ -425,6 +426,7 @@ typedef struct tagPOINT
 
 // ClientToScreen presumably meaningless I hope
 #define ClientToScreen(r)
+#define ScreenToClient(r)
 
 #if (defined(_MSC_VER_XXX) && defined(_DEBUG))
 
@@ -955,6 +957,19 @@ public:
 
 #define STDMETHOD(method)     virtual HRESULT method
 #define STDMETHODIMP HRESULT
+
+
+void SetCursorPosInternal(LONG x, LONG y);
+BOOL GetCursorPos(POINT*);
+
+void SetKeyStateInternal(int key, SHORT state);
+SHORT GetKeyState(int state);
+
+void InitModifierListeners();
+
+SHORT GetCtrlState();
+SHORT GetShiftState();
+SHORT GetAltState();
 
 // tools
 
