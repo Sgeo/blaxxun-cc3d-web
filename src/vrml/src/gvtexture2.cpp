@@ -1091,7 +1091,7 @@ GvTexture::glSet(GglRenderTraversal &state,GvBool repeatS,GvBool repeatT,GvBool 
                     GLfloat _alphaRef=glState.alphaRef;
 					if (hasColorKey && !matHasAlpha) { // no blending done, enable alpha func skipping pixels with alpha = 0.0    
 						// change state
-						glState.SetAlphaFunc(GL_GREATER,0.75); // skip if more then 3 neighbours transparent
+						glState.SetAlphaFunc(GL_GREATER,0.0); // skip if more then 3 neighbours transparent
 						glState.SetAlphaTestFromTexture(TRUE);
 /*						if (glState.needBlendForCKey)
 							glState.SetBlendFromMaterial(TRUE); */
@@ -1191,7 +1191,7 @@ GvTexture::glSet(GglRenderTraversal &state,GvBool repeatS,GvBool repeatT,GvBool 
 						if (glState.canDoAlphaTest) {
 
 							//0.75 // skip if more then 3 neighbours transparent but looing detail
-							glState.SetAlphaFunc(GL_GREATER,0.6); // skip if more then x neighbours transparent
+							glState.SetAlphaFunc(GL_GREATER,0.0); // skip if more then x neighbours transparent
 							glState.SetAlphaTestFromTexture(TRUE);
 							if (glState.needBlendForCKey) {
 								glState.SetBlendFromMaterial(TRUE);
