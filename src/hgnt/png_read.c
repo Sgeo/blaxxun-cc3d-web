@@ -318,8 +318,7 @@ int png_read(const char *file_name,image *im)
    // get the palette	
    png_colorp palette;
    int num_palette;
-   png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
-   if (num_palette>0) {
+   if (png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette) && num_palette>0) {
 	   int i;
 
 	   image_alloc_cmap(im,num_palette);
