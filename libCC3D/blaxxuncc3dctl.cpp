@@ -1345,9 +1345,7 @@ void CGLViewCtrlCtrl::Redraw()
 	{
 		// short cut 
 		//InvalidateRect(NULL, FALSE);
-		EM_ASM({
-			console.warn('Redraw() called but InvalidateRect doesnt exist. What to do?');
-		});
+		glutPostRedisplay();
 		//InvalidateControl(); // does more 
 	}
 }
