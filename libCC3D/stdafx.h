@@ -333,7 +333,7 @@ QueryPerformanceFrequency(
 
 
 //The timeGetTime function retrieves the system time, in milliseconds. 
-inline DWORD timeGetTime() { return (1000l*clock()) / CLOCKS_PER_SEC  ; }
+inline DWORD timeGetTime() { return clock() / (CLOCKS_PER_SEC/1000l)  ; }
 
 #define _timeb timeb
 #define _ftime ftime

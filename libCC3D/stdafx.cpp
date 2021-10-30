@@ -321,6 +321,9 @@ BOOL GetFocus() {
 static int TIMERS[] = {0, 0, 0, 0, 0};
 
 uint32_t SetTimer(uint32_t *id, uint32_t elapse, void (*timerfunc)(void *userData), void *userData) {
+    if(elapse < 0x0A) {
+        elapse = 0x0A;
+    }
     if(*id >= sizeof(TIMERS)) {
         printf("Timer ID exceeded maximum!\n");
         return 0;
