@@ -9950,19 +9950,9 @@ int GView::Initialize(
 	budget.open("c:\\cc3d\\budget.log");
 #endif
 
-#ifdef WIN32
-    GetClientRect(hWnd, &rect);
-#else
 
-    rect.left = 0;
-    rect.right = 300;
+    GetClientRect(&rect);
 
-    rect.top = 0;
-    rect.bottom = 300;
-
-#pragma message( "Initialize: HWND")
-
-#endif
 
 	if (!camera)
         camera = new GCamera();
@@ -10302,11 +10292,9 @@ void GView::Resize(RECT &rect)
 void GView::Resize(HWND hWnd)
 {
     RECT	rect;
-#ifdef WIN32
-    GetClientRect(hWnd, &rect);
-#else
-	// to do:
-#endif 
+
+    GetClientRect(&rect);
+
     Resize(rect);
 }
 
