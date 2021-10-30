@@ -299,7 +299,6 @@ int main( int argc, char *argv[] )
 
    // glut init stuff
 
-   ctl->DoPropExchange();
    
    glutInit( &argc, argv );
    glutInitWindowPosition( 0, 0 );
@@ -317,6 +316,8 @@ int main( int argc, char *argv[] )
    glutMouseFunc( OnMouse );
    glutMotionFunc( OnMotion );
    glutPassiveMotionFunc( OnMotion );
+   
+   ctl->DoPropExchange();
    // glutEntryFunc
    // glutMenuStateFunc
    //glutVisibilityFunc( OnVisibility );
