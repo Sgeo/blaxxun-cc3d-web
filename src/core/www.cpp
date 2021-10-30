@@ -1902,8 +1902,9 @@ void GFile::unref() {
   
   //TRACE("gfile::unref %s  refcnt now = %d\n",GetUrl(),refCnt);
 
-  if (refCnt<=0)
-  		delete this;
+	#pragma message("Too many use-after-frees around unreffing GFiles. Memory leak, but that's not such a big deal")
+  if (refCnt<=0) {}
+  		//delete this;
   else if (Busy() && refCnt == 1 && stop == 0) {  // thread proc has one reference, no other references, so abort
 		 Kill(); // new 
   		 // stop = 1;

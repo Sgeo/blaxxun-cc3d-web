@@ -6332,7 +6332,8 @@ int GView::ReadModel(GFile *newFile)
 			}
 
 		}
-		newFile->unref();
+		#pragma message("Below induced some use-after-frees, but commenting it out like this may be a memory leak")
+		//newFile->unref();
   } 
   else ret=-1;
  

@@ -573,7 +573,7 @@ Redo:
 						return(1);
 					}
 				}
-				theFile->unref();
+				//theFile->unref(); Don't unref(), loader.Release() will unref theFIle
 
 				loader.Release();
 
@@ -653,6 +653,8 @@ Redo:
 					state.view->lastFrameLoadCnt++;
 					state.view->lastFrameInlineLoadCnt++; // new 16.11.99 hg
 
+					//theFile->unref();
+
 				}
 				else { 
 					// try to delete 
@@ -663,7 +665,7 @@ Redo:
 				}
 				
 				scene->unref();
-				theFile->unref();
+				
 				browser->UnRegisterPending(this);
 
 				return(1);
