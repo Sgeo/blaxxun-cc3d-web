@@ -385,7 +385,7 @@ STDMETHODIMP GvField::setValueFromString( /* [in] */ BSTR value)
 {
 	const char *vs;
 
-	vs = value;
+	vs = value.c_str();
 	int ret=set(vs);
 	return ((ret>0) ?  S_OK : S_FALSE);
 }
@@ -404,7 +404,7 @@ STDMETHODIMP GvField::toString(/* [retval][out] */ BSTR  *value)
 		*value = vs;
 		return S_OK;
 	}  else {
-		*value = NULL;
+		*value ="";
 		return S_FALSE;
 	}
 }

@@ -524,7 +524,7 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 #ifdef SGEO_EXPAND_DISPATCH_MAP
 #define BEGIN_DISPATCH_MAP(a, b) EMSCRIPTEN_BINDINGS(bindings) { emscripten::class_<a>(#a)
 #define END_DISPATCH_MAP() ;}
-//#define DISP_PROPERTY_EX(c, propname, getter, setter, ...) .property(propname, &c::getter, &c::setter)
+#define DISP_PROPERTY_EX(c, propname, getter, setter, ...) .property(propname, &c::getter, &c::setter)
 #define DISP_PROPERTY_EX(...)
 #define DISP_FUNCTION(c, funcname, func, ...) .function(funcname, &c::func, emscripten::allow_raw_pointers())
 
@@ -9074,7 +9074,7 @@ BSTR CGLViewCtrlCtrl::getNodeEventOut(LPCTSTR nodeName, LPCTSTR eventOutName)//,
 		if (event->toString(&value) == S_OK)
 			ret = value;
 		else 
-			ret = NULL;
+			ret = "";
 	}
 	return ret;
 }

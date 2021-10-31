@@ -85,6 +85,7 @@ Todo :
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string>
 
 #ifdef WIN32
 
@@ -174,7 +175,7 @@ typedef unsigned int    _TINT;
 
 #define __TCHAR_DEFINED
 
-typedef const char * BSTR;
+typedef std::string BSTR;
 
 /* String functions */
 #define _tcscat     strcat
@@ -573,6 +574,7 @@ public:
 
 	operator LPCTSTR() const { return s; }           // as a C string
 	operator char *() { return s; }
+	operator std::string() { return std::string(s); }
 
     char * GetBuffer( int l ){
        	Empty();
