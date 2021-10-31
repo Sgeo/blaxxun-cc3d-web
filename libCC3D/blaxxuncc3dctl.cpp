@@ -221,6 +221,7 @@ Changes:
 // #include <idispids.h> // READYSTATE 
 
 #include <emscripten.h>
+#include <emscripten/bind.h>
 #include <GL/glut.h>
 
 
@@ -519,7 +520,14 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 
 #pragma message("Consider writing BEGIN_DISPATCH_MAP/DISP_PROPERTY_EX/DISP_FUNCTION macros that expand to embind macros")
 
+#define SGEO_EXPAND_DISPATCH_MAP
 #ifdef SGEO_EXPAND_DISPATCH_MAP
+#define BEGIN_DISPATCH_MAP(a, b) EMSCRIPTEN_BINDINGS(bindings) { emscripten::class_<a>(#a)
+#define END_DISPATCH_MAP() ;}
+//#define DISP_PROPERTY_EX(c, propname, getter, setter, ...) .property(propname, &c::getter, &c::setter)
+#define DISP_PROPERTY_EX(...)
+#define DISP_FUNCTION(c, funcname, func, ...) .function(funcname, &c::func, emscripten::allow_raw_pointers())
+
 
 BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	//{{AFX_DISPATCH_MAP(CGLViewCtrlCtrl)
@@ -563,15 +571,15 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNodeName", getNodeName, VT_BSTR, VTS_UNKNOWN)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getEventOut", getEventOut, VT_UNKNOWN, VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getEventIn", getEventIn, VT_UNKNOWN, VTS_BSTR)
-	DISP_FUNCTION(CGLViewCtrlCtrl, "getControlPathname", getControlPathname, VT_BSTR, VTS_NONE)
-	DISP_FUNCTION(CGLViewCtrlCtrl, "saveWorld", saveWorld, VT_BOOL, VTS_BSTR)
+	//DISP_FUNCTION(CGLViewCtrlCtrl, "getControlPathname", getControlPathname, VT_BSTR, VTS_NONE)
+	//DISP_FUNCTION(CGLViewCtrlCtrl, "saveWorld", saveWorld, VT_BOOL, VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "saveViewpoint", saveViewpoint, VT_EMPTY, VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setFullscreen", setFullscreen, VT_BOOL, VTS_BOOL)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "removeNode", removeNode, VT_BOOL, VTS_UNKNOWN)
-	DISP_FUNCTION(CGLViewCtrlCtrl, "setObserver", setObserver, VT_BOOL, VTS_UNKNOWN VTS_I4)
+	//DISP_FUNCTION(CGLViewCtrlCtrl, "setObserver", setObserver, VT_BOOL, VTS_UNKNOWN VTS_I4)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "loadURLfromFile", loadURLfromFile, VT_BOOL, VTS_BSTR VTS_BSTR VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "onUrlNotify", onUrlNotify, VT_EMPTY, VTS_BSTR VTS_BSTR VTS_BSTR VTS_I4)
-	DISP_FUNCTION(CGLViewCtrlCtrl, "setObserverWnd", setObserverWnd, VT_BOOL, VTS_I4)
+	//DISP_FUNCTION(CGLViewCtrlCtrl, "setObserverWnd", setObserverWnd, VT_BOOL, VTS_I4)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getUiMode", getUiMode, VT_I4, VTS_NONE)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setUiMode", setUiMode, VT_EMPTY, VTS_I4)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "openPreferences", openPreferences, VT_EMPTY, VTS_I4)
@@ -594,17 +602,17 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setViewpointFollow", setViewpointFollow, VT_BOOL, VTS_UNKNOWN VTS_R4 VTS_R4 VTS_R4 VTS_I4)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setNodeEventIn", setNodeEventIn, VT_BOOL, VTS_BSTR VTS_BSTR VTS_BSTR)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNodeEventOut", getNodeEventOut, VT_BSTR, VTS_BSTR VTS_BSTR)
-	DISP_FUNCTION(CGLViewCtrlCtrl, "getObject", getObject, VT_UNKNOWN, VTS_I4)
+	//DISP_FUNCTION(CGLViewCtrlCtrl, "getObject", getObject, VT_UNKNOWN, VTS_I4)
 	#ifdef G_PANEL
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setNavigationPanel", setNavigationPanel, VT_EMPTY, VTS_BOOL)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNavigationPanel", getNavigationPanel, VT_BOOL, VTS_NONE)
 	#endif
-	DISP_STOCKPROP_READYSTATE()
+	// DISP_STOCKPROP_READYSTATE()
 	//}}AFX_DISPATCH_MAP
 //	DISP_PROPERTY_EX_ID(CGLViewCtrlCtrl, "url", DISPID_URL,GetUrl, SetUrl, VT_BSTR)
 //	DISP_PROPERTY_EX_ID(CGLViewCtrlCtrl, "Media",DISPID_MEDIA, GetMedia, SetMedia, VT_BSTR)
 //	DISP_PROPERTY_EX_ID(CGLViewCtrlCtrl, "Cfformat",DISPID_CFFORMAT, GetCfformat, SetCfformat, VT_BSTR)
-	DISP_FUNCTION_ID(CGLViewCtrlCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
+	// DISP_FUNCTION_ID(CGLViewCtrlCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 
 END_DISPATCH_MAP()
 

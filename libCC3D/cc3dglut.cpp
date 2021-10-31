@@ -23,6 +23,7 @@
 //#include <GL/gl.h>
 #include <GL/glut.h>
 #include <emscripten.h>
+#include <emscripten/bind.h>
 
 
 //#include <stdio.h>
@@ -374,4 +375,12 @@ int main( int argc, char *argv[] )
    GvDB::term();
 
    return 0;
+}
+
+CGLViewCtrlCtrl *Browser() {
+   return ctl;
+}
+
+EMSCRIPTEN_BINDINGS(bindings_top) {
+   emscripten::function("Browser", &Browser, emscripten::allow_raw_pointers());
 }

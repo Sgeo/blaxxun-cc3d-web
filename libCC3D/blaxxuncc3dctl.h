@@ -809,10 +809,10 @@ struct	NavCollision
 
 // Implementation
 protected:
-	~CGLViewCtrlCtrl();
 
 
 public:
+	~CGLViewCtrlCtrl();
 
 
 	// get the progID 
