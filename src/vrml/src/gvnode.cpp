@@ -98,6 +98,8 @@ Todo :
 	#include "gvnurbsinventor.h"
 #endif
 
+#include <emscripten/bind.h>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE

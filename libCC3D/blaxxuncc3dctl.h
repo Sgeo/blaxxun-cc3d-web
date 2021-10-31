@@ -1006,7 +1006,7 @@ public:
 	afx_msg void loadURL(BSTR url, BSTR parameter);
 	afx_msg void setDescription(BSTR description);
 	afx_msg GvScene* createVrmlFromString(BSTR vrmlSyntax);
-	afx_msg void createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event);
+	afx_msg void createVrmlFromURL(BSTR url, GvNode *node, BSTR event);
 	afx_msg GvNode* getNode(LPCTSTR name);
 	afx_msg void addRoute(GvNode *fromNode, LPCTSTR fromEventOut, GvNode *toNode, LPCTSTR toEventIn);
 	afx_msg void deleteRoute(GvNode *fromNode, LPCTSTR fromEventOut, GvNode* toNode, LPCTSTR toEventIn);

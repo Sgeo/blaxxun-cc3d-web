@@ -523,11 +523,16 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 #define SGEO_EXPAND_DISPATCH_MAP
 #ifdef SGEO_EXPAND_DISPATCH_MAP
 #define BEGIN_DISPATCH_MAP(a, b) EMSCRIPTEN_BINDINGS(bindings) { emscripten::class_<a>(#a)
-#define END_DISPATCH_MAP() ;}
+#define END_DISPATCH_MAP() }
 #define DISP_PROPERTY_EX(c, propname, getter, setter, ...) .property(propname, &c::getter, &c::setter)
 //#define DISP_PROPERTY_EX(...)
 #define DISP_FUNCTION(c, funcname, func, ...) .function(funcname, &c::func, emscripten::allow_raw_pointers())
 
+
+// EMSCRIPTEN_BINDINGS(node_bindings) {
+// 	emscripten::class_<GvNode>("GvNode")
+// 	;
+// }
 
 BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	//{{AFX_DISPATCH_MAP(CGLViewCtrlCtrl)
@@ -607,6 +612,9 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "setNavigationPanel", setNavigationPanel, VT_EMPTY, VTS_BOOL)
 	DISP_FUNCTION(CGLViewCtrlCtrl, "getNavigationPanel", getNavigationPanel, VT_BOOL, VTS_NONE)
 	#endif
+	;
+	emscripten::class_<GvNode>("GvNode")
+	;
 	// DISP_STOCKPROP_READYSTATE()
 	//}}AFX_DISPATCH_MAP
 //	DISP_PROPERTY_EX_ID(CGLViewCtrlCtrl, "url", DISPID_URL,GetUrl, SetUrl, VT_BSTR)
@@ -615,6 +623,8 @@ BEGIN_DISPATCH_MAP(CGLViewCtrlCtrl, COleControl)
 	// DISP_FUNCTION_ID(CGLViewCtrlCtrl, "AboutBox", DISPID_ABOUTBOX, AboutBox, VT_EMPTY, VTS_NONE)
 
 END_DISPATCH_MAP()
+
+
 
 #endif
 
@@ -5957,7 +5967,7 @@ GvScene* CGLViewCtrlCtrl::createVrmlFromString(BSTR vrmlSyntax)
 // create vrml from URL 
 
 // EAI url is MFString, no waz  
-void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event) 
+void CGLViewCtrlCtrl::createVrmlFromURL(BSTR url, GvNode *node, BSTR event) 
 {
 
 
@@ -5988,11 +5998,11 @@ void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event
 	vrmlFromUrl->setBrowser(view);
 	vrmlFromUrl->ref();
 
-	vrmlFromUrl->url.set_(url);
+	vrmlFromUrl->url.set_(url.c_str());
 
 	if (node) { // set node and get eventIn Index 
 			vrmlFromUrl->node.set(node);
-			vrmlFromUrl->nodeEvent.set(node->getFieldData()->getEventInIndex(node,event));
+			vrmlFromUrl->nodeEvent.set(node->getFieldData()->getEventInIndex(node,event.c_str()));
 	}
 
 	// for resolving relative urls 
@@ -6011,13 +6021,13 @@ void CGLViewCtrlCtrl::createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event
 	case S_NOT_LOADED :	 // to many threads, wait 
 	case S_LOADING :
 		 // will be processed when URL ready 
-		TRACE("CreateVrmlFromUrl: %s started %d \n",(const char *) url,status);
+		TRACE("CreateVrmlFromUrl: %s started %d \n",(const char *) url.c_str(),status);
 		scene->addCreateVrmlFromUrl(vrmlFromUrl); 
 		break; 
 
 	default : 		
 		// data loaded or error, send event 
-		TRACE("CreateVrmlFromUrl: %s done %d \n",(const char *) url,status);
+		TRACE("CreateVrmlFromUrl: %s done %d \n",(const char *) url.c_str(),status);
 		// status == S_PROCESSED if all went well, anyway send NULL children event even if error
 		vrmlFromUrl->SendEvent();
 		view->UpdateSceneInfo(); // probably sensor stuff added 
