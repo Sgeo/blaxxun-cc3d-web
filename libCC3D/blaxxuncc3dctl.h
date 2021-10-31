@@ -375,16 +375,16 @@ public:
 	int SetCameraMode(int newMode);
 
 	// get current viewer mode 
-	int GetCameraMode();
+	int GetCameraMode() const;
 
 	//! set the current viewer mode by lower case string 
 	int SetCameraMode(const char *mode);
 
 	//! get the camera navigation mode by string for mode
-	const char *GetCameraModeString(int mode);
+	const char *GetCameraModeString(int mode) const;
 	
 	//! get the current camera navigation mode by string
-	const char* GetCameraModeString();
+	const char* GetCameraModeString() const;
 
 
 	//! reset the navigation parameters 
@@ -967,33 +967,33 @@ public:
 
 // Dispatch maps
 	//{{AFX_DISPATCH(CGLViewCtrlCtrl)
-	afx_msg const char * GetUrl();
-	afx_msg void SetUrl(LPCTSTR lpszNewValue);
-	afx_msg BSTR GetRenderMode();
-	afx_msg void SetRenderMode(LPCTSTR lpszNewValue);
-	afx_msg BSTR GetNavigationMode();
-	afx_msg void SetNavigationMode(LPCTSTR lpszNewValue);
-	afx_msg short GetHeadlight();
+	afx_msg BSTR GetUrl() const;
+	afx_msg void SetUrl(BSTR lpszNewValue);
+	afx_msg BSTR GetRenderMode() const;
+	afx_msg void SetRenderMode(BSTR lpszNewValue);
+	afx_msg BSTR GetNavigationMode() const;
+	afx_msg void SetNavigationMode(BSTR lpszNewValue);
+	afx_msg short GetHeadlight() const;
 	afx_msg void SetHeadlight(short nNewValue);
-	afx_msg float GetWalkSpeed();
+	afx_msg float GetWalkSpeed() const;
 	afx_msg void SetWalkSpeed(float newValue);
-	afx_msg BOOL GetAnimateAllViewpoints();
+	afx_msg BOOL GetAnimateAllViewpoints() const;
 	afx_msg void SetAnimateAllViewpoints(BOOL bNewValue);
-	afx_msg BSTR GetViewpoint();
-	afx_msg void SetViewpoint(LPCTSTR lpszNewValue);
-	afx_msg BSTR GetDescription();
-	afx_msg void SetDescription(LPCTSTR lpszNewValue);
-	afx_msg BSTR GetWorld();
-	afx_msg void SetWorld(LPCTSTR lpszNewValue);
-	afx_msg BOOL GetCollisionDetection();
+	afx_msg BSTR GetViewpoint() const;
+	afx_msg void SetViewpoint(BSTR lpszNewValue);
+	afx_msg BSTR GetDescription() const;
+	afx_msg void SetDescription(BSTR lpszNewValue);
+	afx_msg BSTR GetWorld() const;
+	afx_msg void SetWorld(BSTR lpszNewValue);
+	afx_msg BOOL GetCollisionDetection() const;
 	afx_msg void SetCollisionDetection(BOOL bNewValue);
-	afx_msg float GetAvatarHeight();
+	afx_msg float GetAvatarHeight() const;
 	afx_msg void SetAvatarHeight(float newValue);
-	afx_msg float GetCollisionDistance();
+	afx_msg float GetCollisionDistance() const;
 	afx_msg void SetCollisionDistance(float newValue);
-	afx_msg float GetVisibilityLimit();
+	afx_msg float GetVisibilityLimit() const;
 	afx_msg void SetVisibilityLimit(float newValue);
-	afx_msg BOOL GetGravity();
+	afx_msg BOOL GetGravity() const;
 	afx_msg void SetGravity(BOOL bNewValue);
 	afx_msg void OnNextViewpoint();
 	afx_msg void OnPrevViewpoint();
@@ -1003,9 +1003,9 @@ public:
 	afx_msg float getCurrentFrameRate();
 	afx_msg BSTR getWorldURL();
 	afx_msg void replaceWorld(GvNode *nodes);
-	afx_msg void loadURL(LPCTSTR url, LPCTSTR parameter);
-	afx_msg void setDescription(LPCTSTR description);
-	afx_msg GvScene* createVrmlFromString(LPCTSTR vrmlSyntax);
+	afx_msg void loadURL(BSTR url, BSTR parameter);
+	afx_msg void setDescription(BSTR description);
+	afx_msg GvScene* createVrmlFromString(BSTR vrmlSyntax);
 	afx_msg void createVrmlFromURL(LPCTSTR url, GvNode *node, LPCTSTR event);
 	afx_msg GvNode* getNode(LPCTSTR name);
 	afx_msg void addRoute(GvNode *fromNode, LPCTSTR fromEventOut, GvNode *toNode, LPCTSTR toEventIn);

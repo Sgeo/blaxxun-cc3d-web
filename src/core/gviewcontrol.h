@@ -102,7 +102,7 @@ public:
 	virtual int SetCameraMode(int newMode) = 0;
 
 	//! get the current camera mode as string
-	virtual const char * GetCameraModeString() = 0; 
+	virtual const char * GetCameraModeString() const = 0; 
 
 
    //! load URL directly from all information of Anchor node / browser loadUrl

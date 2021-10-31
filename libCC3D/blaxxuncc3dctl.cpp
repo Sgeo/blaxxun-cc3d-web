@@ -525,7 +525,7 @@ float GetTime() { return (float) clock()  / (float) CLOCKS_PER_SEC; }
 #define BEGIN_DISPATCH_MAP(a, b) EMSCRIPTEN_BINDINGS(bindings) { emscripten::class_<a>(#a)
 #define END_DISPATCH_MAP() ;}
 #define DISP_PROPERTY_EX(c, propname, getter, setter, ...) .property(propname, &c::getter, &c::setter)
-#define DISP_PROPERTY_EX(...)
+//#define DISP_PROPERTY_EX(...)
 #define DISP_FUNCTION(c, funcname, func, ...) .function(funcname, &c::func, emscripten::allow_raw_pointers())
 
 
@@ -2416,7 +2416,7 @@ int CGLViewCtrlCtrl::SetCameraMode(int newMode)
 }
 
 // get the camera navigation mode 
-int CGLViewCtrlCtrl::GetCameraMode() 
+int CGLViewCtrlCtrl::GetCameraMode() const
 {
    return(m_currentCameraMode);
 }
@@ -2465,14 +2465,14 @@ int CGLViewCtrlCtrl::SetCameraMode(const char *mode_)
 }
 
 // get the camera navigation mode by string for mode 
-const char* CGLViewCtrlCtrl::GetCameraModeString(int mode)
+const char* CGLViewCtrlCtrl::GetCameraModeString(int mode) const
 {
     if (mode<0) mode = m_currentCameraMode;
     return(MoveModeLookup(mode));
 }
 
 // get the current camera navigation mode by string
-const char* CGLViewCtrlCtrl::GetCameraModeString()
+const char* CGLViewCtrlCtrl::GetCameraModeString() const
 {
     return(MoveModeLookup(m_currentCameraMode));
 }
@@ -4683,18 +4683,18 @@ void CGLViewCtrlCtrl::StopTimer()
 
 
 // get the current URL (DISPATCH property)
-const char * CGLViewCtrlCtrl::GetUrl() 
+BSTR CGLViewCtrlCtrl::GetUrl() const 
 {
 	CString strResult;
 	if (view) strResult = view->GetUrl();
 	else strResult = m_initialUrl;
-	return (const char *)strResult;
+	return (BSTR)strResult;
 }
 
 // set the new URL (DISPATCH property)
-void CGLViewCtrlCtrl::SetUrl(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetUrl(BSTR lpszNewValue) 
 {
-	CString newUrl(lpszNewValue);
+	CString newUrl(lpszNewValue.c_str());
 
 	if (!view) {  // not initialized yet, store the url
 		m_initialUrl = newUrl;
@@ -5770,7 +5770,7 @@ void CGLViewCtrlCtrl::OnPrevViewpoint()
     int ret = view->SetPrevViewpoint(1);
 }
 
-BSTR CGLViewCtrlCtrl::GetRenderMode() 
+BSTR CGLViewCtrlCtrl::GetRenderMode() const
 {
 	CString strResult;
 	
@@ -5779,9 +5779,9 @@ BSTR CGLViewCtrlCtrl::GetRenderMode()
 	return strResult;
 }
 
-void CGLViewCtrlCtrl::SetRenderMode(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetRenderMode(BSTR lpszNewValue) 
 {
-  	CString tmp(lpszNewValue);
+  	CString tmp(lpszNewValue.c_str());
 	tmp.MakeLower();
     GRenderMode mode = (GRenderMode) GRenderModeLookup(tmp);
 	view->SetRenderMode(mode);
@@ -5881,31 +5881,31 @@ void CGLViewCtrlCtrl::replaceWorld(GvNode *node)
 
 // load the url given, parameter could be "target=frameName"
 // EAI url and parameter are MF´s !!
-void CGLViewCtrlCtrl::loadURL(LPCTSTR url, LPCTSTR parameter) 
+void CGLViewCtrlCtrl::loadURL(BSTR url, BSTR parameter) 
 {
 	EAI_CALL("loadURL")
 
 	if (!view) {
-		m_initialUrl = url;
+		m_initialUrl = url.c_str();
 		return;
 	}
-	if (url[0] == '#')  {
-		view->SetCamera(&url[1]);
+	if (url.c_str()[0] == '#')  {
+		view->SetCamera(&url.c_str()[1]);
 		return;
 	}
 
 	CString absoluteUrl;
-	CreateAbsolutePath(view->GetScene()->GetHomeUrl(),url,absoluteUrl);
+	CreateAbsolutePath(view->GetScene()->GetHomeUrl(),url.c_str(),absoluteUrl);
 
 	const char *target = NULL;
 	const char *location = NULL;
 
-	if (strlen(parameter)>0) {
+	if (strlen(parameter.c_str())>0) {
 			const char *targetPrefix = "target=";
 			const int targetPrefixLen = strlen(targetPrefix);
 
 			// check for target option 
-			const char *opt = parameter;
+			const char *opt = parameter.c_str();
 			if (strncmp(opt, targetPrefix,targetPrefixLen) == 0) {
 						target = &opt[targetPrefixLen];
 			}
@@ -5915,15 +5915,15 @@ void CGLViewCtrlCtrl::loadURL(LPCTSTR url, LPCTSTR parameter)
 
 }
 
-void CGLViewCtrlCtrl::setDescription(LPCTSTR description) 
+void CGLViewCtrlCtrl::setDescription(BSTR description) 
 {
 	// could be title ? 
-	Message(description);
+	Message(description.c_str());
 }
 
 // create Vrml from String
 // returns Scene Pseudo Node containings nodes
-GvScene* CGLViewCtrlCtrl::createVrmlFromString(LPCTSTR vrmlSyntax) 
+GvScene* CGLViewCtrlCtrl::createVrmlFromString(BSTR vrmlSyntax) 
 {
 
 	if (!view)  {
@@ -5942,11 +5942,11 @@ GvScene* CGLViewCtrlCtrl::createVrmlFromString(LPCTSTR vrmlSyntax)
 		scene->setBrowser(view);
 
         scene->ref();
-        newScene = scene->createVrmlFromString((char *)vrmlSyntax,m_reporter);
+        newScene = scene->createVrmlFromString((char *)vrmlSyntax.c_str(),m_reporter);
         scene->unref(); scene = NULL;
 
     } 	// create a new scene from string 
-	else newScene = scene->createVrmlFromString((char *)vrmlSyntax,m_reporter);
+	else newScene = scene->createVrmlFromString((char *)vrmlSyntax.c_str(),m_reporter);
 
 	if (!newScene) return NULL;
 
@@ -6403,7 +6403,7 @@ STDAPI CoGetClassObjectFromURL( REFCLSID rCLASSID,
 #endif
 
 
-BSTR CGLViewCtrlCtrl::GetNavigationMode() 
+BSTR CGLViewCtrlCtrl::GetNavigationMode() const
 {
 	CString strResult;
 	strResult = GetCameraModeString(GetCameraMode());
@@ -6412,14 +6412,14 @@ BSTR CGLViewCtrlCtrl::GetNavigationMode()
 }
 
 
-void CGLViewCtrlCtrl::SetNavigationMode(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetNavigationMode(BSTR lpszNewValue) 
 {
-	CString tmp = lpszNewValue;
+	CString tmp = lpszNewValue.c_str();
     tmp.MakeLower();
     SetCameraMode(tmp);
 }
 
-short CGLViewCtrlCtrl::GetHeadlight() 
+short CGLViewCtrlCtrl::GetHeadlight() const
 {
 	if (!view) return 1;
 	return view->GetHeadLight();
@@ -6431,7 +6431,7 @@ void CGLViewCtrlCtrl::SetHeadlight(short nNewValue)
 		view->SetHeadLight (nNewValue ? TRUE : FALSE);
 }
 
-float CGLViewCtrlCtrl::GetWalkSpeed() 
+float CGLViewCtrlCtrl::GetWalkSpeed() const
 {
 	if (view) return view->viewStepSpeedLocal;
 	else return 0.0f;
@@ -6636,7 +6636,7 @@ UINT CGLViewCtrlCtrl::RenderWorker()
 
 
 
-BOOL CGLViewCtrlCtrl::GetAnimateAllViewpoints() 
+BOOL CGLViewCtrlCtrl::GetAnimateAllViewpoints() const
 {
 	if (!view) return FALSE;
 	return (view->AnimatingCamera());
@@ -6659,7 +6659,7 @@ void CGLViewCtrlCtrl::SetAnimateAllViewpoints(BOOL bNewValue)
 }
 
 // get the name of current viewpoint 
-BSTR CGLViewCtrlCtrl::GetViewpoint() 
+BSTR CGLViewCtrlCtrl::GetViewpoint() const
 {
 	CString strResult;
 	if (view) 
@@ -6669,26 +6669,23 @@ BSTR CGLViewCtrlCtrl::GetViewpoint()
 }
 
 // set current viewpoint to viewpoint named lpszNewValue
-void CGLViewCtrlCtrl::SetViewpoint(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetViewpoint(BSTR lpszNewValue) 
 {
 	if (!view) return;
-	view->SetCamera(lpszNewValue);
+	view->SetCamera(lpszNewValue.c_str());
 	if (!m_timerRunning) StartTimer();
 }
 
-BSTR CGLViewCtrlCtrl::GetDescription() 
+BSTR CGLViewCtrlCtrl::GetDescription() const
 {
-	CString strResult;
-	// TODO: Add your property handler here
-
-	return strResult;
+	return "";
 }
 
 
-void CGLViewCtrlCtrl::SetDescription(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetDescription(BSTR lpszNewValue) 
 {
 	// TODO: Add your property handler here
-	Message(lpszNewValue);
+	Message(lpszNewValue.c_str());
 }
 
 /*
@@ -6705,18 +6702,12 @@ void CGlViewDataPathProperty::OnDataAvailable( DWORD dwsize, DWORD bscfFlag )
 
 
 //OLE_DATAPATH
-BSTR CGLViewCtrlCtrl::GetWorld() 
+BSTR CGLViewCtrlCtrl::GetWorld() const
 {
-	CString strResult;
-	// TODO: Replace "VAR" with the name of a member variable
-	//       whose type is derived from CDataPathProperty.
-
-//	 strResult = m_world.GetPath();
-
-	return strResult;
+	return "";
 }
 
-void CGLViewCtrlCtrl::SetWorld(LPCTSTR lpszNewValue) 
+void CGLViewCtrlCtrl::SetWorld(BSTR lpszNewValue) 
 {
 	TRACE("CGLViewCtrlCtrl::SetWorld(...) %p\n",this);
 
@@ -6845,7 +6836,7 @@ BSTR CGLViewCtrlCtrl::getNodeName(GvNode *fromNode)
 }
 
 // get collision detection flag 
-BOOL CGLViewCtrlCtrl::GetCollisionDetection() 
+BOOL CGLViewCtrlCtrl::GetCollisionDetection() const
 {
 	if (!view) return 1;
 	return view->collisionDetection;
@@ -7978,7 +7969,7 @@ void CGLViewCtrlCtrl::OnSettingsPreferences()
 }
 #endif
 
-float CGLViewCtrlCtrl::GetAvatarHeight() 
+float CGLViewCtrlCtrl::GetAvatarHeight() const
 {
 	if (!view) return 0;
 	return view->heightOverGround;
@@ -7990,7 +7981,7 @@ void CGLViewCtrlCtrl::SetAvatarHeight(float newValue)
 	view->heightOverGround	= view->heightOverGroundLocal=newValue;
 }
 
-float CGLViewCtrlCtrl::GetCollisionDistance() 
+float CGLViewCtrlCtrl::GetCollisionDistance() const
 {
 	if (!view) return 0;
 
@@ -8004,7 +7995,7 @@ void CGLViewCtrlCtrl::SetCollisionDistance(float newValue)
 	view->collisionDistance = view->collisionDistanceLocal = newValue;
 }
 
-float CGLViewCtrlCtrl::GetVisibilityLimit() 
+float CGLViewCtrlCtrl::GetVisibilityLimit() const
 {
 	if (!view) return 0; 
 	// TODO: Add your property handler here
@@ -8034,7 +8025,7 @@ BOOL CGLViewCtrlCtrl::setFullscreen(BOOL mode)
 }
 
 
-BOOL CGLViewCtrlCtrl::GetGravity() 
+BOOL CGLViewCtrlCtrl::GetGravity() const
 {
 	if (!view) return FALSE;
 	return view->stayOnGround;
