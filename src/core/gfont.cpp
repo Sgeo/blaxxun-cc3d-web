@@ -849,7 +849,7 @@ void  ComputeGlyphOutline(HDC hDC, UINT letter,
 
 		if ((GetGlyphOutline(hDC, letter, flag, &gm, size, lpBits, &mat)) != size)
 		{
-			TRACE("GFont:Can´t get TrueType Glph outline \n");
+			TRACE("GFont:CanÂ´t get TrueType Glph outline \n");
 		}
 		else
 		{
@@ -863,7 +863,7 @@ void  ComputeGlyphOutline(HDC hDC, UINT letter,
 	}
 	else
 	{
-		TRACE("GFont:Can´t allocate space for %c \n", letter);
+		TRACE("GFont:CanÂ´t allocate space for %c \n", letter);
 	}
 
 	// todo : prop spacing ? 
