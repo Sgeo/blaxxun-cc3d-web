@@ -6041,7 +6041,7 @@ void CGLViewCtrlCtrl::createVrmlFromURL(BSTR url, GvNode *node, BSTR event)
 
 // get node of current scene by name
 // nodes added from createVrmlFromString, createVrmlFromUrl are not available !
-GvNode* CGLViewCtrlCtrl::getNode(LPCTSTR name) 
+GvNode* CGLViewCtrlCtrl::getNode(BSTR name) 
 {
 	EAI_CALL("getNode")
 
@@ -6050,10 +6050,10 @@ GvNode* CGLViewCtrlCtrl::getNode(LPCTSTR name)
 	if (!scene) return NULL;
 
 	// find the node
-	GvNode *node = scene->getNode(name);
+	GvNode *node = scene->getNode(name.c_str());
 
 	// insert Scene Group for Passport if not loading yet 
-	if (node == NULL && (strcmp(name,"Scene") == 0) && mainLoader == NULL) {
+	if (node == NULL && (strcmp(name.c_str(),"Scene") == 0) && mainLoader == NULL) {
 		ViewLock viewLock(view);
 		GvNode *n = new Gv2Group();
 		n->setName("Scene");
