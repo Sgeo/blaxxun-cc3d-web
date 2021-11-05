@@ -52,7 +52,13 @@ Todo :
 class GShell;
 
 
-#ifdef WIN32
+#ifdef __EMSCRIPTEN__
+
+#include <ft2build.h>
+
+#include FT_FREETYPE_H
+#include FT_IMAGE_H
+#include FT_OUTLINE_H
 
 float ComputeGlyphLineHeight();
 
@@ -63,9 +69,9 @@ float ComputeGlyphLineHeight();
 
 */
 int ComputeGlyphOutline(
-	HDC hDC,			// a Windows DC with a TrueType font selected
+	FT_Face font_face,			// A font loaded by Freetype
  	
-	const  _TCHAR *text, // the input text, to compute a polygon outline for
+	const  char *text, // the input text, to compute a polygon outline for
 
  	float &x, float &y, // starting x,y position, will be updated after the call to new position
 	float spacing, // 0.0 extra character spacing

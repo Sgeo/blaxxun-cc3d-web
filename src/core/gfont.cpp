@@ -51,10 +51,12 @@ Todo :
 
 #include "stdafx.h"
 
-#if defined(_WIN32)
+#if defined(__EMSCRIPTEN__)
 
 //#include <tchar.h>
-#include <mbstring.h>
+//#include <mbstring.h>
+
+#include <iostream>
 
 
 //#include <stdlib.h>
@@ -77,6 +79,8 @@ Todo :
 
 // Convert degrees to radians for math functions.
 #define RAD(x) ((x) * 3.1415927 / 180)
+
+#ifdef SGEO_UNDERSTANDS_FIXED
 
 /****************************************************************************
  *  FUNCTION   : FixedFromDouble
@@ -114,7 +118,7 @@ float/* PASCAL NEAR */ FloatFromFixed(FIXED f)
 
 /****************************************************************************
  *  FUNCTION   : fxDiv2
- *  RETURNS    : (val1 + val2)/2 for FIXED values
+ *  RETURNS    : (val1 + val2)/2 forf FIXED values
  ****************************************************************************/
 FIXED/* PASCAL NEAR */ fxDiv2(FIXED fxVal1, FIXED fxVal2)
 {
@@ -124,109 +128,15 @@ FIXED/* PASCAL NEAR */ fxDiv2(FIXED fxVal1, FIXED fxVal2)
     return(*(FIXED *)&l);
 }
 
-/****************************************************************************
- *  FUNCTION   : MakeRotationMat
- *  PURPOSE    : Fill in a rotation matrix based on the given angle.
- *  RETURNS    : none.
- ****************************************************************************/
-void MakeRotationMat(LPMAT2 lpMat, double dAngle)
-{
-    lpMat->eM11 = FixedFromDouble(cos(RAD(dAngle)));
-    lpMat->eM12 = FixedFromDouble(sin(RAD(dAngle)));
-    lpMat->eM21 = FixedFromDouble(-sin(RAD(dAngle)));
-    lpMat->eM22 = FixedFromDouble(cos(RAD(dAngle)));
-}
-
-/****************************************************************************
- *  FUNCTION   : ShearMat
- *  PURPOSE    : Fill in a 0.25 horizontal shear matrix.
- *  RETURNS    : none.
- ****************************************************************************/
-void ShearMat(LPMAT2 lpMat)
-{
-    lpMat->eM11 = FixedFromDouble(1);
-    lpMat->eM12 = FixedFromDouble(0);
-    lpMat->eM21 = FixedFromDouble(0.25);
-    lpMat->eM22 = FixedFromDouble(1);
-}
-/****************************************************************************
- *  FUNCTION   : IdentityMat
- *  PURPOSE    : Fill in matrix to be the identity matrix.
- *  RETURNS    : none.
- ****************************************************************************/
-void IdentityMat(LPMAT2 lpMat)
-{
-    lpMat->eM11 = FixedFromDouble(1);
-    lpMat->eM12 = FixedFromDouble(0);
-    lpMat->eM21 = FixedFromDouble(0);
-    lpMat->eM22 = FixedFromDouble(1);
-}
-
-/****************************************************************************
- *
- *  FUNCTION   : BitmapFromT2Bitmap
- *
- *  PURPOSE    : Create a Windows bitmap from the GGO_BITMAP format.
- *               Two methods are provided:
- *                 1) create a DWORD-aligned bitmap by setting WidthBytes.
- *                 2) WORD-align the bits and create conventional bitmap.
- *
- *  RETURNS    : Handle to a Windows bitmap object
- *
- ****************************************************************************/
-HBITMAP BitmapFromT2Bitmap(void FAR *lpBits, WORD width, WORD height)
-{
-#if 1
-{
-// Create a DWORD-aligned Windows bitmap.  By building up a BITMAP structure
-// with the bmWidthBytes field corresponding to DWORD-alignment and using
-// CreateBitmapIndirect, a bitmap that is DWORD-aligned can be read by 
-// the device driver.
-    BITMAP bm;
-
-    bm.bmType = 0;
-    bm.bmWidth = width;
-    bm.bmHeight = height;
-    bm.bmWidthBytes = ((width + 31) >> 5) << 2;
-    bm.bmPlanes = 1;
-    bm.bmBitsPixel = 1;
-    bm.bmBits = lpBits;
-    return (CreateBitmapIndirect(&bm));
-}
 #else
-{
-// Create a WORD-aligned (conventional alignment) bitmap by WORD-aligning
-// the GGO_BITMAP format bits.  The bits are not touched if the bitmap
-// is already WORD-aligned.
-
-    WORD WordWidth;
-
-    // if word align is same as dword align, bitmap is ready.
-    // if not, eliminate the extra word buffer.
-    WordWidth = (width + 15) >> 4;
-    if (WordWidth != ((width + 31) >> 5) << 1)
-    {
-	_asm 
-	{
-	push	ds
-	les	di,lpBits;
-	lds	si,lpBits;
-	mov	dx,height
-
-copy_row:
-	mov	cx,WordWidth
-	rep	movsw		; copy relevant words
-	inc	si
-	inc	si		; skip over excess WORD
-	dec	dx		; one more scanline compacted
-	jnz	copy_row
-	pop	ds
-	}	       
-    }
-    return(CreateBitmap(width, height, 1, 1, lpBits));
+float FloatFromFixed(float f) {
+	return f;
+}
+float fxDiv2(float fxVal1, float fxVal2) {
+	return (fxVal1 + fxVal2)/2;
 }
 #endif
-}
+
 
 
 
@@ -316,25 +226,9 @@ int SubdivideSpline(const Point &a, const Point &b, const Point &c, int steps, P
  *** Also, a subdivided DD = old DD/4.
  ***
  ****************************************************************************/
-int NEAR PASCAL QSpline2Polyline(LPPOINT lpptPolygon, LPPOINTFX lppfSpline)
-{
-    // Skip over A point.  It is already in the polygon.
-    lppfSpline++;
 
-    // Store the B point.
-    lpptPolygon->x = IntFromFixed(lppfSpline->x);
-    lpptPolygon->y = IntFromFixed(lppfSpline->y);
-    lppfSpline++;
-    lpptPolygon++;
 
-    // Store the C point.
-    lpptPolygon->x = IntFromFixed(lppfSpline->x);
-    lpptPolygon->y = IntFromFixed(lppfSpline->y);
-
-    return(2);	// Two points added to polygon.
-}
-
-int NEAR PASCAL QSpline2Polyline(Point * lpptPolygon, LPPOINTFX lppfSpline)
+int QSpline2Polyline(Point * lpptPolygon, FT_Vector* lppfSpline)
 {
     // Skip over A point.  It is already in the polygon.
     lppfSpline++;
@@ -352,7 +246,7 @@ int NEAR PASCAL QSpline2Polyline(Point * lpptPolygon, LPPOINTFX lppfSpline)
     return(2);	// Two points added to polygon.
 }
 
-int NEAR PASCAL QSpline2PolylineSubdiv(Point *lpptPolygon, LPPOINTFX lppfSpline, int steps)
+int  QSpline2PolylineSubdiv(Point *lpptPolygon, FT_Vector* lppfSpline, int steps)
 {
 	Point a,b,c;
     a.Set(FloatFromFixed(lppfSpline->x),FloatFromFixed(lppfSpline->y),0);
@@ -367,251 +261,109 @@ int NEAR PASCAL QSpline2PolylineSubdiv(Point *lpptPolygon, LPPOINTFX lppfSpline,
     return SubdivideSpline(a,b,c,steps,lpptPolygon);	//  points added to polygon.
 }
 
+struct DecomposeData {
+	Point *pt;
+    WORD *cTotal;	// Total number of points in polypolygon.
+    WORD *cInCurve; 	// Number of points in current curve.
+    WORD *cCurves;	// Number of curves in polypolygon.
+    WORD *cInSpline;	// Number of points in digitized spline curve.
+	INT *count;
+	FT_Vector initial;
+	int duplicateHardPts;
+	int splineSubdiv;
+};
 
-/****************************************************************************
- *  FUNCTION   : DrawT2Outline
- *
- *  PURPOSE    : Decode the GGO_NATIVE outline, create a polypolygon from it,
- *               and draw it using PolyPolygon.  Color and relative 
- *               positioning provided by caller.
- *
- *               Polygon is not actually returned as would be more common
- *               in real usage.  Also, an arbitrary size for the polygon
- *               is specified instead of actually expanding on a need-to-
- *               grow basis.
- *
- *               Error conditions are not handled.
- *
- *  RETURNS    : none.
- ****************************************************************************/
-void DrawT2Outline(HDC hDC, LPTTPOLYGONHEADER lpHeader, DWORD size) 
-{
-    LPTTPOLYGONHEADER lpStart;
-    LPTTPOLYCURVE lpCurve;
-    POINT pt[1000];
-    /* WORD*/   int count[50];
-    WORD cTotal = 0;	// Total number of points in polypolygon.
-    WORD cInCurve; 	// Number of points in current curve.
-    WORD cCurves = 0;	// Number of curves in polypolygon.
-    WORD cInSpline;	// Number of points in digitized spline curve.
-    WORD iFirstCurve;	// Index to start point of first curve.
-    WORD i;
-    POINTFX spline[3];
+int Decompose_MoveTo(const FT_Vector *to, void *user) {
+	std::cout << "MoveTo" << std::endl;
+	DecomposeData *data = static_cast<DecomposeData*>(user);
+	data->initial = *to;
 
-    lpStart = lpHeader;
-    while ((DWORD)lpHeader < (DWORD)(((LPSTR)lpStart) + size))
-    {
-	if (lpHeader->dwType == TT_POLYGON_TYPE)
+	(data->pt)[*data->cTotal].x = FloatFromFixed(to->x);
+	(data->pt)[*data->cTotal].y = FloatFromFixed(to->y);
+
+	// if(*data->cCurves > 0) {
+	// 	(data->count)[*data->cCurves - 1] = *data->cInCurve;
+	// 	std::cout << "Setting count[" << *data->cCurves - 1 << "] = " << *data->cInCurve << std::endl;
+	// }
+	
+
+	*data->cInCurve = 1;
+	*data->cTotal += 1;
+	*data->cCurves += 1;
+
+
+	if (data->duplicateHardPts) // to get hard edge in sweep code
 	{
-	    cInCurve = 0;
-
-	    // Get to first curve.
-	    lpCurve = (LPTTPOLYCURVE) (lpHeader + 1);
-	    iFirstCurve = cTotal;
-
-	    while ((DWORD)lpCurve < (DWORD)(((LPSTR)lpHeader) + lpHeader->cb))
-	    {
-		if (lpCurve->wType == TT_PRIM_LINE)
-		{
-		    for (i = 0; i < lpCurve->cpfx; i++)
-		    {
-			pt[cTotal].x = IntFromFixed(lpCurve->apfx[i].x);
-			pt[cTotal].y = IntFromFixed(lpCurve->apfx[i].y);
-			cTotal++;
-			cInCurve++;
-		    }
-		}
-		else if (lpCurve->wType == TT_PRIM_QSPLINE)
-		{
-		    //**********************************************
-		    // Format assumption:
-		    //   The bytes immediately preceding a POLYCURVE
-		    //   structure contain a valid POINTFX.
-		    //
-		    //   If this is first curve, this points to the 
-		    //      pfxStart of the POLYGONHEADER.
-		    //   Otherwise, this points to the last point of
-		    //      the previous POLYCURVE.
-		    //
-		    //	 In either case, this is representative of the
-		    //      previous curve's last point.
-		    //**********************************************
-		    spline[0] = *(LPPOINTFX)((LPSTR)lpCurve - sizeof(POINTFX));
-	
-		    for (i = 0; i < lpCurve->cpfx;)
-		    {
-		        // The B point.
-			spline[1] = lpCurve->apfx[i++];
-
-			// Calculate the C point.
-			if (i == (lpCurve->cpfx - 1))
-			{
-			    spline[2] = lpCurve->apfx[i++];
-			}     
-			else
-			{
-			    // C is midpoint between B and next point.
-			    spline[2].x = fxDiv2(lpCurve->apfx[i-1].x,
-			    				lpCurve->apfx[i].x);
-			    spline[2].y = fxDiv2(lpCurve->apfx[i-1].y,
-			    				lpCurve->apfx[i].y);
-			}
-
-			cInSpline = QSpline2Polyline(&(pt[cTotal]), spline);
-			cTotal += cInSpline;
-			cInCurve += cInSpline;
-
-			// New A point for next slice of spline.
-			spline[0] = spline[2];
-		    }
-		}
-		else
-		; // error, error, error
-
-		// Move on to next curve.
-		lpCurve = (LPTTPOLYCURVE)&(lpCurve->apfx[i]);
-	    }
-
-	    // Add points to close curve.
-	    // Depending on the specific font and glyph being used, these
-	    // may not always be needed, but it never hurts.
-	    pt[cTotal].x = lpHeader->pfxStart.x.value;
-	    pt[cTotal].y = lpHeader->pfxStart.y.value;
-	    cInCurve++;
-	    cTotal++;
-	    pt[cTotal].x = pt[iFirstCurve].x;
-	    pt[cTotal].y = pt[iFirstCurve].y;
-	    cInCurve++;
-	    cTotal++;
-	    count[cCurves++] = cInCurve;
-
-	    // Move on to next polygon.
-	    lpHeader = (LPTTPOLYGONHEADER)(((LPSTR)lpHeader) + lpHeader->cb);
+		(data->pt)[*data->cTotal].x = (data->pt)[*data->cTotal - 1].x;
+		(data->pt)[*data->cTotal].y = (data->pt)[*data->cTotal - 1].y;
+		*data->cTotal += 1;
+		*data->cInCurve += 1;
 	}
-	else
-	; // error, error, error
-    }
-
-    // flip coordinates to get glyph right side up (Windows coordinates)
-    for (i = 0; i < cTotal; i++)
-	pt[i].y = 0 - pt[i].y;
-
-    PolyPolygon(hDC, pt, count, cCurves);
+	(data->count)[*data->cCurves - 1] = *data->cInCurve;
+	return 0;
 }
 
-#if 0
-/****************************************************************************
- *  FUNCTION   : OutputGlyph
- *
- *  PURPOSE    : Output a character glyph at a given position.
- *
- *               Depending on user choices, the glyph is either retrieved
- *               as a bitmap or an outline or is output with TextOut.
- *
- *  RETURNS    : none.
- ****************************************************************************/
-void/* PASCAL NEAR */ OutputGlyph(HDC hDC, UINT letter, WORD x, WORD y, WORD ascent)
-{
-    GLYPHMETRICS gm;
-    MAT2 mat;
-    DWORD size;
-    HANDLE hBits;
-    LPSTR lpBits;
-    WORD flag;
-    HBITMAP hbm;
-    HBRUSH hbr;
-    DWORD oldOrg;
-
-    // Simply output the character.  The matrix setting does not affect
-    // this output.
-    if (wGlyph == IDM_TEXTOUT)
-    {
-	TextOut(hDC, x, y, (LPSTR)&letter, 1);
-	return;
-    }
-	       
-    // make the 2x2 matrix
-    // these are simply hardcoded examples.
-    if (wEffect == IDM_IDENTITY)
-	IdentityMat(&mat);
-    else if (wEffect == IDM_ROTATE60)
-	MakeRotationMat(&mat, 60);
-    else if (wEffect == IDM_SHEAR)
-	ShearMat(&mat);
-
-    flag = (wGlyph == IDM_BITMAP) ? GGO_BITMAP : GGO_NATIVE;
-
-    // allocate space for the bitmap/outline
-    size = GetGlyphOutline(hDC, letter, flag, &gm, 0, NULL, &mat);
-    hBits = GlobalAlloc(GHND, size);
-    lpBits = GlobalLock(hBits);
-
-    if ((GetGlyphOutline(hDC, letter, flag, &gm, size, lpBits, &mat)) != size)
-    {
-	MessageBox(hMyWnd, "Won't get it", "foo", MB_OK);
-	return;
-    }
-
-    // Get the glyph in Windows bitmap format and blt to the screen.
-    // Alignment is done in the blting.
-    if (wGlyph == IDM_BITMAP)
-    {
-	hbm = BitmapFromT2Bitmap(lpBits, gm.gmBlackBoxX, gm.gmBlackBoxY);
-	SelectObject(hdcMem, hbm);
-
-	BitBlt(hDC, x + gm.gmptGlyphOrigin.x, y + (ascent - gm.gmptGlyphOrigin.y), 
-		gm.gmBlackBoxX, gm.gmBlackBoxY, hdcMem, 0, 0, SRCCOPY);
-	SelectObject(hdcMem, hbmDefault);
-	DeleteObject(hbm);
-    }
-    // Glyph is in outline format.  Set up viewport origin to align the
-    // glyph and draw it.  Actual decoding and drawing is done in 
-    // DrawT2Outline.
-    else if (wGlyph == IDM_OUTLINE)
-    {
-	hbr = CreateSolidBrush(RGB(255, 0, 255));
-	hbr = SelectObject(hDC, hbr);
+int Decompose_LineTo(const FT_Vector *to, void *user) {
+	std::cout << "LineTo" << std::endl;
 	
-	oldOrg = GetViewportOrg(hDC);
+	DecomposeData *data = static_cast<DecomposeData*>(user);
+	data->initial = *to;
 
-	// Align based on cell origin.
-	OffsetViewportOrg(hDC, x, y + ascent);
-	DrawT2Outline(hDC, (LPTTPOLYGONHEADER)lpBits, size);
+	(data->pt)[*data->cTotal].x = FloatFromFixed(to->x);
+	(data->pt)[*data->cTotal].y = FloatFromFixed(to->y);
+	//ptHard[cTotal]=1;	// hard edge
+	*data->cTotal+=1;
+	*data->cInCurve+=1;
 
-	SetViewportOrg(hDC, LOWORD(oldOrg), HIWORD(oldOrg));
+	if (data->duplicateHardPts) // to get hard edge in sweep code
+	{
+		(data->pt)[*data->cTotal].x = (data->pt)[*data->cTotal - 1].x;
+		(data->pt)[*data->cTotal].y = (data->pt)[*data->cTotal - 1].y;
+		*data->cTotal+=1;
+		*data->cInCurve+=1;
+	}
+	(data->count)[*data->cCurves - 1] = *data->cInCurve;
+	return 0;
 
-	hbr = SelectObject(hDC, hbr);
-	DeleteObject(hbr);
-    }
-
-    GlobalUnlock(hBits);
-    GlobalFree(hBits);
 }
 
-#endif
+int Decompose_CubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user) {
+	std::cout << "CubicTo" << std::endl;
+	return FT_Err_Unimplemented_Feature; //We don't support cubic
+}
 
+int Decompose_ConicTo(const FT_Vector *control, const FT_Vector *to, void *user) {
+	std::cout << "ConicTo" << std::endl;
+	DecomposeData *data = static_cast<DecomposeData*>(user);
+	FT_Vector spline[3];
+	spline[0] = data->initial;
+	spline[1] = *control;
+	spline[2] = *to;
+	int cInSpline = QSpline2PolylineSubdiv((Point *) &(data->pt)[*data->cTotal], spline,data->splineSubdiv);
+	*data->cTotal += cInSpline;
+	*data->cInCurve += cInSpline;
+	(data->count)[*data->cCurves - 1] = *data->cInCurve;
+	data->initial = *to;
+	return 0;
+}
 
 // decode  the outline and append to shell
 
-void ComputeT2Outline(LPTTPOLYGONHEADER lpHeader, DWORD size,float scaleFac, float x, float y, int duplicateHardPts, 
+void ComputeT2Outline(FT_Face font_face,float scaleFac, float x, float y, int duplicateHardPts, 
 				GShell &s) 
 {
-    LPTTPOLYGONHEADER lpStart;
-    LPTTPOLYCURVE lpCurve;
     //POINT 
     Point pt[4500];
 //	char  ptHard[1500];
     /*WORD*/ 
     INT count[150];
     WORD cTotal = 0;	// Total number of points in polypolygon.
-    WORD cInCurve; 	// Number of points in current curve.
+    WORD cInCurve = 0; 	// Number of points in current curve.
     WORD cCurves = 0;	// Number of curves in polypolygon.
-    WORD cInSpline;	// Number of points in digitized spline curve.
+    WORD cInSpline = 0;	// Number of points in digitized spline curve.
     WORD iFirstCurve;	// Index to start point of first curve.
     WORD i;
-    POINTFX spline[3];
 	
-	if (!lpHeader) return;
 	int splineSubdiv = 2; // number of spline subdivisions
 
 	if (scaleFac >= 0.1) splineSubdiv = 2; // hack for now
@@ -621,128 +373,33 @@ void ComputeT2Outline(LPTTPOLYGONHEADER lpHeader, DWORD size,float scaleFac, flo
 	gbool isLine = RTISA(&s,GPolyline);
 
 	
-    lpStart = lpHeader;
-    while ((DWORD)lpHeader < (DWORD)(((LPSTR)lpStart) + size))
-    {
-	if (lpHeader->dwType == TT_POLYGON_TYPE)
-	{
-	    cInCurve = 0;
+    DecomposeData decomposeData;
+	decomposeData.pt = pt;
+	decomposeData.cTotal = &cTotal;
+	decomposeData.cInCurve = &cInCurve;
+	decomposeData.cCurves = &cCurves;
+	decomposeData.cInSpline = &cInSpline;
+	decomposeData.initial.x = 0;
+	decomposeData.initial.y = 0;
+	decomposeData.splineSubdiv = splineSubdiv;
+	decomposeData.count = count;
+	decomposeData.duplicateHardPts = duplicateHardPts;
 
-	    // Get to first curve.
-	    lpCurve = (LPTTPOLYCURVE) (lpHeader + 1);
-	    iFirstCurve = cTotal;
+	FT_Outline_Funcs funcs;
+	funcs.move_to = &Decompose_MoveTo;
+	funcs.line_to = &Decompose_LineTo;
+	funcs.conic_to = &Decompose_ConicTo;
+	funcs.cubic_to = &Decompose_CubicTo;
+	funcs.shift = 0;
+	funcs.delta = 0;
 
-#if 1
-		// TTPLOT does this at start
-	   // unclear why need, where is doc for this 
-	    pt[cTotal].x = lpHeader->pfxStart.x.value;
-	    pt[cTotal].y = lpHeader->pfxStart.y.value;
-	    cInCurve++;
-	    cTotal++;
-#endif
-
-
-	    while ((DWORD)lpCurve < (DWORD)(((LPSTR)lpHeader) + lpHeader->cb))
-	    {
-		if (lpCurve->wType == TT_PRIM_LINE)
-		{
-		    for (i = 0; i < lpCurve->cpfx; i++)
-		    {
-				pt[cTotal].x = FloatFromFixed(lpCurve->apfx[i].x);
-				pt[cTotal].y = FloatFromFixed(lpCurve->apfx[i].y);
-				//ptHard[cTotal]=1;	// hard edge 
-				cTotal++;
-				cInCurve++;
-
-				if (duplicateHardPts) // to get hard edge in sweep code
-				{	pt[cTotal].x=pt[cTotal-1].x;
-					pt[cTotal].y=pt[cTotal-1].y;
-					cTotal++;
-					cInCurve++;
-				}
-		    }
-		}
-		else if (lpCurve->wType == TT_PRIM_QSPLINE)
-		{
-		    //**********************************************
-		    // Format assumption:
-		    //   The bytes immediately preceding a POLYCURVE
-		    //   structure contain a valid POINTFX.
-		    //
-		    //   If this is first curve, this points to the 
-		    //      pfxStart of the POLYGONHEADER.
-		    //   Otherwise, this points to the last point of
-		    //      the previous POLYCURVE.
-		    //
-		    //	 In either case, this is representative of the
-		    //      previous curve's last point.
-		    //**********************************************
-		    spline[0] = *(LPPOINTFX)((LPSTR)lpCurve - sizeof(POINTFX));
-	
-		    for (i = 0; i < lpCurve->cpfx;)
-		    {
-		        // The B point.
-				spline[1] = lpCurve->apfx[i++];
-
-				// Calculate the C point.
-				if (i == (lpCurve->cpfx - 1))
-				{
-					spline[2] = lpCurve->apfx[i++];
-				}     
-				else
-				{
-					// C is midpoint between B and next point.
-					spline[2].x = fxDiv2(lpCurve->apfx[i-1].x,
-			    					lpCurve->apfx[i].x);
-					spline[2].y = fxDiv2(lpCurve->apfx[i-1].y,
-			    					lpCurve->apfx[i].y);
-				}
-
-				// cInSpline = QSpline2Polyline(/*(LPPOINT)*/ &(pt[cTotal]), spline);
-				cInSpline = QSpline2PolylineSubdiv((Point *) &pt[cTotal], spline,splineSubdiv);
-	
-				//for(int j=0;j<cInSpline;j++) ptHard[j+cTotal]=0;
-	
-				cTotal += cInSpline;
-				cInCurve += cInSpline;
-
-				// New A point for next slice of spline.
-				spline[0] = spline[2];
-		    }  // i
-		}
-		else
-			TRACE("ComputeT2Outline: unknow stroke type");
-		; // error, error, error
-
-		// Move on to next curve.
-		lpCurve = (LPTTPOLYCURVE)&(lpCurve->apfx[i]);
-	    }
-
-	    // Add points to close curve.
-	    // Depending on the specific font and glyph being used, these
-	    // may not always be needed, but it never hurts.
-#if 0
-	   // unclear why need, where is doc for this 
-	    pt[cTotal].x = lpHeader->pfxStart.x.value;
-	    pt[cTotal].y = lpHeader->pfxStart.y.value;
-	    cInCurve++;
-	    cTotal++;
-#endif
-
-	if (isLine) { // close curve 
-	    pt[cTotal].x = pt[iFirstCurve].x;
-	    pt[cTotal].y = pt[iFirstCurve].y;
-	    cInCurve++;
-	    cTotal++;
+	if(font_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE) {
+		return;
 	}
-	    count[cCurves++] = cInCurve;
+	FT_Outline_Decompose(&font_face->glyph->outline, &funcs, &decomposeData);
 
-	    // Move on to next polygon.
-	    lpHeader = (LPTTPOLYGONHEADER)(((LPSTR)lpHeader) + lpHeader->cb);
-	}
-	else
-	; // error, error, error
-    }
+	// count[cCurves] = cInCurve; // Count for last curve
+	// std::cout << "[Last] Setting count[" << cCurves << "] = " << cInCurve << std::endl;
 
 
 #if 0
@@ -762,6 +419,10 @@ void ComputeT2Outline(LPTTPOLYGONHEADER lpHeader, DWORD size,float scaleFac, flo
 	int ptOffset=0;
 
 	// Append polygons to shell
+	std::cout << "cCurves " << cCurves << std::endl;
+	for(i=0; i<cCurves;i++) {
+		std::cout << "cCurves[" << i << "]: " << count[i] << std::endl;
+	}
 	for(i=0; i<cCurves;i++) {
 		int cnt = count[i];
 
@@ -772,6 +433,7 @@ void ComputeT2Outline(LPTTPOLYGONHEADER lpHeader, DWORD size,float scaleFac, flo
 		// compute handedness of polygon 
 
 		float area=0.0;
+		std::cout << "cnt: " << cnt << " ptOffset: " << ptOffset << std::endl;
 		for (int ii=0;ii<cnt;ii++) {
 			int j = (ii + 1) % cnt;
 			area += pt[ptOffset+ii].x * pt[ptOffset+j].y;
@@ -812,66 +474,44 @@ void ComputeT2Outline(LPTTPOLYGONHEADER lpHeader, DWORD size,float scaleFac, flo
 
 //@func compute a polygonal outline for character letter
 
-void  ComputeGlyphOutline(HDC hDC, UINT letter, 
+void  ComputeGlyphOutline(FT_Face font_face, UINT letter, 
 						  float scaleFac, float &x, float &y, 
 						  float dirstepx, // 1.0
 						  float dirstepy,// -1.0
 						  int duplicateHardPts, GShell &s)
 {
-    GLYPHMETRICS gm;
-    MAT2 mat;
-    DWORD size;
-    HANDLE hBits;
-    LPSTR lpBits;
-    WORD flag;
+    // GLYPHMETRICS gm;
+    // MAT2 mat;
+    // DWORD size;
+    // HANDLE hBits;
+    // LPSTR lpBits;
+    // WORD flag;
     //DWORD oldOrg;
 
 	       
     // make the 2x2 matrix
     // these are simply hardcoded examples.
 //    if (wEffect == IDM_IDENTITY)
-	IdentityMat(&mat);
+	//IdentityMat(&mat);
   //  else if (wEffect == IDM_ROTATE60)
 //	MakeRotationMat(&mat, 60);
 //    else if (wEffect == IDM_SHEAR)
 //	ShearMat(&mat);
 
-    flag = GGO_NATIVE;
+    //flag = GGO_NATIVE;
 
-    // allocate space for the bitmap/outline
-    size = GetGlyphOutline(hDC, letter, flag, &gm, 0, NULL, &mat);
+	FT_Load_Char(font_face, letter, FT_LOAD_NO_SCALE);
 
-	if (size >0) 
-	{
-  
-		hBits = GlobalAlloc(GHND, size);
-		lpBits =(LPSTR) GlobalLock(hBits);
 
-		if ((GetGlyphOutline(hDC, letter, flag, &gm, size, lpBits, &mat)) != size)
-		{
-			TRACE("GFont:Can´t get TrueType Glph outline \n");
-		}
-		else
-		{
-
-			// Glyph is in outline format.
-			ComputeT2Outline((LPTTPOLYGONHEADER)lpBits, size,scaleFac,x,y,duplicateHardPts,s);
-		}
-
-		GlobalUnlock(hBits);
-		GlobalFree(hBits);
-	}
-	else
-	{
-		TRACE("GFont:Can´t allocate space for %c \n", letter);
-	}
+	// Glyph is in outline format.
+	ComputeT2Outline(font_face, scaleFac,x,y,duplicateHardPts,s);
 
 	// todo : prop spacing ? 
 
 
-	x +=  dirstepx* gm.gmCellIncX * scaleFac;
+	x +=  dirstepx* font_face->glyph->linearHoriAdvance * scaleFac;
 	if (letter == 10)	
-		y +=  dirstepy* gm.gmCellIncY*scaleFac;
+		y +=  dirstepy* font_face->glyph->linearVertAdvance*scaleFac;
 
 }
 
@@ -892,9 +532,9 @@ float ComputeGlyphLineHeight(
 
 
 int ComputeGlyphOutline(
-	HDC hDC,			// a Windows DC with a TrueType font selected
+	FT_Face font_face,			// a Windows DC with a TrueType font selected
  	
-	const  _TCHAR *text, // the input text, to compute a polygon outline for
+	const  char *text, // the input text, to compute a polygon outline for
 
  	float &x, float &y, // starting x,y position, will be updated after the call to new position
 	float spacing, // 0.0 extra character spacing
@@ -916,23 +556,18 @@ int ComputeGlyphOutline(
   int len;
   
  // #include <tchar.h>
-  unsigned char * mbsp;
+  const unsigned char * mbsp;
 
 #ifndef _UNICODE   
 
   gbool mbcs=gfalse;
   gbool utf8=gtrue;
   
-  mbcs = gtrue; utf8=gfalse; 	
+  //mbcs = gtrue; utf8=gfalse; 	
   if (utf8) {
-	 mbsp = (unsigned char *) text;
+	 mbsp = (const unsigned char *) text;
 	 len = utf8strlen(mbsp);
-  } else 	
-  if (mbcs) {
-	 mbsp = (unsigned char *) text;
-	 len = _mbstrlen(text);
-  } else 
-	  len=_tclen(text);
+  }
 #else
   gbool mbcs=gfalse;
   gbool utf8=gfalse;
@@ -942,8 +577,7 @@ int ComputeGlyphOutline(
   // float spacing = 1.0;
   float xstart = x;
   
-  TEXTMETRIC  tm;
-  GetTextMetrics(hDC,&tm);
+  short font_height = font_face->ascender - font_face->descender; // Not height, per Freetype documentation. MS docs for tmHeight say ascender+descender
   //OUTLINETEXTMETRIC otm;
   //GetOutlineTextMetrics(hDC,sizeof(otm),&otm);
   // otmLineGap
@@ -964,24 +598,12 @@ int ComputeGlyphOutline(
 		c = utf8nextcinc(mbsp);
 		if (c == UTF_EOF) break;
 		if (c == UTF_INVALID) break;
-	} else 
-	if (mbcs) {
-		c = _mbsnextc(mbsp);
-		mbsp= _mbsinc(mbsp);
-	} else {
-		c =_tcsnextc(text);
-	    text =_tcsinc(text);
-	}
+	} 
 
     if (c == 13) {
 		unsigned int cnext;
 		if (utf8) {
 			c = utf8nextcinc(mbsp);
-		} else 
-		if (mbcs) {
-			cnext = _mbsnextc(mbsp);
-		} else {
-			cnext =_tcsnextc(text);
 		}
 
 		if (cnext == '\n') {} // ignore and process ass /n
@@ -993,7 +615,7 @@ int ComputeGlyphOutline(
    	else 
 	if (c == '\n') {
 		i++;
-		y+=dirstepy*tm.tmHeight*scaleFac*lineSpacing;
+		y+=dirstepy*font_height*scaleFac*lineSpacing;
 		break;
 
 	}
@@ -1003,7 +625,7 @@ int ComputeGlyphOutline(
     { x=xstart;	tstart = i + 1; i++; 
     }
     else if (c  == 13) 
-    { y-=tm.tmHeight*scaleFac; }
+    { y-=font_height*scaleFac; }
   	else 
 #endif
 
@@ -1012,7 +634,7 @@ int ComputeGlyphOutline(
 	  //GetTextExtentPoint32(hDC,&text[i],1,&size);
 	  //TRACE("Text extent reports %d %d \n",size.cx,size.cy); is the same as in Gm
 
-  	  ComputeGlyphOutline(hDC,c,scaleFac,x,y,dirstepx,dirstepy,duplicateHardPts,s);
+  	  ComputeGlyphOutline(font_face,c,scaleFac,x,y,dirstepx,dirstepy,duplicateHardPts,s);
 
 	  i++;
 	}
@@ -1180,7 +802,7 @@ typedef POINT	far *LPPOINT;
 //#define NEAR		    _near
 //#define PASCAL		    _pascal
 
-int NEAR PASCAL QSpline2Polyline(LPPOINT lpptBuffer, LPQS lpqsPoints, 
+int QSpline2Polyline(LPPOINT lpptBuffer, LPQS lpqsPoints, 
                       int inGY, unsigned int far *count, int nAscent)
 {
   int32 Ax, Ay, Bx, By, Cx, Cy;

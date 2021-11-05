@@ -93,12 +93,14 @@ Todo :
 #include <grayselect.h>
 
 // Font support (True Type)
-#ifdef WIN32
+#ifdef __EMSCRIPTEN__
 #include "gfont.h"
 #endif
 
 
 #include "goptimizetraversal.h"
+
+static FT_Library ft_library;
 
 
 
@@ -3445,43 +3447,37 @@ Gv2Text::BuildShell(GTraversal &state)
 	gbool m_outline=0;
 	gbool m_bitmap=0;
 	gbool m_italic=0;
+	gbool m_bold = 0;
+	gbool m_underline = 0;
+	gbool m_strikeout = 0;
+	int m_height = 75;
+	int m_width = 0;
 	GBitmapTextConfig config; // configuration for textfont 
 
-#ifdef WIN32
+#ifdef __EMSCRIPTEN__
 
-		// logical font description
-   		LOGFONT m_lf;
+		CString fontpath = "/fonts/Arimo";
 
-		m_lf.lfHeight=75;
-		//m_lf.lfHeight=100;
-
-	    m_lf.lfWidth=0;
-	    m_lf.lfEscapement=m_lf.lfOrientation=0;
-	    m_lf.lfWeight=FW_NORMAL;
+		if(!ft_library) {
+			FT_Init_FreeType(&ft_library);
+		}
 		
-		if (fontStyle && strstr(fontStyle->style,"BOLD"))  m_lf.lfWeight = 700;
+		if (fontStyle && strstr(fontStyle->style,"BOLD"))  m_bold=1;
 	    
-	    m_lf.lfItalic=0;
-		if (fontStyle &&  strstr(fontStyle->style,"ITALIC"))  m_lf.lfItalic = m_italic=1;
+		if (fontStyle &&  strstr(fontStyle->style,"ITALIC"))  m_italic=1;
 	    
-	    m_lf.lfUnderline=0;
-		if (fontStyle &&  strstr(fontStyle->style, "UNDERLINE"))  m_lf.lfUnderline = 1;
+		if (fontStyle &&  strstr(fontStyle->style, "UNDERLINE"))  m_underline = 1;
 	    
-	    m_lf.lfStrikeOut=0;
-		if (fontStyle &&  strstr(fontStyle->style,"STRIKEOUT"))  m_lf.lfStrikeOut = 1;
+		if (fontStyle &&  strstr(fontStyle->style,"STRIKEOUT"))  m_strikeout = 1;
 		
 		if (fontStyle &&  strstr(fontStyle->style,"INVERT"))  m_invert = 1; 
 
 		if (fontStyle &&  strstr(fontStyle->style,"EXTRUDE"))  m_extrude = 1; 
 		if (fontStyle &&  strstr(fontStyle->style,"OUTLINE"))  m_outline = 1; 
 
-	    m_lf.lfCharSet=ANSI_CHARSET;
-	    m_lf.lfOutPrecision=OUT_TT_ONLY_PRECIS;
-	    m_lf.lfClipPrecision=CLIP_DEFAULT_PRECIS;
-	    m_lf.lfQuality=PROOF_QUALITY; //DEFAULT_QUALITY;
-	    m_lf.lfPitchAndFamily=FF_DONTCARE;
+
 	    
-	    lstrcpy(m_lf.lfFaceName,"Arial");
+	    //lstrcpy(m_lf.lfFaceName,"Arial");
 		if (fontStyle) {
 			if (fontStyle->family.getNum()>0) {
 			const char *fam = fontStyle->family.get1(0);
@@ -3495,21 +3491,34 @@ Gv2Text::BuildShell(GTraversal &state)
 
 			} 
 			else if (fontStyle->family.get1(0) == "SANS") 
-	    		lstrcpy(m_lf.lfFaceName,"Arial");
+	    		fontpath = "/fonts/Arimo";
 			else if (fontStyle->family.get1(0) == "SERIF") 
-	    		lstrcpy(m_lf.lfFaceName,"Times New Roman");
+	    		fontpath = "/fonts/Tinos";
 			else if (fontStyle->family.get1(0) == "TYPEWRITER") 
-	    		lstrcpy(m_lf.lfFaceName,"Courier New");
+	    		fontpath = "/fonts/Cousine";
 			else 
-				lstrcpy(m_lf.lfFaceName,fontStyle->family.get1(0).getString()); // to do unicode
+				fontpath = "/fonts/Arimo"; // original code tried to use the specified font.
 			}
 			 {
-				const char *lang = fontStyle->language.get();
-				if (streq(lang,"SYMBOL"))  m_lf.lfCharSet = SYMBOL_CHARSET; // test
-				else if (streq(lang,"OEM"))  m_lf.lfCharSet = OEM_CHARSET ; // test
-				else if (streq(lang,"DEFAULT"))  m_lf.lfCharSet = DEFAULT_CHARSET;  // test
+				// const char *lang = fontStyle->language.get();
+				// if (streq(lang,"SYMBOL"))  m_lf.lfCharSet = SYMBOL_CHARSET; // test
+				// else if (streq(lang,"OEM"))  m_lf.lfCharSet = OEM_CHARSET ; // test
+				// else if (streq(lang,"DEFAULT"))  m_lf.lfCharSet = DEFAULT_CHARSET;  // test
 
 			}	
+		}
+
+		if(!m_bold && !m_italic) {
+			fontpath += "-Regular.ttf";
+		} else {
+			fontpath += "-";
+			if(m_bold) {
+				fontpath += "Bold";
+			}
+			if(m_italic) {
+				fontpath = "Italic";
+			}
+			fontpath += ".ttf";
 		}
 #else
 		if (fontStyle &&  strstr(fontStyle->style,"ITALIC"))  m_italic=1;
@@ -3620,18 +3629,16 @@ Gv2Text::BuildShell(GTraversal &state)
 		
 		} else {
 
-#ifdef WIN32
-		HFONT font;
+#ifdef __EMSCRIPTEN__
+		FT_Face font;
 		//m_lf.lfHeight=80;
 		//m_lf.lfHeight = -MulDiv(20, GetDeviceCaps(pDC->m_hDC, LOGPIXELSY), 72);
 
 		height *= 0.133; // font units ??
 
-		if ((font = ::CreateFontIndirect(&m_lf)) != NULL)
+		if (!(FT_New_Face(ft_library, fontpath, 0, &font)))
 		{
 
-			HDC hdc = ::GetDC(NULL);
-			HGDIOBJ	oldFont = ::SelectObject(hdc,font);
 
 
 			GShell *s;
@@ -3659,7 +3666,7 @@ Gv2Text::BuildShell(GTraversal &state)
 
 				//to do: kernning // center, multiline
 
-				ComputeGlyphOutline(hdc,m_text,x,y,0.0,height,dirstepx,dirstepy, spacing ,align,widthi,m_extrude,*s,maxLength);
+				ComputeGlyphOutline(font,m_text,x,y,0.0,height,dirstepx,dirstepy, spacing ,align,widthi,m_extrude,*s,maxLength);
 				//maxLength=max(maxLength,thisLength);
 
 
@@ -3783,9 +3790,7 @@ Gv2Text::BuildShell(GTraversal &state)
 			theShell->SetVP(vp);
 			}
 
-			if (oldFont) ::SelectObject(hdc, oldFont);
-			::ReleaseDC(NULL,hdc);
-			::DeleteObject(font);
+			FT_Done_Face(font);
 #else 
     return(0);
 #endif	// WIN32	

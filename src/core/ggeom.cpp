@@ -519,11 +519,11 @@ GShell * ComputeExtrudedShell(
 
 		      //   if (p1!=p2) 
          {
-		    pbufParam[pbufp-pbuf].Set(0.0,extrusionVParameter[0],0.0);
+		    pbufParam[(unsigned int)(pbufp-pbuf)].Set(0.0,extrusionVParameter[0],0.0);
 		    for(int i=1; i<n; i++) {
 
 				Point dist = pbufp[i]-pbufp[i-1];
-		  		pbufParam[(pbufp-pbuf)+i].Set(pbufParam[(pbufp-pbuf)+i-1].x + dist.Len(),extrusionVParameter[0],0.0);
+		  		pbufParam[(unsigned int)((pbufp-pbuf)+i)].Set(pbufParam[(unsigned int)((pbufp-pbuf)+i-1)].x + dist.Len(),extrusionVParameter[0],0.0);
 
 		  }
 		 }
