@@ -130,7 +130,7 @@ FIXED/* PASCAL NEAR */ fxDiv2(FIXED fxVal1, FIXED fxVal2)
 
 #else
 float FloatFromFixed(float f) {
-	return f;
+	return 75*f/2268;
 }
 float fxDiv2(float fxVal1, float fxVal2) {
 	return (fxVal1 + fxVal2)/2;
@@ -274,7 +274,7 @@ struct DecomposeData {
 };
 
 int Decompose_MoveTo(const FT_Vector *to, void *user) {
-	std::cout << "MoveTo" << std::endl;
+	//std::cout << "MoveTo" << std::endl;
 	DecomposeData *data = static_cast<DecomposeData*>(user);
 	data->initial = *to;
 
@@ -304,7 +304,7 @@ int Decompose_MoveTo(const FT_Vector *to, void *user) {
 }
 
 int Decompose_LineTo(const FT_Vector *to, void *user) {
-	std::cout << "LineTo" << std::endl;
+	//std::cout << "LineTo" << std::endl;
 	
 	DecomposeData *data = static_cast<DecomposeData*>(user);
 	data->initial = *to;
@@ -328,12 +328,12 @@ int Decompose_LineTo(const FT_Vector *to, void *user) {
 }
 
 int Decompose_CubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user) {
-	std::cout << "CubicTo" << std::endl;
+	//std::cout << "CubicTo" << std::endl;
 	return FT_Err_Unimplemented_Feature; //We don't support cubic
 }
 
 int Decompose_ConicTo(const FT_Vector *control, const FT_Vector *to, void *user) {
-	std::cout << "ConicTo" << std::endl;
+	//std::cout << "ConicTo" << std::endl;
 	DecomposeData *data = static_cast<DecomposeData*>(user);
 	FT_Vector spline[3];
 	spline[0] = data->initial;
@@ -419,10 +419,10 @@ void ComputeT2Outline(FT_Face font_face,float scaleFac, float x, float y, int du
 	int ptOffset=0;
 
 	// Append polygons to shell
-	std::cout << "cCurves " << cCurves << std::endl;
-	for(i=0; i<cCurves;i++) {
-		std::cout << "cCurves[" << i << "]: " << count[i] << std::endl;
-	}
+	//std::cout << "cCurves " << cCurves << std::endl;
+	// for(i=0; i<cCurves;i++) {
+	// 	std::cout << "cCurves[" << i << "]: " << count[i] << std::endl;
+	// }
 	for(i=0; i<cCurves;i++) {
 		int cnt = count[i];
 
@@ -433,7 +433,7 @@ void ComputeT2Outline(FT_Face font_face,float scaleFac, float x, float y, int du
 		// compute handedness of polygon 
 
 		float area=0.0;
-		std::cout << "cnt: " << cnt << " ptOffset: " << ptOffset << std::endl;
+		//std::cout << "cnt: " << cnt << " ptOffset: " << ptOffset << std::endl;
 		for (int ii=0;ii<cnt;ii++) {
 			int j = (ii + 1) % cnt;
 			area += pt[ptOffset+ii].x * pt[ptOffset+j].y;
@@ -500,7 +500,7 @@ void  ComputeGlyphOutline(FT_Face font_face, UINT letter,
 
     //flag = GGO_NATIVE;
 
-	FT_Load_Char(font_face, letter, FT_LOAD_NO_SCALE);
+	FT_Load_Char(font_face, letter, FT_LOAD_NO_SCALE | FT_LOAD_LINEAR_DESIGN);
 
 
 	// Glyph is in outline format.
@@ -508,10 +508,12 @@ void  ComputeGlyphOutline(FT_Face font_face, UINT letter,
 
 	// todo : prop spacing ? 
 
-
-	x +=  dirstepx* font_face->glyph->linearHoriAdvance * scaleFac;
+	std::cout << "dirstepx = " << dirstepx << "; font_face->glyph->linearHoriAdvance = " << font_face->glyph->linearHoriAdvance << "; scaleFac = " << scaleFac << ";\n";
+	std::cout << "x = " << x << std::endl;
+	std::cout << "x += " << dirstepx* font_face->glyph->linearHoriAdvance * scaleFac << std::endl;
+	x +=  dirstepx* (75.0/2268.0) * font_face->glyph->linearHoriAdvance * scaleFac;
 	if (letter == 10)	
-		y +=  dirstepy* font_face->glyph->linearVertAdvance*scaleFac;
+		y +=  dirstepy* (75.0/2268.0) *font_face->glyph->linearVertAdvance*scaleFac;
 
 }
 
@@ -578,6 +580,7 @@ int ComputeGlyphOutline(
   float xstart = x;
   
   short font_height = font_face->ascender - font_face->descender; // Not height, per Freetype documentation. MS docs for tmHeight say ascender+descender
+  std::cout << "font_height = " << font_height << std::endl;
   //OUTLINETEXTMETRIC otm;
   //GetOutlineTextMetrics(hDC,sizeof(otm),&otm);
   // otmLineGap

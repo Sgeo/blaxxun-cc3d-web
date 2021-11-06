@@ -3516,7 +3516,7 @@ Gv2Text::BuildShell(GTraversal &state)
 				fontpath += "Bold";
 			}
 			if(m_italic) {
-				fontpath = "Italic";
+				fontpath += "Italic";
 			}
 			fontpath += ".ttf";
 		}
@@ -3638,7 +3638,7 @@ Gv2Text::BuildShell(GTraversal &state)
 
 		if (!(FT_New_Face(ft_library, fontpath, 0, &font)))
 		{
-
+			//FT_Set_Char_Size(font, 0, 0, 300, 300);
 
 
 			GShell *s;
