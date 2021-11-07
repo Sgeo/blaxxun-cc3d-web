@@ -3639,6 +3639,14 @@ Gv2Text::BuildShell(GTraversal &state)
 		if (!(FT_New_Face(ft_library, fontpath, 0, &font)))
 		{
 			//FT_Set_Char_Size(font, 0, 0, 300, 300);
+			//FT_Set_Pixel_Sizes(font, 72, 72);
+			FT_Size_RequestRec sizeRequest;
+			sizeRequest.type = FT_SIZE_REQUEST_TYPE_REAL_DIM; // Ascender - descender
+			sizeRequest.width = 75 << 6; // 26.6
+			sizeRequest.height = 75 << 6; // 26.6
+			sizeRequest.horiResolution = 0;
+			sizeRequest.vertResolution = 0;
+			FT_Request_Size(font, &sizeRequest);
 
 
 			GShell *s;

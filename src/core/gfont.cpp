@@ -130,7 +130,7 @@ FIXED/* PASCAL NEAR */ fxDiv2(FIXED fxVal1, FIXED fxVal2)
 
 #else
 float FloatFromFixed(float f) {
-	return 75*f/2268;
+	return f/64.0;
 }
 float fxDiv2(float fxVal1, float fxVal2) {
 	return (fxVal1 + fxVal2)/2;
@@ -500,7 +500,7 @@ void  ComputeGlyphOutline(FT_Face font_face, UINT letter,
 
     //flag = GGO_NATIVE;
 
-	FT_Load_Char(font_face, letter, FT_LOAD_NO_SCALE | FT_LOAD_LINEAR_DESIGN);
+	FT_Load_Char(font_face, letter, FT_LOAD_NO_BITMAP);
 
 
 	// Glyph is in outline format.
@@ -508,12 +508,12 @@ void  ComputeGlyphOutline(FT_Face font_face, UINT letter,
 
 	// todo : prop spacing ? 
 
-	std::cout << "dirstepx = " << dirstepx << "; font_face->glyph->linearHoriAdvance = " << font_face->glyph->linearHoriAdvance << "; scaleFac = " << scaleFac << ";\n";
-	std::cout << "x = " << x << std::endl;
-	std::cout << "x += " << dirstepx* font_face->glyph->linearHoriAdvance * scaleFac << std::endl;
-	x +=  dirstepx* (75.0/2268.0) * font_face->glyph->linearHoriAdvance * scaleFac;
+	// std::cout << "dirstepx = " << dirstepx << "; font_face->glyph->linearHoriAdvance = " << font_face->glyph->linearHoriAdvance << "; scaleFac = " << scaleFac << ";\n";
+	// std::cout << "x = " << x << std::endl;
+	// std::cout << "x += " << dirstepx* font_face->glyph->linearHoriAdvance * scaleFac << std::endl;
+	x +=  dirstepx * (1/65536.0) * font_face->glyph->linearHoriAdvance * scaleFac;
 	if (letter == 10)	
-		y +=  dirstepy* (75.0/2268.0) *font_face->glyph->linearVertAdvance*scaleFac;
+		y +=  dirstepy * (1/65536.0) * font_face->glyph->linearVertAdvance * scaleFac;
 
 }
 
@@ -580,7 +580,7 @@ int ComputeGlyphOutline(
   float xstart = x;
   
   short font_height = font_face->ascender - font_face->descender; // Not height, per Freetype documentation. MS docs for tmHeight say ascender+descender
-  std::cout << "font_height = " << font_height << std::endl;
+//   std::cout << "font_height = " << font_height << std::endl;
   //OUTLINETEXTMETRIC otm;
   //GetOutlineTextMetrics(hDC,sizeof(otm),&otm);
   // otmLineGap
