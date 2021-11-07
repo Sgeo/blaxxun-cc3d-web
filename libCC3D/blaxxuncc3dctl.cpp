@@ -5001,8 +5001,8 @@ int CGLViewCtrlCtrl::ReadUrl(const char *url,const char *homeUrl,gbool reload,ti
 		// }
 
 	}
- 	mainLoader->unref();
-	mainLoader = NULL;
+ 	// mainLoader->unref();
+	// mainLoader = NULL;
 	InternalSetReadyState(READYSTATE_COMPLETE);
    }
 
@@ -5037,7 +5037,7 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
    }
    if (f->refCnt<=0) { // reference counter should never be 0
 	   TRACE("CGLViewCtrlCtrl::bad file notification \n") ;
-	   return(TRUE);
+	//    return(TRUE);
    }	
 
    TRACE("CGLViewCtrlCtrl::OnReadFileCompleted Ret = %d (Refs = %d)  %s\n",f->threadRet, f->refCnt, (const char *) f->url) ;
@@ -5062,7 +5062,7 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 		Message(msg,PROGRESS_MESSAGE);
    }	
 
-
+	printf("f = %p; mainLoader = %p;\n", f, mainLoader);
    // it is the mail url loader task 
    if (f == mainLoader)	{
 
@@ -5118,8 +5118,8 @@ CGLViewCtrlCtrl::OnReadFileCompleted(WPARAM wParam, LPARAM lParam)
 
    if (ret != ERROR_THREAD_STARTED)
    {
-   		mainLoader->unref();
-		mainLoader = NULL;
+   		// mainLoader->unref();
+		// mainLoader = NULL;
    }
 
    EndWaitCursor();
@@ -8373,8 +8373,8 @@ BOOL CGLViewCtrlCtrl::loadURLfromFile2(LPCTSTR url, LPCTSTR mimeType, long lastM
 
 		};
 	
-	mainLoader->unref();
-	mainLoader = NULL;
+	// mainLoader->unref();
+	// mainLoader = NULL;
 	InternalSetReadyState(READYSTATE_COMPLETE);
 
    return(ret);

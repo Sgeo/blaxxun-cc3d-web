@@ -123,6 +123,12 @@ static int WWWnotAvailable =0;
 #endif 
 #endif 
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/fetch.h>
+#include <cstdio>
+#include "blaxxuncc3dctl.h"
+#endif
+
 //INVALID_PORT_NUMBER INTERNET_INVALID_PORT_NUMBER
 
 int WWWabort=0;
@@ -3091,6 +3097,46 @@ int TouchCacheUrl(const char *localFile)
   return(ret);
 }
 
+#ifdef __EMSCRIPTEN__
+void em_fetch_callback_success(emscripten_fetch_t *fetch) {
+	GFile *me = (GFile*)fetch->userData;
+	char filename[L_tmpnam];
+	std::tmpnam(filename);
+	FILE *file = fopen(filename, "wb");
+	fwrite(fetch->data, sizeof(char), fetch->numBytes, file);
+	fclose(file);
+	printf("File written: %s\n", filename);
+	me->localFile = filename;
+	me->localFileClass = GLFC_IE_CACHE_FILE; // Does this actually do anything?
+	me->localFileUnzipped = filename;
+	me->urlLoaded = 1;
+	me->threadRet = 0;
+	me->lastChecked = CTime::GetCurrentTime();
+	// if (me->hPostMsgWnd && me->refCnt >1) {
+	//   me->ref(); 	// receiving window must do the unref 
+    //   ::PostMessage(me->hPostMsgWnd,WM_READFILECOMPLETED, (WPARAM) me->threadRet, (LPARAM) me) ;
+	// } else 
+	//if (me->hGlobalPostMsgWnd && me->refCnt >1) {
+	if (me->hGlobalPostMsgWnd) {	
+	  printf("Refcount: %i\n", me->refCnt);
+	  me->ref(); 	// receiving window must do the unref 
+	  CGLViewCtrlCtrl *ctl = (CGLViewCtrlCtrl*)(me->hGlobalPostMsgWnd);
+	  ctl->OnReadFileCompleted(me->threadRet, (LONG)me);
+	}
+	else 
+      me->threadBusy=0;
+
+	me->unref(); 
+	emscripten_fetch_close(fetch);
+}
+
+void em_fetch_callback_error(emscripten_fetch_t *fetch) {
+	GFile *me = (GFile*)fetch->userData;
+
+	emscripten_fetch_close(fetch);
+}
+#endif
+
 /* 
 process a load request of this file
 */
@@ -3313,6 +3359,18 @@ Retry:
 	 	 	  ret = WriteUrlToFile();
 
 			}
+#elif defined(__EMSCRIPTEN__)
+			emscripten_fetch_attr_t fetch_attr;
+			emscripten_fetch_attr_init(&fetch_attr);
+			fetch_attr.userData = this;
+			strcpy(fetch_attr.requestMethod, "GET");
+			fetch_attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+			fetch_attr.onsuccess = em_fetch_callback_success;
+			fetch_attr.onerror = em_fetch_callback_error;
+			emscripten_fetch(&fetch_attr, (const char *)url);
+			ref();
+			return ERROR_THREAD_STARTED;
+
 
 #else
 

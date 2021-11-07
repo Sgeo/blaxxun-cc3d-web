@@ -305,7 +305,8 @@ int main( int argc, char *argv[] )
 
    // create a view	
    ctl = new CGLViewCtrlCtrl();
-   if (!ctl) return(-1);	
+   if (!ctl) return(-1);
+   GFile::hGlobalPostMsgWnd = ctl;
    //view->SetReporter(reporter);
 
    InitModifierListeners();
