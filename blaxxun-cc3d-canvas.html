@@ -6,13 +6,21 @@
             import BlaxxunCC3D from './blaxxun-cc3d.js';
             window.cc3d = await BlaxxunCC3D({
                 params: {
-                    src: "http://localhost:8080/places/shopping/vrml/shopping.wrl"
+                    src: "http://www.cybertown.com/places/enter/vrml/enter.wrl"
                 },
-                canvas: document.querySelector("#cc3d")
+                canvas: document.querySelector("#cc3d"),
+                download: function(url) {
+                    let parsed = new URL(url, "http://www.cybertown.com");
+                    if(parsed.hostname === "www.cybertown.com") {
+                        parsed.host = window.location.host;
+                        parsed.pathname = "/worlds" + parsed.pathname;
+                    }
+                    return parsed.toString();
+                }
             });
         </script>
     </head>
     <body>
-        <canvas id="cc3d" style="width:100%;height:100%"></canvas>
+        <canvas id="cc3d" style="width:100%;height:100%;padding:0"></canvas>
     </body>
 </html>

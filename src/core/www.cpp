@@ -124,6 +124,7 @@ static int WWWnotAvailable =0;
 #endif 
 
 #ifdef __EMSCRIPTEN__
+#include <emscripten.h>
 #include <emscripten/fetch.h>
 #include <cstdio>
 #include <uuid/uuid.h>
@@ -3380,7 +3381,17 @@ Retry:
 			fetch_attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
 			fetch_attr.onsuccess = em_fetch_callback_success;
 			fetch_attr.onerror = em_fetch_callback_error;
-			emscripten_fetch(&fetch_attr, (const char *)url);
+			char *new_url = (char*)EM_ASM_INT({
+				if(!Module.download) Module.download = function(url) { return url; };
+				let url = UTF8ToString($0);
+				let new_url = Module.download(url);
+				let new_url_bytes_with_nul = lengthBytesUTF8(new_url) + 1;
+				let new_url_heap = _malloc(new_url_bytes_with_nul);
+				stringToUTF8(new_url, new_url_heap, new_url_bytes_with_nul);
+				return new_url_heap;
+			}, (const char *)url);
+			emscripten_fetch(&fetch_attr, new_url);
+			free(new_url);
 			ref();
 			return ERROR_THREAD_STARTED;
 
