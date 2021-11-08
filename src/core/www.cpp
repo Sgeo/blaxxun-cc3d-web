@@ -126,6 +126,7 @@ static int WWWnotAvailable =0;
 #ifdef __EMSCRIPTEN__
 #include <emscripten/fetch.h>
 #include <cstdio>
+#include <uuid/uuid.h>
 #include "blaxxuncc3dctl.h"
 #endif
 
@@ -3097,11 +3098,16 @@ int TouchCacheUrl(const char *localFile)
   return(ret);
 }
 
+
+
 #ifdef __EMSCRIPTEN__
 void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	GFile *me = (GFile*)fetch->userData;
-	char filename[L_tmpnam];
-	std::tmpnam(filename);
+	uuid_t uuid;
+	uuid_generate(uuid);
+	char filename[42]; // 5 for "/tmp/", 36 for UUID, 1 for NUL 
+	strcpy(filename, "/tmp/");
+	uuid_unparse(uuid, filename+5);
 	FILE *file = fopen(filename, "wb");
 	fwrite(fetch->data, sizeof(char), fetch->numBytes, file);
 	fclose(file);
