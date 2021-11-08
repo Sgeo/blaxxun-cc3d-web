@@ -3118,9 +3118,9 @@ void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	// } else 
 	//if (me->hGlobalPostMsgWnd && me->refCnt >1) {
 	if (me->hGlobalPostMsgWnd) {	
-	  printf("Refcount before ref(): %i\n", me->refCnt);
+	  //printf("Refcount before ref(): %i\n", me->refCnt);
 	  me->ref(); 	// receiving window must do the unref 
-	  printf("Refcount after ref(): %i\n", me->refCnt);
+	  //printf("Refcount after ref(): %i\n", me->refCnt);
 	  CGLViewCtrlCtrl *ctl = (CGLViewCtrlCtrl*)(me->hGlobalPostMsgWnd);
 	  ctl->OnReadFileCompleted(me->threadRet, (LONG)me);
 	}
@@ -3133,7 +3133,13 @@ void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 
 void em_fetch_callback_error(emscripten_fetch_t *fetch) {
 	GFile *me = (GFile*)fetch->userData;
-
+	me->threadRet = -1;
+	if(me->hGlobalPostMsgWnd) {
+		me->ref();
+		CGLViewCtrlCtrl *ctl = (CGLViewCtrlCtrl*)(me->hGlobalPostMsgWnd);
+		ctl->OnReadFileCompleted(me->threadRet, (LONG)me);
+	}
+	me->unref();
 	emscripten_fetch_close(fetch);
 }
 #endif
