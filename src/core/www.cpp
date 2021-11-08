@@ -3118,8 +3118,9 @@ void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	// } else 
 	//if (me->hGlobalPostMsgWnd && me->refCnt >1) {
 	if (me->hGlobalPostMsgWnd) {	
-	  printf("Refcount: %i\n", me->refCnt);
+	  printf("Refcount before ref(): %i\n", me->refCnt);
 	  me->ref(); 	// receiving window must do the unref 
+	  printf("Refcount after ref(): %i\n", me->refCnt);
 	  CGLViewCtrlCtrl *ctl = (CGLViewCtrlCtrl*)(me->hGlobalPostMsgWnd);
 	  ctl->OnReadFileCompleted(me->threadRet, (LONG)me);
 	}

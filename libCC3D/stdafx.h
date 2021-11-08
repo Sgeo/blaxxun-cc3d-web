@@ -301,8 +301,8 @@ inline void LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
 inline void DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
 {}
 
-inline long InterlockedDecrement(long * l) { l--; return *l; }
-inline long InterlockedIncrement(long * l) { l++; return *l;  }
+inline long InterlockedDecrement(long * l) { *l-=1; return *l; }
+inline long InterlockedIncrement(long * l) { *l+=1; return *l;  }
 
 //typedef __int64 LONGLONG; // 
 typedef double LONGLONG; // 
