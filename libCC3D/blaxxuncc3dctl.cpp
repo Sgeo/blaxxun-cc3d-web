@@ -2227,24 +2227,24 @@ void CGLViewCtrlCtrl::DoPropExchange()
 	ULONG	timerInterval=0;
 
 	if (1) {
-		PX_String("URL", url);
-		PX_String("Media", media);
-		PX_String("VRML-DASHBOARD", dash);
+		PX_String("url", url);
+		PX_String("media", media);
+		PX_String("vrml-dashboard", dash);
 		
-		PX_String("FULLSCREEN", fullscreen); // 4.3
+		PX_String("fullscreen", fullscreen); // 4.3
 		
-		PX_String("FULLSCREEN-MODE", fullscreenMode); // 4.3
+		PX_String("fullscreen-mode", fullscreenMode); // 4.3
 	
-		PX_ULong( "TIMER-INTERVAL", timerInterval, 0); //4.3
+		PX_ULong( "timer-interval", timerInterval, 0); //4.3
 
-		PX_String("AVATAR-URL", avatarUrl);  //4.3
-		PX_String("AVATAR-DISPLAY", avatarMode);  //4.3
+		PX_String("avatar-url", avatarUrl);  //4.3
+		PX_String("avatar-display", avatarMode);  //4.3
 
 		//
-		PX_Bool("FORCE-HW", m_driverHints->m_useHW);  //4.3
-		PX_Bool("FORCE-RGB", m_driverHints->m_useRgb);  //4.3
-		PX_Bool("HW-PROBLEM-CHECK", m_forceHwProblemCheck);  //4.3
-		PX_Bool("HIDE-CURSOR", m_hideCursor);  //4.3
+		PX_Bool("force-hw", m_driverHints->m_useHW);  //4.3
+		PX_Bool("force-rgb", m_driverHints->m_useRgb);  //4.3
+		PX_Bool("hw-problem-check", m_forceHwProblemCheck);  //4.3
+		PX_Bool("hide-cursor", m_hideCursor);  //4.3
 
 		// PX_String("BACKGROUND-COLOR", backgroundColor); // 4.3
 		// PX_String("BACKGROUND-IMAGE", backgroundImage); // 4.3
@@ -2269,14 +2269,14 @@ void CGLViewCtrlCtrl::DoPropExchange()
 		}
 
 		if (url.GetLength() == 0) 
-			PX_String("DATA", url);
+			PX_String("data", url);
 
 		if (url.GetLength() == 0) 
-			PX_String("WORLD", url);
+			PX_String("world", url);
 		
 		// see KB mimetype example (used from EMBED etc. ) 
 		if (url.GetLength() == 0) 
-			PX_String("SRC", url);
+			PX_String("src", url);
 
 
 		if (url.GetLength()>0) {
@@ -2311,7 +2311,7 @@ void CGLViewCtrlCtrl::DoPropExchange()
 		else
 			url = view->GetUrl();
 
-		PX_String("URL", url);
+		PX_String("url", url);
 	}
    
 

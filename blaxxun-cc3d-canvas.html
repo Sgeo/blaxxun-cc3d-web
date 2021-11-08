@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blaxxun CC3D web demo</title>
+        <script type="module">
+            import BlaxxunCC3D from './blaxxun-cc3d.js';
+            window.cc3d = await BlaxxunCC3D({
+                params: {
+                    src: "http://localhost:8080/places/shopping/vrml/shopping.wrl"
+                },
+                canvas: document.querySelector("#cc3d")
+            });
+        </script>
+    </head>
+    <body>
+        <canvas id="cc3d" style="width:100%;height:100%"></canvas>
+    </body>
+</html>
