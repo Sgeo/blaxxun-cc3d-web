@@ -82,6 +82,7 @@ Todo :
 #include <ctype.h>
 
 #include <time.h>
+#include <chrono>
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -334,7 +335,7 @@ QueryPerformanceFrequency(
 
 
 //The timeGetTime function retrieves the system time, in milliseconds. 
-inline DWORD timeGetTime() { return clock() / (CLOCKS_PER_SEC/1000l)  ; }
+inline DWORD timeGetTime() { return std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()).time_since_epoch().count(); }
 
 #define _timeb timeb
 #define _ftime ftime
