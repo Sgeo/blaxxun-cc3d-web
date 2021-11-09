@@ -127,7 +127,6 @@ static int WWWnotAvailable =0;
 #include <emscripten.h>
 #include <emscripten/fetch.h>
 #include <cstdio>
-#include <uuid/uuid.h>
 #include "blaxxuncc3dctl.h"
 #endif
 
@@ -3102,13 +3101,26 @@ int TouchCacheUrl(const char *localFile)
 
 
 #ifdef __EMSCRIPTEN__
+
+char *filename_from_url(char *url) {
+	// Remember to delete after use
+	int url_len = strlen(url);
+	char *filename = new char[5 + url_len];
+	strcpy(filename, "/tmp/");
+	for(int i = 0; i <= url_len; i++) { // = url_len should be include the NUL
+		char the_char = url[i];
+		if(the_char == '/') {
+			filename[5 + i] = '\\';
+		} else {
+			filename[5 + i] = the_char;
+		}
+	}
+	return filename;
+}
+
 void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	GFile *me = (GFile*)fetch->userData;
-	uuid_t uuid;
-	uuid_generate(uuid);
-	char filename[42]; // 5 for "/tmp/", 36 for UUID, 1 for NUL 
-	strcpy(filename, "/tmp/");
-	uuid_unparse(uuid, filename+5);
+	char *filename = filename_from_url((char*)me->url);
 	FILE *file = fopen(filename, "wb");
 	fwrite(fetch->data, sizeof(char), fetch->numBytes, file);
 	fclose(file);
@@ -3119,6 +3131,7 @@ void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	me->urlLoaded = 1;
 	me->threadRet = 0;
 	me->lastChecked = CTime::GetCurrentTime();
+	delete filename; // localFile and localFileUnzipped are CString duplicates of filename
 	// if (me->hPostMsgWnd && me->refCnt >1) {
 	//   me->ref(); 	// receiving window must do the unref 
     //   ::PostMessage(me->hPostMsgWnd,WM_READFILECOMPLETED, (WPARAM) me->threadRet, (LPARAM) me) ;
@@ -3149,6 +3162,8 @@ void em_fetch_callback_error(emscripten_fetch_t *fetch) {
 	me->unref();
 	emscripten_fetch_close(fetch);
 }
+
+
 #endif
 
 /* 
