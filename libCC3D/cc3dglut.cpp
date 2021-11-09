@@ -91,6 +91,12 @@ static void OnPaint( void )
    glutSwapBuffers();
 }
 
+static void OnIdle( void ) {
+   if(ctl) {
+      ctl->OnIdle(1);
+   }
+}
+
 
 static void OnSize( int width, int height )
 {
@@ -364,7 +370,7 @@ int main( int argc, char *argv[] )
    }		                        
    
    // the idle function, sampling timeSensors & checking the redraw flag
-   // glutIdleFunc(OnIdle);
+   glutIdleFunc(OnIdle);
 
    glutMainLoop();
 

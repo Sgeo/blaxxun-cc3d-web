@@ -3124,7 +3124,7 @@ void em_fetch_callback_success(emscripten_fetch_t *fetch) {
 	FILE *file = fopen(filename, "wb");
 	fwrite(fetch->data, sizeof(char), fetch->numBytes, file);
 	fclose(file);
-	printf("File written: %s\n", filename);
+	//printf("File written: %s\n", filename);
 	me->localFile = filename;
 	me->localFileClass = GLFC_IE_CACHE_FILE; // Does this actually do anything?
 	me->localFileUnzipped = filename;
